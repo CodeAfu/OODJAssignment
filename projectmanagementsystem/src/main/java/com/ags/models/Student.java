@@ -11,31 +11,31 @@ public class Student {
     public Student() {
         projects = new Project[10];
     }
+
+    public Student(int numOfProjects) {
+        projects = new Project[numOfProjects];
+    }
     
+
     public String getName() {
         return name;
     }
-
 
     public void setName(String name) {
         this.name = name;
     }
 
-
     public String getDob() {
         return dob;
     }
-
 
     public void setDob(String dob) {
         this.dob = dob;
     }
 
-
     public Project[] getProjects() {
         return projects;
     }
-
 
     public void setProjects(Project[] projects) {
         this.projects = projects;
