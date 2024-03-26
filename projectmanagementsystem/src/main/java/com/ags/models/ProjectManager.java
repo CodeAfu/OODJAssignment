@@ -13,7 +13,7 @@ public class ProjectManager {
 
     }
 
-    public void assignLecturerRole(Lecturer lecturer, Role role) {
+    public void assignRoleToLecturer(Lecturer lecturer, Role role) {
         lecturer.setRole(role);
     }
 }
