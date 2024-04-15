@@ -2,35 +2,22 @@ package com.ags.pms.models;
 
 import java.util.Date;
 
-public class Student {
-    private int id;
-    private String name;
-    private String dob;
+public class Student extends User {
     private Project[] projects; 
 
     public Student() {
+        super();
         projects = new Project[10];
     }
 
     public Student(int numOfProjects) {
+        super();
         projects = new Project[numOfProjects];
     }
     
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDob() {
-        return dob;
-    }
-
-    public void setDob(String dob) {
-        this.dob = dob;
+    public Student(int id, String name, String dob, String email, int numOfProjects) {
+        super(id, name, dob, email);
+        projects = new Project[numOfProjects];
     }
 
     public Project[] getProjects() {
