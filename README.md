@@ -18,7 +18,7 @@
         - Confirm presentations
         - Evaluate report with feedback
         - Project Manager Menus:
-            - Assign assesment type to student
+            - Assign AssessmentType to Student
             - Assign Supervisor and SecondMarker to Lecturer
             - View Report Status
     - Admin:

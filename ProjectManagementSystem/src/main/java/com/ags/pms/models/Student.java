@@ -1,7 +1,9 @@
 package com.ags.pms.models;
 
 public class Student extends User {
-    private Project[] projects; 
+
+    private Project[] projects;
+    private AssessmentType assessmentType;
 
     // Debug
     public Student() {
@@ -47,5 +49,13 @@ public class Student extends User {
 
     public void editStudent(Student student) {
         // Use student object, find 
+    }
+    
+    public AssessmentType getAssessmentType() {
+        return assessmentType;
+    }
+
+    public void setAssessmentType(AssessmentType assessmentType) {
+        this.assessmentType = assessmentType;
     }
 }
