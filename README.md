@@ -4,10 +4,27 @@
 ### GUI
 - Login
 - Register
-- Admin Menu
-- Student Menu
-- Lecturer Menu (Access to Project Manager Menu based on role)
-- Report View
+- Main Menu (Adaptive Menus based on user role)
+    - Student:
+        - Dashboard
+        - View Report
+        - Request Presentation
+        - Results
+    - Lecturer:
+        - Dashboard
+        - View Supervisees
+        - View Presentation Requests
+        - View Second marker slots
+        - Confirm presentations
+        - Evaluate report with feedback
+        - Project Manager Menus:
+            - Assign assesment type to student
+            - Assign Supervisor and SecondMarker to Lecturer
+            - View Report Status
+    - Admin:
+        - Register Students/Lecturer
+        - Update Menu (Register Student,  Assign Project Manager to Lecturer)
+
 
 ### Models
 - Lecturer

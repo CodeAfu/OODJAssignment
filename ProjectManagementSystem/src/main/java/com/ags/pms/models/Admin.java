@@ -1,9 +1,11 @@
 package com.ags.pms.models;
 
-public class Admin {
+public class Admin implements AuthUser {
+    private String username;
+    private String password;
 
     public Admin() {
-        
+
     }
 
     public void assignRoleToLecturer(Lecturer lecturer, Role role) {
@@ -26,7 +28,30 @@ public class Admin {
     
         // Save student to the database
     }
-
     
+    @Override
+    public void login() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'login'");
+    }
 
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    
+    @Override
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

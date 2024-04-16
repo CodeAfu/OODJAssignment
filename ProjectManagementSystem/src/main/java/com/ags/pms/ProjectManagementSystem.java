@@ -4,14 +4,18 @@
 
 package com.ags.pms;
 
+import com.ags.pms.models.*;
+
 public class ProjectManagementSystem {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        consoleTests();
     }
     
     
     private static void consoleTests() {
-        
+        Admin admin = new Admin();
+        admin.setUsername("Admin");
+        System.out.println(admin.getUsername());
     }
 }
