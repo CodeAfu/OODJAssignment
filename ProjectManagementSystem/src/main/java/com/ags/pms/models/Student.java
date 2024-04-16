@@ -1,15 +1,15 @@
 package com.ags.pms.models;
 
-import java.util.Date;
-
 public class Student extends User {
     private Project[] projects; 
 
+    // Debug
     public Student() {
         super();
         projects = new Project[10];
     }
 
+    // Probably delete
     public Student(int numOfProjects) {
         super();
         projects = new Project[numOfProjects];
@@ -18,6 +18,11 @@ public class Student extends User {
     public Student(int id, String name, String dob, String email, int numOfProjects) {
         super(id, name, dob, email);
         projects = new Project[numOfProjects];
+    }
+    
+    public Student(int id, String name, String dob, String email) {
+        super(id, name, dob, email);
+        projects = new Project[10];
     }
 
     public Project[] getProjects() {
@@ -38,5 +43,9 @@ public class Student extends User {
 
     public void submitProject(Project project) {
         
+    }
+
+    public void editStudent(Student student) {
+        // Use student object, find 
     }
 }

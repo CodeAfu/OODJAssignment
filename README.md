@@ -52,6 +52,9 @@
         - LastName
         - DoB
 
+### Definitely High Fidelity Prototype
+![prototype](https://i.imgur.com/ICzJID8.png)
+
 ### Copy pasta
 ✅
 ❌
