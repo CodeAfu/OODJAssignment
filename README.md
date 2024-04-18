@@ -27,10 +27,10 @@
 
 
 ### Models
-- Lecturer
-- Student
-- Admin
-- Project Manager
+- Lecturer -> Ibrahim
+- Student -> Rion
+- Admin -> Ruhit
+- Project Manager -> Ibrahim
 
 ### Functionalities (Adapt as deemed necessary)
 #### User Based:

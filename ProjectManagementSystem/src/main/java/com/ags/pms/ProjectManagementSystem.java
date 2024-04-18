@@ -10,11 +10,11 @@ import com.ags.pms.forms.Login;
 public class ProjectManagementSystem {
 
     public static void main(String[] args) {
-        // runApp();
+        // app();
         consoleTests();
     }
     
-    private static void runApp() {
+    private static void app() {
         new Login().setVisible(true);
     }
     

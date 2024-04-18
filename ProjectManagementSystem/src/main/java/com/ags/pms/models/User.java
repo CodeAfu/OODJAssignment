@@ -1,11 +1,11 @@
 package com.ags.pms.models;
 
-public class User {
+public class User implements AuthUser {
     
-    private int id;
-    private String name;
-    private String dob;
-    private String email;
+    protected int id;
+    protected String name;
+    protected String dob;
+    protected String email;
     
     public User() {}
     
@@ -46,6 +46,11 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public void login() {
+        
     }
 
 }

@@ -1,19 +1,17 @@
 package com.ags.pms.models;
 
 public class Admin implements AuthUser {
+
     private String username;
     private String password;
 
+    public Admin(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     public Admin() {
 
-    }
-
-    public void assignRoleToLecturer(Lecturer lecturer, Role role) {
-        lecturer.setRole(role);
-    }
-    
-    public String getRoleOfLecturer(Lecturer lecturer) {
-        return lecturer.getRole().name();
     }
 
     // Requires overloads for other Student Constructors
@@ -35,23 +33,23 @@ public class Admin implements AuthUser {
         throw new UnsupportedOperationException("Unimplemented method 'login'");
     }
 
-    @Override
     public String getUsername() {
         return username;
     }
 
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
     public void setUsername(String username) {
         this.username = username;
     }
-    
-    @Override
+
+
+    // Needs change
+    public String getPassword() {
+
+        return password;
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

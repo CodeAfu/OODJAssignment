@@ -1,23 +1,62 @@
 package com.ags.pms.models;
 
 public class Lecturer extends User {
-    private Role role;
     
+    private boolean isProjectManager;
+
     public Lecturer(Role role) {
         super();
-        this.role = role;
+        isProjectManager = false;    
     }
     
     public Lecturer(int id, String name, String dob, String email, Role role) {
         super(id, name, dob, email);
-        this.role = role;
+        isProjectManager = false;
+    }
+    
+    public boolean isProjectManager() {
+        return isProjectManager;
     }
 
-    public Role getRole() {
-        return role;
+    public void setProjectManager(boolean isProjectManager) {
+        this.isProjectManager = isProjectManager;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void toggleProjectManager(boolean isProjectManager) {
+
+        if (isProjectManager) {
+            isProjectManager = false;
+        } else {
+            isProjectManager = true;
+        }
+
+        System.out.println("Project Manager: " + isProjectManager);
     }
+
+    public void viewSupervisees() {
+
+    }
+
+    public void viewPresentationRequests() {
+
+    }
+
+    public void viewAvailableSlots() {
+
+    }
+
+    public void viewSecondMarkerAcceptance() {
+
+    }
+
+    public void setPresentationSlot() {
+
+    }
+
+    public void viewReport() {
+
+    }
+
+
+
 }
