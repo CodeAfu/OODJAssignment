@@ -21,7 +21,7 @@ public class PasswordHandler {
     
     public void initFromStrings(String secretKey, String IV) {
         aes = new AES();
-        aes.setKey(secretKey, "AES");
+        aes.setKey(secretKey);
         aes.setIV(IV);
     }
     

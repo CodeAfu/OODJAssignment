@@ -8,6 +8,7 @@ import com.ags.pms.models.*;
 import com.ags.pms.services.*;
 
 import com.ags.pms.forms.Login;
+import com.ags.pms.io.JsonHandler;
 
 public class ProjectManagementSystem {
 
@@ -25,9 +26,17 @@ public class ProjectManagementSystem {
     }
     
     private static void consoleTests() throws Exception {
-        testAES();
+        testFileHandler();
+        // testAES();
     }
 
+
+    private static void testFileHandler() {
+        JsonHandler handler = new JsonHandler();
+        handler.writeFile("Users.txt", "Test Write");
+        String text = handler.readFile("Users.txt");
+        System.out.println(text);
+    }
 
     private static void testAES() throws Exception {
         PasswordHandler handler = new PasswordHandler();

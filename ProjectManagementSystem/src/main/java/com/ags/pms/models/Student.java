@@ -1,42 +1,33 @@
 package com.ags.pms.models;
 
+import java.util.ArrayList;
+
 public class Student extends User {
 
-    private Project[] projects;
+    private ArrayList<Project> projects;
     private AssessmentType assessmentType;
 
     // Debug
     public Student() {
         super();
-        projects = new Project[10];
-    }
-
-    // Probably delete
-    public Student(int numOfProjects) {
-        super();
-        projects = new Project[numOfProjects];
-    }
-    
-    public Student(int id, String name, String dob, String email, String username, String password, int numOfProjects) {
-        super(id, name, dob, email, username, password);
-        projects = new Project[numOfProjects];
+        projects = new ArrayList<Project>();
     }
     
     public Student(int id, String name, String dob, String email, String username, String password) {
         super(id, name, dob, email, username, password);
-        projects = new Project[10];
+        projects = new ArrayList<Project>();
     }
 
-    public Project[] getProjects() {
+    public ArrayList<Project> getProjects() {
         return projects;
     }
 
-    public void setProjects(Project[] projects) {
+    public void setProjects(ArrayList<Project> projects) {
         this.projects = projects;
     }
 
     public void addProject(Project project) {
-        projects[projects.length - 1] = project;
+        projects.add(project);
     }
 
     public void submitProject() {

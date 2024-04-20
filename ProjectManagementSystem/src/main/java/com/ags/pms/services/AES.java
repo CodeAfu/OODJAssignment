@@ -84,8 +84,8 @@ public class AES {
         return Base64.getDecoder().decode(data);
     }
 
-    public void setKey(String secretKey, String algoString) {
-        this.key = new SecretKeySpec(decode(secretKey), algoString);
+    public void setKey(String secretKey) {
+        this.key = new SecretKeySpec(decode(secretKey), "AES");
     }
 
     public void setIV(String IV) {
