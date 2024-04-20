@@ -28,18 +28,23 @@ public class ProjectManagementSystem {
     }
     
     private static void consoleTests() throws Exception {
-        PasswordHandler password = new PasswordHandler();
-
-        password.init();
-
-        String encryptedPassword = password.encryptPassword("Come_Test_This_IV");
-        String decryptedPassword = password.decryptPassword(encryptedPassword);
-
-        Helper.printErr(encryptedPassword);
-        Helper.printErr(decryptedPassword);
-        Helper.printErr(password.exportKeys());
-
+        testAES();
     }
 
+
+    private static void testAES() throws Exception {
+        PasswordHandler handler = new PasswordHandler();
+
+        // password.init();
+        handler.initFromStrings("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
+
+        String encryptedPassword = handler.encryptPassword("Come_Test_This_IV");
+        String decryptedPassword = handler.decryptPassword("3gqnTZubvObeoO+7+slXcWG3GMxONFbVOMxOv44exHde");
+
+        Helper.printErr("Encrypted: " + encryptedPassword);
+        Helper.printErr("Decrypted: " + decryptedPassword);
+        Helper.printErr("Secret Key: " + handler.exportKeys()[0]);
+        Helper.printErr("IV: " + handler.exportKeys()[1]);
+    }
 
 }

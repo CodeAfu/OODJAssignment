@@ -49,8 +49,8 @@ public class AES {
         Cipher encryptionCipher = Cipher.getInstance("AES/GCM/NoPadding");
 
         if (this.IV == null) {
-            this.IV = encryptionCipher.getIV();
             encryptionCipher.init(Cipher.ENCRYPT_MODE, key);
+            this.IV = encryptionCipher.getIV();
         } else {
             GCMParameterSpec spec = new GCMParameterSpec(T_LEN, IV);
             encryptionCipher.init(Cipher.ENCRYPT_MODE, key, spec);
@@ -69,14 +69,13 @@ public class AES {
         return new String(decryptedBytes);
     }
 
-    public String exportKeys() {
+    public String[] exportKeys() {
         String secretKey = encode(key .getEncoded());
         String IV = encode(this.IV);
 
-        return new String(
-            "Secret Key: " + secretKey
-            + "\nIV: " + IV
-        );
+        return new String[] {
+            secretKey, IV
+        };
     }
 
     private String encode(byte[] data) {

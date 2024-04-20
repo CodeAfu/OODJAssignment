@@ -11,14 +11,16 @@ import com.ags.pms.models.AuthUser;
 
 public class PasswordHandler {
 
+    private String encryptedPassword;
     private AES aes;
-
+    
     public void init() throws NoSuchAlgorithmException {
         aes = new AES();
         aes.init();
     }
-
+    
     public void initFromStrings(String secretKey, String IV) {
+        aes = new AES();
         aes.setKey(secretKey, "AES");
         aes.setIV(IV);
     }
@@ -31,7 +33,12 @@ public class PasswordHandler {
         return aes.decrypt(password);
     }
 
-    public String exportKeys() {
+    public void setEncryptedPassword(String encryptedPassword) {
+        this.encryptedPassword = encryptedPassword;
+    }
+    
+    public String[] exportKeys() {
         return aes.exportKeys();
     }
+    
 }
