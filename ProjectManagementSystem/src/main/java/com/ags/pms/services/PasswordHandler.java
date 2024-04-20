@@ -9,7 +9,7 @@ import javax.crypto.NoSuchPaddingException;
 
 import com.ags.pms.models.AuthUser;
 
-public class PasswordEncryptor {
+public class PasswordHandler {
 
     private AES aes;
 
@@ -25,5 +25,4 @@ public class PasswordEncryptor {
     public String decryptPassword(String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         return aes.decrypt(password);
     }
-
 }

@@ -28,7 +28,7 @@ public class ProjectManagementSystem {
     }
     
     private static void consoleTests() throws Exception {
-        PasswordEncryptor password = new PasswordEncryptor();
+        PasswordHandler password = new PasswordHandler();
 
         password.initAES();
 
