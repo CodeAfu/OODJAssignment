@@ -56,7 +56,4 @@ public class Lecturer extends User {
     public void viewReport() {
 
     }
-
-
-
 }

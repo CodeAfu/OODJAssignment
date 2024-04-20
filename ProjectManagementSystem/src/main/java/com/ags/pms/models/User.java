@@ -6,6 +6,8 @@ public abstract class User implements AuthUser {
     protected String name;
     protected String dob;
     protected String email;
+    protected String username;
+    protected String password;
 
     public User() {
     }
@@ -54,7 +56,7 @@ public abstract class User implements AuthUser {
     }
 
     @Override
-    public void login() {
+    public void login(String username, String password) {
         
     }
 

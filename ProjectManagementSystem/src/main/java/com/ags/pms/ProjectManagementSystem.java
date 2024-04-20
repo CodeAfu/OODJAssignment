@@ -38,8 +38,8 @@ public class ProjectManagementSystem {
         // password.init();
         handler.initFromStrings("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
 
-        String encryptedPassword = handler.encryptPassword("Come_Test_This_IV");
-        String decryptedPassword = handler.decryptPassword("3gqnTZubvObeoO+7+slXcWG3GMxONFbVOMxOv44exHde");
+        String encryptedPassword = handler.encryptPassword("TestPasswordDamn");
+        String decryptedPassword = handler.decryptPassword("yQC5XJSuqubdkMm319tlVm4rzj06iqYyaWo12SaDbA0=");
 
         Helper.printErr("Encrypted: " + encryptedPassword);
         Helper.printErr("Decrypted: " + decryptedPassword);

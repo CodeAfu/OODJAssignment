@@ -1,6 +1,23 @@
 # OODJ Assignment
 
 ## TODO
+- Build Models
+    - Lecturer -> Ruhit
+    - ProjectManager -> Ruhit
+    - Admin -> Rion
+    - Student -> Rion
+- Build GUI
+    - Login -> Ruhit
+    - Register -> Ruhit
+    - MainMenuBody -> NA
+    - StudentMenu -> NA
+    - LecturerMenu -> NA
+    - AdminMenu -> NA
+- Build Project Dependencies
+    - FileHandler -> Ibrahim
+    - PasswordHandler -> Ibrahim ✅
+    
+
 ### GUI
 - Login
 - Register
@@ -14,7 +31,7 @@
         - Dashboard
         - View Supervisees
         - View Presentation Requests
-        - View Second marker slots
+        - View Second Marker slots
         - Confirm presentations
         - Evaluate report with feedback
         - Project Manager Menus:
@@ -27,10 +44,10 @@
 
 
 ### Models
-- Lecturer -> Ibrahim
+- Lecturer -> Ruhit
 - Student -> Rion
-- Admin -> Ruhit
-- Project Manager -> Ibrahim
+- Admin -> Rion
+- Project Manager -> Ruhit
 
 ### Functionalities (Adapt as deemed necessary)
 #### User Based:
@@ -76,3 +93,4 @@
 ✅
 ❌
 ❗
+3gqnTZubvObeoO

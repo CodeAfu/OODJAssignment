@@ -2,6 +2,6 @@ package com.ags.pms.models;
 
 public interface AuthUser {
     
-    public void login();
+    public void login(String username, String password);
 
 }
