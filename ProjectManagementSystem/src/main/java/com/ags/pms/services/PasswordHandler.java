@@ -13,16 +13,25 @@ public class PasswordHandler {
 
     private AES aes;
 
-    public void initAES() throws NoSuchAlgorithmException {
+    public void init() throws NoSuchAlgorithmException {
         aes = new AES();
         aes.init();
     }
+
+    public void initFromStrings(String secretKey, String IV) {
+        aes.setKey(secretKey, "AES");
+        aes.setIV(IV);
+    }
     
-    public String encryptPassword(String password) throws NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+    public String encryptPassword(String password) throws NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         return aes.encrypt(password);
     }
     
     public String decryptPassword(String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         return aes.decrypt(password);
+    }
+
+    public String exportKeys() {
+        return aes.exportKeys();
     }
 }

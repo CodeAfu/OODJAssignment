@@ -30,13 +30,15 @@ public class ProjectManagementSystem {
     private static void consoleTests() throws Exception {
         PasswordHandler password = new PasswordHandler();
 
-        password.initAES();
+        password.init();
 
-        String encryptedPassword = password.encryptPassword("TestPassword");
+        String encryptedPassword = password.encryptPassword("Come_Test_This_IV");
         String decryptedPassword = password.decryptPassword(encryptedPassword);
 
         Helper.printErr(encryptedPassword);
         Helper.printErr(decryptedPassword);
+        Helper.printErr(password.exportKeys());
+
     }
 
 
