@@ -17,13 +17,13 @@ public class Student extends User {
         projects = new Project[numOfProjects];
     }
     
-    public Student(int id, String name, String dob, String email, int numOfProjects) {
-        super(id, name, dob, email);
+    public Student(int id, String name, String dob, String email, String username, String password, int numOfProjects) {
+        super(id, name, dob, email, username, password);
         projects = new Project[numOfProjects];
     }
     
-    public Student(int id, String name, String dob, String email) {
-        super(id, name, dob, email);
+    public Student(int id, String name, String dob, String email, String username, String password) {
+        super(id, name, dob, email, username, password);
         projects = new Project[10];
     }
 

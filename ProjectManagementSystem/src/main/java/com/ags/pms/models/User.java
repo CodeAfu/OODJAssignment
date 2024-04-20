@@ -12,15 +12,22 @@ public abstract class User implements AuthUser {
     public User() {
     }
     
-    public User(int id, String name, String dob, String email) {
-        createUser(id, name, dob, email);
-    }
-
-    public void createUser(int id, String name, String dob, String email) {
+    public User(int id, String name, String dob, String email, String username, String password) {
         this.id = id;
         this.name = name;
         this.dob = dob;
         this.email = email;
+        this.username = username;
+        this.password = password;
+    }
+
+    public void initializeUser(int id, String name, String dob, String email, String username, String password) {
+        this.id = id;
+        this.name = name;
+        this.dob = dob;
+        this.email = email;
+        this.username = username;
+        this.password = password;
     }
     
     public int getId() {
@@ -53,6 +60,11 @@ public abstract class User implements AuthUser {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setAccount(String username, String Password) {
+        this.username = username;
+        this.password = password;
     }
 
     @Override

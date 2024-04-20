@@ -1,8 +1,6 @@
 package com.ags.pms.io;
 
-import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 
 import com.ags.pms.Helper;
 

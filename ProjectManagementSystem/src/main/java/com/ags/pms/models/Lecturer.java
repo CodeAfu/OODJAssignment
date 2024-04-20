@@ -9,8 +9,8 @@ public class Lecturer extends User {
         isProjectManager = false;    
     }
     
-    public Lecturer(int id, String name, String dob, String email) {
-        super(id, name, dob, email);
+    public Lecturer(int id, String name, String dob, String email, String username, String password) {
+        super(id, name, dob, email, username, password);
         isProjectManager = false;
     }
     

@@ -4,8 +4,8 @@ public class ProjectManager extends Lecturer {
 
     private Role role;
     
-    public ProjectManager(int id, String name, String dob, String email, Role role) {
-        super(id, name, dob, email);
+    public ProjectManager(int id, String name, String dob, String email, Role role, String username, String password) {
+        super(id, name, dob, email, username, password);
         this.role = role;
     }
     
