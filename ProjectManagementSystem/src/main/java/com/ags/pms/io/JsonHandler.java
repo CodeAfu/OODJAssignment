@@ -58,6 +58,26 @@ public class JsonHandler implements JsonIO {
         return output;
     }
 
+    public void writeJson() {
+        try { 
+            ObjectMapper mapper = new ObjectMapper();
+            PasswordHandler pwHandler = new PasswordHandler();
+
+            // Strings below should not be shared, create config file to hide info
+            pwHandler.initFromStrings("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
+            String password = pwHandler.encryptPassword("SamplePassword");
+            Student student = new Student(1, "John Doe", "10/02/2024", "johndoe@email.com", "user", password);
+
+            String jsonData = mapper.writeValueAsString(student);
+
+            writeFile("Students.txt", jsonData);
+
+        } catch (Exception ex) {
+            Helper.printErr(Helper.getStackTraceString(ex));
+        }
+
+    }
+
     @Override
     public void read(JsonReadable read) {
         // TODO Auto-generated method stub
@@ -66,20 +86,6 @@ public class JsonHandler implements JsonIO {
 
     @Override
     public void write(JsonWritable write) {
-        try { 
-            ObjectMapper mapper = new ObjectMapper();
-    
-            PasswordHandler pwHandler = new PasswordHandler();
-            // Strings below should not be shared, create config file to hide info
-            pwHandler.initFromStrings("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
-            String password = pwHandler.encryptPassword("SamplePassword");
-            Student student = new Student(1, "John Doe", "10/02/2024", "johndoe@email.com", "user", password);
-
-            String jsonData = mapper.writeValueAsString(student);
-
-        } catch (Exception ex) {
-            Helper.printErr(Helper.getStackTraceString(ex));
-        }
 
     }
 }

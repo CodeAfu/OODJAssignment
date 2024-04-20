@@ -33,8 +33,9 @@ public class ProjectManagementSystem {
 
     private static void testFileHandler() {
         JsonHandler handler = new JsonHandler();
-        handler.writeFile("Users.txt", "Test Write");
-        String text = handler.readFile("Users.txt");
+        // handler.writeFile("Users.txt", "Test Write");
+        handler.writeJson();
+        String text = handler.readFile("Students.txt");
         System.out.println(text);
     }
 
