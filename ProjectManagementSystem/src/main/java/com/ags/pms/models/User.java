@@ -1,15 +1,20 @@
 package com.ags.pms.models;
 
-public class User implements AuthUser {
+public abstract class User implements AuthUser {
     
     protected int id;
     protected String name;
     protected String dob;
     protected String email;
-    
-    public User() {}
+
+    public User() {
+    }
     
     public User(int id, String name, String dob, String email) {
+        createUser(id, name, dob, email);
+    }
+
+    public void createUser(int id, String name, String dob, String email) {
         this.id = id;
         this.name = name;
         this.dob = dob;

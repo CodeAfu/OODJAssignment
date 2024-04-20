@@ -4,12 +4,12 @@ public class Lecturer extends User {
     
     private boolean isProjectManager;
 
-    public Lecturer(Role role) {
+    public Lecturer() {
         super();
         isProjectManager = false;    
     }
     
-    public Lecturer(int id, String name, String dob, String email, Role role) {
+    public Lecturer(int id, String name, String dob, String email) {
         super(id, name, dob, email);
         isProjectManager = false;
     }
