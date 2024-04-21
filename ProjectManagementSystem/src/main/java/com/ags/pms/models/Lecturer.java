@@ -8,6 +8,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import com.ags.pms.io.Jsonable;
+
 public class Lecturer extends User {
     
     private boolean isProjectManager;
@@ -63,5 +65,17 @@ public class Lecturer extends User {
 
     public void viewReport() {
 
+    }
+
+    @Override
+    public Jsonable jsonToObject(String json) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'jsonToObject'");
+    }
+
+    @Override
+    public void objectToJson(Jsonable obj) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'objectToJson'");
     }
 }

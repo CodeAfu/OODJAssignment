@@ -2,6 +2,11 @@ package com.ags.pms;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashMap;
+
+import javax.print.attribute.HashPrintJobAttributeSet;
+
+import com.ags.pms.io.FileName;
 
 public class Helper {
     
@@ -16,5 +21,25 @@ public class Helper {
         PrintWriter pw = new PrintWriter(sw);
         ex.printStackTrace(pw);
         return sw.toString();
+    }
+
+    public static String getFilenameByEnum(FileName filename) {
+        HashMap<FileName, String> hashMap = new HashMap<>();
+        hashMap.put(FileName.STUDENTS, "Students.txt");
+        hashMap.put(FileName.LECTURERS, "Lecturers.txt");
+        hashMap.put(FileName.PROJECTMANAGERS, "ProjectManagers.txt");
+        hashMap.put(FileName.ADMINS, "Admins.txt");
+        
+        return hashMap.get(filename);
+    }
+    
+    public static String getFilenameByClassName(String className) {
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("Student", "Students.txt");
+        hashMap.put("Lecturer", "Lecturers.txt");
+        hashMap.put("ProjectManager", "ProjectManagers.txt");
+        hashMap.put("Admin", "Admins.txt");
+        
+        return hashMap.get(className);
     }
 }

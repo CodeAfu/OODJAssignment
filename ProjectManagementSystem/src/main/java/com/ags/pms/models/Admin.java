@@ -8,6 +8,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import com.ags.pms.io.Jsonable;
+
 public class Admin extends User {
 
     public Admin() {
@@ -23,6 +25,18 @@ public class Admin extends User {
 
     public void registerStudent(Student student) {
         
+    }
+
+    @Override
+    public Jsonable jsonToObject(String json) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'jsonToObject'");
+    }
+
+    @Override
+    public void objectToJson(Jsonable obj) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'objectToJson'");
     }
     
 }

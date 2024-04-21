@@ -8,10 +8,9 @@ import java.util.Scanner;
 
 import com.ags.pms.Helper;
 import com.ags.pms.models.*;
-import com.ags.pms.services.PasswordHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JsonHandler implements JsonIO {
+public class JsonHandler {
 
     private String path = "ProjectManagementSystem/src/main/java/com/ags/pms/data/";
 
@@ -32,7 +31,7 @@ public class JsonHandler implements JsonIO {
         }
     }
 
-    public void writeFile(String filename, String contents) {
+    public void writeData(String filename, String contents) {
         try {
             FileWriter writer = new FileWriter(path + filename);
             writer.write(contents);
@@ -42,7 +41,7 @@ public class JsonHandler implements JsonIO {
         }
     }
 
-    public String readFile(String filename) {
+    public String readData(String filename) {
         String output = "";
         try {
             FileReader file = new FileReader(path + filename);
@@ -58,38 +57,46 @@ public class JsonHandler implements JsonIO {
         return output;
     }
 
-    public void writeJson() {
+    public <Jsonable> void writeJson(ArrayList<Jsonable> objTs) {
+        if (objTs.isEmpty()) {
+            throw new NullPointerException("writeJson() objTs is null.");
+        }
+
         try { 
             ObjectMapper mapper = new ObjectMapper();
-            ArrayList<Student> students = new ArrayList<>();
+            Jsonable firstObj = objTs.get(0); 
+            String className = firstObj.getClass().getSimpleName();
+            String jsonData;
             
-            // Strings below should not be shared, create config file to hide info
-            // Also call initFromStrings within PasswordHandler encryptPassword method
-
-            Student student1 = new Student(1, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Project>(), AssessmentType.FYP);
-            Student student2 = new Student(2, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Project>(), AssessmentType.INVESTIGATIONREPORTS);
-
-            students.add(student1);
-            students.add(student2);
-
-            String jsonData = mapper.writeValueAsString(students);
-
-            writeFile("Students.txt", jsonData);
-
+            switch (className) {
+                case "Student":
+                    @SuppressWarnings("unchecked") 
+                    ArrayList<Student> students = new ArrayList<>((ArrayList<Student>) objTs);
+                    jsonData = mapper.writeValueAsString(students);
+                    writeData(Helper.getFilenameByClassName(className), jsonData);
+                    break;
+                case "Lecturer":
+                    @SuppressWarnings("unchecked") 
+                    ArrayList<Lecturer> lecturers = new ArrayList<>((ArrayList<Lecturer>) objTs);
+                    jsonData = mapper.writeValueAsString(lecturers);
+                    writeData(Helper.getFilenameByClassName(className), jsonData);
+                    break;
+                case "ProjectManager":
+                    @SuppressWarnings("unchecked") 
+                    ArrayList<ProjectManager> projectManagers = new ArrayList<>((ArrayList<ProjectManager>) objTs);
+                    jsonData = mapper.writeValueAsString(projectManagers);
+                    writeData(Helper.getFilenameByClassName(className), jsonData);
+                    break;
+                case "Admin":
+                    @SuppressWarnings("unchecked") 
+                    ArrayList<Admin> admins = new ArrayList<>((ArrayList<Admin>) objTs);
+                    jsonData = mapper.writeValueAsString(admins);
+                    writeData(Helper.getFilenameByClassName(className), jsonData);
+                    break;
+            }
         } catch (Exception ex) {
             Helper.printErr(Helper.getStackTraceString(ex));
         }
-
-    }
-
-    @Override
-    public void read(JsonReadable read) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'read'");
-    }
-
-    @Override
-    public void write(JsonWritable write) {
 
     }
 }
