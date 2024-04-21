@@ -1,5 +1,15 @@
 package com.ags.pms.models;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import com.ags.pms.services.PasswordHandler;
+
 public abstract class User implements AuthUser {
     
     protected int id;
@@ -8,26 +18,31 @@ public abstract class User implements AuthUser {
     protected String email;
     protected String username;
     protected String password;
-
+    
+    private PasswordHandler pwHandler = new PasswordHandler("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
+    
     public User() {
     }
     
-    public User(int id, String name, String dob, String email, String username, String password) {
+    public User(int id, String name, String dob, String email, String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         this.id = id;
         this.name = name;
         this.dob = dob;
         this.email = email;
         this.username = username;
-        this.password = password;
+        this.password = pwHandler.encryptPassword(password);
     }
 
-    public void initializeUser(int id, String name, String dob, String email, String username, String password) {
+    public void initializeUser(int id, String name, String dob, String email, String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+        PasswordHandler pwHandler = new PasswordHandler();
+        pwHandler.initFromStrings("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
+
         this.id = id;
         this.name = name;
         this.dob = dob;
         this.email = email;
         this.username = username;
-        this.password = password;
+        this.password = pwHandler.encryptPassword(password);
     }
     
     public int getId() {
@@ -62,9 +77,17 @@ public abstract class User implements AuthUser {
         this.email = email;
     }
 
-    public void setAccount(String username, String Password) {
+    public String getUsername() {
+        return username;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+
+    public void setAccount(String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         this.username = username;
-        this.password = password;
+        this.password = pwHandler.encryptPassword(password);
     }
 
     @Override

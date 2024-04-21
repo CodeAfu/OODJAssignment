@@ -1,1 +1,1 @@
-{"id":1,"name":"John Doe","dob":"10/02/2024","email":"johndoe@email.com","projects":[],"assessmentType":null}
+[{"id":1,"name":"John Doe","dob":"10/02/2024","email":"johndoe@email.com","username":"johnUser","password":"yQC5XJSuqub9IbGNewfKyQegzePyZ68J","projects":[],"assessmentType":"FYP"},{"id":2,"name":"John Kumar","dob":"09/03/2024","email":"johnkumar@email.com","username":"john_kumar","password":"2gqlTJe7rPPMGMq8Z/druQpBYRiEO4V7Ag==","projects":[],"assessmentType":"INVESTIGATIONREPORTS"}]

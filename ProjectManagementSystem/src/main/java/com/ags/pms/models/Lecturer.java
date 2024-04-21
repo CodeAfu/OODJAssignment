@@ -1,5 +1,13 @@
 package com.ags.pms.models;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 public class Lecturer extends User {
     
     private boolean isProjectManager;
@@ -9,7 +17,7 @@ public class Lecturer extends User {
         isProjectManager = false;    
     }
     
-    public Lecturer(int id, String name, String dob, String email, String username, String password) {
+    public Lecturer(int id, String name, String dob, String email, String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         super(id, name, dob, email, username, password);
         isProjectManager = false;
     }

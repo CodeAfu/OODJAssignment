@@ -3,7 +3,7 @@ package com.ags.pms.io;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.net.PasswordAuthentication;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import com.ags.pms.Helper;
@@ -61,15 +61,18 @@ public class JsonHandler implements JsonIO {
     public void writeJson() {
         try { 
             ObjectMapper mapper = new ObjectMapper();
-            PasswordHandler pwHandler = new PasswordHandler();
-
+            ArrayList<Student> students = new ArrayList<>();
+            
             // Strings below should not be shared, create config file to hide info
             // Also call initFromStrings within PasswordHandler encryptPassword method
-            pwHandler.initFromStrings("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
-            String password = pwHandler.encryptPassword("SamplePassword");
-            Student student = new Student(1, "John Doe", "10/02/2024", "johndoe@email.com", "user", password);
 
-            String jsonData = mapper.writeValueAsString(student);
+            Student student1 = new Student(1, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Project>(), AssessmentType.FYP);
+            Student student2 = new Student(2, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Project>(), AssessmentType.INVESTIGATIONREPORTS);
+
+            students.add(student1);
+            students.add(student2);
+
+            String jsonData = mapper.writeValueAsString(students);
 
             writeFile("Students.txt", jsonData);
 

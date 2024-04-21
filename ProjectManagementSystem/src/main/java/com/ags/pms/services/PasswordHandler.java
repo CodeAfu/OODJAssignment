@@ -13,6 +13,13 @@ public class PasswordHandler {
 
     private String encryptedPassword;
     private AES aes;
+
+    public PasswordHandler() {
+    }
+
+    public PasswordHandler(String secretKey, String IV) {
+        initFromStrings(secretKey, IV);
+    }
     
     public void init() throws NoSuchAlgorithmException {
         aes = new AES();
