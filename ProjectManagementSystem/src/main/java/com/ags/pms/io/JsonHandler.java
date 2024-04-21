@@ -64,6 +64,7 @@ public class JsonHandler implements JsonIO {
             PasswordHandler pwHandler = new PasswordHandler();
 
             // Strings below should not be shared, create config file to hide info
+            // Also call initFromStrings within PasswordHandler encryptPassword method
             pwHandler.initFromStrings("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
             String password = pwHandler.encryptPassword("SamplePassword");
             Student student = new Student(1, "John Doe", "10/02/2024", "johndoe@email.com", "user", password);

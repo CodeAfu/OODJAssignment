@@ -17,6 +17,12 @@ public class Student extends User {
         super(id, name, dob, email, username, password);
         projects = new ArrayList<Project>();
     }
+    
+    public Student(int id, String name, String dob, String email, String username, String password, ArrayList<Project> projects, AssessmentType assessmentType) {
+        super(id, name, dob, email, username, password);
+        this.projects = projects;
+        this.assessmentType = assessmentType;
+    }
 
     public ArrayList<Project> getProjects() {
         return projects;
