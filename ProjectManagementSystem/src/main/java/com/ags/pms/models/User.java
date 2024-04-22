@@ -24,7 +24,12 @@ public abstract class User implements AuthUser, Jsonable {
     
     public User() {
     }
-    
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     public User(int id, String name, String dob, String email, String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         this.id = id;
         this.name = name;

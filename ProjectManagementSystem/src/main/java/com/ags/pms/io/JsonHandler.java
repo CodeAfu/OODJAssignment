@@ -57,6 +57,7 @@ public class JsonHandler {
         return output;
     }
 
+    @SuppressWarnings("hiding")
     public <Jsonable> void writeJson(ArrayList<Jsonable> objTs) {
         if (objTs.isEmpty()) {
             throw new NullPointerException("writeJson() objTs is null.");

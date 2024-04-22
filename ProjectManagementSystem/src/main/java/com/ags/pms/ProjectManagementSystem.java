@@ -46,6 +46,8 @@ public class ProjectManagementSystem {
         
         ArrayList<Student> students = new ArrayList<>();
         ArrayList<Lecturer> lecturers = new ArrayList<>();
+        ArrayList<Admin> admins = new ArrayList<>();
+        ArrayList<ProjectManager> projectManagers = new ArrayList<>();
 
         Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Project>(), AssessmentType.FYP);
         Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Project>(), AssessmentType.INVESTIGATIONREPORTS);
@@ -55,12 +57,24 @@ public class ProjectManagementSystem {
         Lecturer lecturer1 = new Lecturer(2001, "Joshua", "11/01/1980", "joshua@lecturer.com", "josh_lecturer", "verySecurePasswordMate");
         Lecturer lecturer2 = new Lecturer(2002, "Amardeep", "11/01/1980", "amardeep@lecturer.com", "somelecturer", "123qweasdzxc");
         lecturer1.setProjectManager(true);
-
         lecturers.add(lecturer1);
         lecturers.add(lecturer2);
+        
+        Admin admin1 = new Admin("admin", "password");
+        Admin admin2 = new Admin("heh", "test2");
+        admins.add(admin1);
+        admins.add(admin2);
+        
+        ProjectManager projectManager1 = new ProjectManager(2001, "Joshua", "11/01/1980", "joshua@lecturer.com", Role.SUPERVISOR, "josh_lecturer", "verySecurePasswordMate");
+        ProjectManager projectManager2 = new ProjectManager(2002, "Amardeep", "11/01/1980", "amardeep@lecturer.com", Role.SECONDMARKER, "somelecturer", "123qweasdzxc");
+        projectManagers.add(projectManager1);
+        projectManagers.add(projectManager2);
 
         handler.writeJson(students);
         handler.writeJson(lecturers);
+        handler.writeJson(admins);
+        handler.writeJson(projectManagers);
+        
         String text = handler.readData("Students.txt");
         System.out.println(text);
     }
