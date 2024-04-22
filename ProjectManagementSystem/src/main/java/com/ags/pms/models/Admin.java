@@ -9,6 +9,9 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import com.ags.pms.io.Jsonable;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Admin extends User {
 
@@ -16,7 +19,7 @@ public class Admin extends User {
         super();
     }
 
-    public Admin(String username, String password) {
+    public Admin(String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         super(username, password);
     }
 
@@ -30,11 +33,11 @@ public class Admin extends User {
     public void registerStudent(Student student) {
         
     }
-
+    
     @Override
-    public Jsonable jsonToObject(String json) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'jsonToObject'");
+    public Jsonable jsonToObject(String json) throws JsonMappingException, JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(json, Admin.class);
     }
 
     @Override

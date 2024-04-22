@@ -25,9 +25,9 @@ public abstract class User implements AuthUser, Jsonable {
     public User() {
     }
 
-    public User(String username, String password) {
+    public User(String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         this.username = username;
-        this.password = password;
+        this.password = pwHandler.encryptPassword(password);
     }
 
     public User(int id, String name, String dob, String email, String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
@@ -40,9 +40,6 @@ public abstract class User implements AuthUser, Jsonable {
     }
 
     public void initializeUser(int id, String name, String dob, String email, String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
-        PasswordHandler pwHandler = new PasswordHandler();
-        pwHandler.initFromStrings("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
-
         this.id = id;
         this.name = name;
         this.dob = dob;

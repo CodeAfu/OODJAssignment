@@ -4,8 +4,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 
-import javax.print.attribute.HashPrintJobAttributeSet;
-
 import com.ags.pms.io.FileName;
 
 public class Helper {

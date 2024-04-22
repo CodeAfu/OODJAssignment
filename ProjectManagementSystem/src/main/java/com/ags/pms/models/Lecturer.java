@@ -9,6 +9,9 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import com.ags.pms.io.Jsonable;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Lecturer extends User {
     
@@ -68,9 +71,9 @@ public class Lecturer extends User {
     }
 
     @Override
-    public Jsonable jsonToObject(String json) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'jsonToObject'");
+    public Jsonable jsonToObject(String json) throws JsonMappingException, JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(json, Lecturer.class);
     }
 
     @Override

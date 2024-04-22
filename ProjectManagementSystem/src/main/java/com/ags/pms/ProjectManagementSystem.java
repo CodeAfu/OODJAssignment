@@ -17,6 +17,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import com.ags.pms.forms.Login;
+import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
 
 public class ProjectManagementSystem {
@@ -42,7 +43,6 @@ public class ProjectManagementSystem {
 
     private static void testFileHandler() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         JsonHandler handler = new JsonHandler();
-        // handler.writeFile("Users.txt", "Test Write");
         
         ArrayList<Student> students = new ArrayList<>();
         ArrayList<Lecturer> lecturers = new ArrayList<>();
@@ -60,7 +60,7 @@ public class ProjectManagementSystem {
         lecturers.add(lecturer1);
         lecturers.add(lecturer2);
         
-        Admin admin1 = new Admin("admin", "password");
+        Admin admin1 = new Admin("admin", "OkayDude");
         Admin admin2 = new Admin("heh", "test2");
         admins.add(admin1);
         admins.add(admin2);
@@ -74,9 +74,12 @@ public class ProjectManagementSystem {
         handler.writeJson(lecturers);
         handler.writeJson(admins);
         handler.writeJson(projectManagers);
+
+        ArrayList<Student> studentsFromJson = handler.readJson(FileName.STUDENTS, Student.class);
+        studentsFromJson.forEach(s -> System.out.println(s.getName()));
         
-        String text = handler.readData("Students.txt");
-        System.out.println(text);
+        // String text = handler.readData("Students.txt");
+        // System.out.println(text);
     }
 
     private static void testAES() throws Exception {

@@ -8,7 +8,10 @@ import java.util.Scanner;
 
 import com.ags.pms.Helper;
 import com.ags.pms.models.*;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import net.bytebuddy.jar.asm.TypeReference;
 
 public class JsonHandler {
 
@@ -98,6 +101,18 @@ public class JsonHandler {
         } catch (Exception ex) {
             Helper.printErr(Helper.getStackTraceString(ex));
         }
+    }
 
+    public <T> ArrayList<T> readJson(FileName filename, Class<T> classType) {
+        ObjectMapper mapper = new ObjectMapper();
+        ArrayList<T> jsonableList = new ArrayList<>();
+        String json = readData(Helper.getFilenameByEnum(filename));
+        try { 
+            JavaType type = mapper.getTypeFactory().constructParametricType(ArrayList.class, classType);
+            jsonableList = mapper.readValue(json, type);
+        } catch (Exception ex) {
+            Helper.printErr(Helper.getStackTraceString(ex));
+        }
+        return jsonableList;
     }
 }
