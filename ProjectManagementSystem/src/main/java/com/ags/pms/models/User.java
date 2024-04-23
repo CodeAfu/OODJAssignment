@@ -8,6 +8,11 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import com.ags.pms.Helper;
+import com.ags.pms.io.JsonHandler;
 import com.ags.pms.services.PasswordHandler;
 
 public abstract class User implements AuthUser {
@@ -26,7 +31,7 @@ public abstract class User implements AuthUser {
 
     public User(String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         this.username = username;
-        this.password = pwHandler.encryptPassword(password);
+        this.password = password;
     }
 
     public User(int id, String name, String dob, String email, String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
@@ -35,7 +40,7 @@ public abstract class User implements AuthUser {
         this.dob = dob;
         this.email = email;
         this.username = username;
-        this.password = pwHandler.encryptPassword(password);
+        this.password = password;
     }
 
     public void initializeUser(int id, String name, String dob, String email, String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
@@ -44,7 +49,7 @@ public abstract class User implements AuthUser {
         this.dob = dob;
         this.email = email;
         this.username = username;
-        this.password = pwHandler.encryptPassword(password);
+        this.password = password;
     }
     
     public int getId() {
@@ -87,14 +92,65 @@ public abstract class User implements AuthUser {
         return password;
     }
 
-    public void setAccount(String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
-        this.username = username;
-        this.password = pwHandler.encryptPassword(password);
+    public void encryptPassword() {
+         try {
+            this.password = pwHandler.encryptPassword(this.password);
+        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
+                | BadPaddingException | InvalidAlgorithmParameterException e) {
+            Helper.printErr(Helper.getStackTraceString(e));
+        }
+    }
+    
+    public void decryptPassword() {
+        try {
+            this.password = pwHandler.decryptPassword(this.password);
+        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
+                | BadPaddingException | InvalidAlgorithmParameterException e) {
+            Helper.printErr(Helper.getStackTraceString(e));                
+        }
     }
 
     @Override
-    public void login(String username, String password) {
-        
+    public <T extends User> boolean login() {
+        JsonHandler handler = new JsonHandler();
+
+        @SuppressWarnings("unchecked")
+        Class<T> userClass = (Class<T>)getClass();
+        String classSimpleName = userClass.getSimpleName();
+        ArrayList<T> dataArrayList = handler.readJson(classSimpleName, userClass);
+
+        HashMap<String, String> users = new HashMap<>();
+
+        for (User obj : dataArrayList) {
+            try {
+                users.put(obj.getUsername(), pwHandler.decryptPassword(obj.getPassword()));
+            } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
+                    | BadPaddingException | InvalidAlgorithmParameterException ex) {
+                Helper.printErr(Helper.getStackTraceString(ex));
+            }
+        }
+
+        // PRINT ALL VALUES OF HASHSET
+        // for (String name : users.keySet()) {
+            // String key = name.toString();
+            // String value = users.get(name).toString();
+            // System.out.println(key + " " + value);
+        // }
+
+        if (validateUser(users)) return true;
+
+        return false;
+    }
+
+    private boolean validateUser(HashMap<String, String> users) {
+        if (users != null) {
+            if (users.containsKey(this.username)) {
+                if (users.get(this.username).equals(this.password)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

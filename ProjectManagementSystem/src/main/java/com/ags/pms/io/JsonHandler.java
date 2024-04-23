@@ -5,21 +5,18 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import com.ags.pms.Helper;
 import com.ags.pms.models.*;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.bytebuddy.jar.asm.TypeReference;
 
 public class JsonHandler {
 
     private String path = "ProjectManagementSystem/src/main/java/com/ags/pms/data/";
-
-    public String readFile() {
-        return "";
-    }
 
     public void initFile(String filename) {
         try {
@@ -60,17 +57,17 @@ public class JsonHandler {
         return output;
     }
 
-    @SuppressWarnings("hiding")
-    public <Jsonable> void writeJson(ArrayList<Jsonable> objTs) {
+    public <T extends User> void writeJson(ArrayList<T> objTs) {
         if (objTs.isEmpty()) {
             throw new NullPointerException("writeJson() objTs is null.");
         }
 
         try { 
             ObjectMapper mapper = new ObjectMapper();
-            Jsonable firstObj = objTs.get(0); 
+            T firstObj = objTs.get(0); 
             String className = firstObj.getClass().getSimpleName();
             String jsonData;
+            objTs.forEach(obj -> obj.encryptPassword());
             
             switch (className) {
                 case "Student":
@@ -103,7 +100,7 @@ public class JsonHandler {
         }
     }
 
-    public <T> ArrayList<T> readJson(FileName filename, Class<T> classType) {
+    public <T extends User> ArrayList<T> readJson(FileName filename, Class<T> classType) {
         ObjectMapper mapper = new ObjectMapper();
         ArrayList<T> jsonableList = new ArrayList<>();
         String json = readData(Helper.getFilenameByEnum(filename));
@@ -115,4 +112,68 @@ public class JsonHandler {
         }
         return jsonableList;
     }
+
+    public <T extends User> ArrayList<T> readJson(String className, Class<T> classType) {
+        ObjectMapper mapper = new ObjectMapper();
+        ArrayList<T> jsonableList = new ArrayList<>();
+        String json = readData(Helper.getFilenameByClassName(className));
+        try { 
+            JavaType type = mapper.getTypeFactory().constructParametricType(ArrayList.class, classType);
+            jsonableList = mapper.readValue(json, type);
+        } catch (Exception ex) {
+            Helper.printErr(Helper.getStackTraceString(ex));
+        }
+        return jsonableList;
+    }
+
+    public CompletableFuture<Void> writeDataAsync(String filename, String contents) {
+        return CompletableFuture.runAsync(() -> {
+            writeData(filename, contents);
+        });
+    }
+
+    public CompletableFuture<String> readDataAsync(String filename) {
+        return CompletableFuture.supplyAsync(() -> {
+            return readData(filename);
+        });
+    }
+
+    public <T extends User> CompletableFuture<Void> writeJsonAsync(ArrayList<T> objTs) {
+        return CompletableFuture.runAsync(() -> {
+            writeJson(objTs);
+        });
+    }
+
+    public <T extends User> CompletableFuture<ArrayList<T>> readJsonAsync(FileName filename, Class<T> classType) {
+        return CompletableFuture.supplyAsync(() -> {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList<T> jsonableList = new ArrayList<>();
+            String json = readDataAsync(Helper.getFilenameByEnum(filename)).join(); // Wait for readDataAsync to complete
+    
+            try {
+                JavaType type = mapper.getTypeFactory().constructParametricType(ArrayList.class, classType);
+                jsonableList = mapper.readValue(json, type);
+            } catch (Exception ex) {
+                Helper.printErr(Helper.getStackTraceString(ex));
+            }
+            return jsonableList;
+        });
+    }
+
+    public <T extends User> CompletableFuture<ArrayList<T>> readJsonAsync(String className, Class<T> classType) {
+        return CompletableFuture.supplyAsync(() -> {
+            ObjectMapper mapper = new ObjectMapper();
+            ArrayList<T> jsonableList = new ArrayList<>();
+            String json = readDataAsync(Helper.getFilenameByClassName(className)).join(); // Wait for readDataAsync to complete
+    
+            try {
+                JavaType type = mapper.getTypeFactory().constructParametricType(ArrayList.class, classType);
+                jsonableList = mapper.readValue(json, type);
+            } catch (Exception ex) {
+                Helper.printErr(Helper.getStackTraceString(ex));
+            }
+            return jsonableList;
+        });
+    }
+
 }

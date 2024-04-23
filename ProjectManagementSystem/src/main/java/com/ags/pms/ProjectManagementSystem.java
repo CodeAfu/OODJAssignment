@@ -36,10 +36,21 @@ public class ProjectManagementSystem {
     }
     
     private static void consoleTests() throws Exception {
-        testFileHandler();
+        // testLogin();
+        testFileHandlerAsync();
+        // testFileHandler();
         // testAES();
     }
 
+    
+    private static void testLogin() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+        ProjectManager manager = new ProjectManager("somelecturerPM", "123qweasdzxc");
+        System.out.println(manager.login());
+    }
+
+    private static void testFileHandlerAsync() {
+        
+    }
 
     private static void testFileHandler() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         JsonHandler handler = new JsonHandler();
@@ -76,6 +87,7 @@ public class ProjectManagementSystem {
         handler.writeJson(admins);
         handler.writeJson(projectManagers);
 
+        // READ
         ArrayList<Student> studentsFromJson = handler.readJson(FileName.STUDENTS, Student.class);
         ArrayList<Admin> adminsFromJson = handler.readJson(FileName.ADMINS, Admin.class);
         ArrayList<Lecturer> lecturersFromJson = handler.readJson(FileName.LECTURERS, Lecturer.class);

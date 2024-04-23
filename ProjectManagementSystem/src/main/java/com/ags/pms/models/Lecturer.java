@@ -21,6 +21,10 @@ public class Lecturer extends User {
         super(id, name, dob, email, username, password);
         isProjectManager = false;
     }
+
+    public Lecturer(String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+        super(username, password);
+    }
     
     public boolean isProjectManager() {
         return isProjectManager;
