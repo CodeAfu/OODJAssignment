@@ -12,8 +12,13 @@ public class ProjectManager extends Lecturer {
 
     private Role role;
     
+    public ProjectManager() {
+        super();
+    }
+    
     public ProjectManager(int id, String name, String dob, String email, Role role, String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         super(id, name, dob, email, username, password);
+        this.isProjectManager = true;
         this.role = role;
     }
     

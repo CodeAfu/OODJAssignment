@@ -8,10 +8,9 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import com.ags.pms.io.Jsonable;
 import com.ags.pms.services.PasswordHandler;
 
-public abstract class User implements AuthUser, Jsonable {
+public abstract class User implements AuthUser {
     
     protected int id;
     protected String name;

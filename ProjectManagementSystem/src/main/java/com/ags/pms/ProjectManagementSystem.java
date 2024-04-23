@@ -43,7 +43,8 @@ public class ProjectManagementSystem {
 
     private static void testFileHandler() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         JsonHandler handler = new JsonHandler();
-        
+        PasswordHandler pwHandler = new PasswordHandler("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
+
         ArrayList<Student> students = new ArrayList<>();
         ArrayList<Lecturer> lecturers = new ArrayList<>();
         ArrayList<Admin> admins = new ArrayList<>();
@@ -65,8 +66,8 @@ public class ProjectManagementSystem {
         admins.add(admin1);
         admins.add(admin2);
         
-        ProjectManager projectManager1 = new ProjectManager(2001, "Joshua", "11/01/1980", "joshua@lecturer.com", Role.SUPERVISOR, "josh_lecturer", "verySecurePasswordMate");
-        ProjectManager projectManager2 = new ProjectManager(2002, "Amardeep", "11/01/1980", "amardeep@lecturer.com", Role.SECONDMARKER, "somelecturer", "123qweasdzxc");
+        ProjectManager projectManager1 = new ProjectManager(2001, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com", Role.SUPERVISOR, "josh_lecturerPM", "verySecurePasswordMate");
+        ProjectManager projectManager2 = new ProjectManager(2002, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com", Role.SECONDMARKER, "somelecturerPM", "123qweasdzxc");
         projectManagers.add(projectManager1);
         projectManagers.add(projectManager2);
 
@@ -76,10 +77,14 @@ public class ProjectManagementSystem {
         handler.writeJson(projectManagers);
 
         ArrayList<Student> studentsFromJson = handler.readJson(FileName.STUDENTS, Student.class);
-        studentsFromJson.forEach(s -> System.out.println(s.getName()));
+        ArrayList<Admin> adminsFromJson = handler.readJson(FileName.ADMINS, Admin.class);
+        ArrayList<Lecturer> lecturersFromJson = handler.readJson(FileName.LECTURERS, Lecturer.class);
+        ArrayList<ProjectManager> projectManagersFromJson = handler.readJson(FileName.PROJECTMANAGERS, ProjectManager.class);
         
-        // String text = handler.readData("Students.txt");
-        // System.out.println(text);
+        studentsFromJson.forEach(obj -> System.out.println(obj.getUsername() + ": " + obj.getPassword()));
+        adminsFromJson.forEach(obj -> System.out.println(obj.getUsername() + ": " + obj.getPassword()));
+        lecturersFromJson.forEach(obj -> System.out.println(obj.getUsername() + ": " + obj.getPassword()));
+        projectManagersFromJson.forEach(obj -> System.out.println(obj.getUsername() + ": " + obj.getPassword()));
     }
 
     private static void testAES() throws Exception {
