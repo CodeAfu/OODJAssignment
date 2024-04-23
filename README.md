@@ -23,9 +23,9 @@ class Sample {
         JsonHandler handler = new JsonHandler();  
 
         // Read 
-        ArrayList<Student> students = handler.handler.readJson(FileName.STUDENTS); 
+        ArrayList<Student> students = handler.readJson(FileName.STUDENTS); 
         // OR
-        ArrayList<Student> students = handler.handler.readJson("Student");
+        ArrayList<Student> students = handler.readJson("Student");
 
         // Modify the contents of students (just an example, idk if this works)
         for (Student student : students) {
