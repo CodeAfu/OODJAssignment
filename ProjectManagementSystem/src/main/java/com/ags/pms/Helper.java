@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.ags.pms.io.FileName;
+import com.ags.pms.models.Admin;
+import com.ags.pms.models.Lecturer;
+import com.ags.pms.models.ProjectManager;
+import com.ags.pms.models.Student;
 import com.ags.pms.models.User;
 import com.ags.pms.services.PasswordHandler;
 
@@ -44,4 +48,23 @@ public class Helper {
         return hashMap.get(className);
     }
 
+    public static Class<?> getClassTypeByFilename(FileName filename) {
+        HashMap<FileName, Class<?>> hashMap = new HashMap<>();
+        hashMap.put(FileName.STUDENTS, Student.class);
+        hashMap.put(FileName.LECTURERS, Lecturer.class);
+        hashMap.put(FileName.ADMINS, Admin.class);
+        hashMap.put(FileName.PROJECTMANAGERS, ProjectManager.class);
+
+        return hashMap.get(filename);
+    }
+
+    public static Class<?> getClassTypeByClassName(String className) {
+        HashMap<String, Class<?>> hashMap = new HashMap<>();
+        hashMap.put("Student", Student.class);
+        hashMap.put("Lecturer", Lecturer.class);
+        hashMap.put("Admin", Admin.class);
+        hashMap.put("ProjectManager", ProjectManager.class);
+        
+        return hashMap.get(className);
+    }
 }

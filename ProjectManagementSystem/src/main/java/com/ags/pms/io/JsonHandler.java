@@ -100,12 +100,12 @@ public class JsonHandler {
         }
     }
 
-    public <T extends User> ArrayList<T> readJson(FileName filename, Class<T> classType) {
+    public <T extends User> ArrayList<T> readJson(FileName filename) {
         ObjectMapper mapper = new ObjectMapper();
         ArrayList<T> jsonableList = new ArrayList<>();
         String json = readData(Helper.getFilenameByEnum(filename));
         try { 
-            JavaType type = mapper.getTypeFactory().constructParametricType(ArrayList.class, classType);
+            JavaType type = mapper.getTypeFactory().constructParametricType(ArrayList.class, Helper.getClassTypeByFilename(filename));
             jsonableList = mapper.readValue(json, type);
         } catch (Exception ex) {
             Helper.printErr(Helper.getStackTraceString(ex));
@@ -113,12 +113,12 @@ public class JsonHandler {
         return jsonableList;
     }
 
-    public <T extends User> ArrayList<T> readJson(String className, Class<T> classType) {
+    public <T extends User> ArrayList<T> readJson(String className) {
         ObjectMapper mapper = new ObjectMapper();
         ArrayList<T> jsonableList = new ArrayList<>();
         String json = readData(Helper.getFilenameByClassName(className));
         try { 
-            JavaType type = mapper.getTypeFactory().constructParametricType(ArrayList.class, classType);
+            JavaType type = mapper.getTypeFactory().constructParametricType(ArrayList.class, Helper.getClassTypeByClassName(className));
             jsonableList = mapper.readValue(json, type);
         } catch (Exception ex) {
             Helper.printErr(Helper.getStackTraceString(ex));
@@ -144,14 +144,14 @@ public class JsonHandler {
         });
     }
 
-    public <T extends User> CompletableFuture<ArrayList<T>> readJsonAsync(FileName filename, Class<T> classType) {
+    public <T extends User> CompletableFuture<ArrayList<T>> readJsonAsync(FileName filename) {
         return CompletableFuture.supplyAsync(() -> {
             ObjectMapper mapper = new ObjectMapper();
             ArrayList<T> jsonableList = new ArrayList<>();
             String json = readDataAsync(Helper.getFilenameByEnum(filename)).join(); // Wait for readDataAsync to complete
-    
+            
             try {
-                JavaType type = mapper.getTypeFactory().constructParametricType(ArrayList.class, classType);
+                JavaType type = mapper.getTypeFactory().constructParametricType(ArrayList.class, Helper.getClassTypeByFilename(filename));
                 jsonableList = mapper.readValue(json, type);
             } catch (Exception ex) {
                 Helper.printErr(Helper.getStackTraceString(ex));
@@ -160,14 +160,14 @@ public class JsonHandler {
         });
     }
 
-    public <T extends User> CompletableFuture<ArrayList<T>> readJsonAsync(String className, Class<T> classType) {
+    public <T extends User> CompletableFuture<ArrayList<T>> readJsonAsync(String className) {
         return CompletableFuture.supplyAsync(() -> {
             ObjectMapper mapper = new ObjectMapper();
             ArrayList<T> jsonableList = new ArrayList<>();
             String json = readDataAsync(Helper.getFilenameByClassName(className)).join(); // Wait for readDataAsync to complete
     
             try {
-                JavaType type = mapper.getTypeFactory().constructParametricType(ArrayList.class, classType);
+                JavaType type = mapper.getTypeFactory().constructParametricType(ArrayList.class, Helper.getClassTypeByClassName(className));
                 jsonableList = mapper.readValue(json, type);
             } catch (Exception ex) {
                 Helper.printErr(Helper.getStackTraceString(ex));
@@ -175,5 +175,4 @@ public class JsonHandler {
             return jsonableList;
         });
     }
-
 }

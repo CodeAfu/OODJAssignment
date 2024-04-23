@@ -11,6 +11,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -21,6 +22,11 @@ import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
 
 public class ProjectManagementSystem {
+
+    private static ArrayList<Student> studentsFromJson;
+    private static ArrayList<Lecturer> lecturersFromJson;
+    private static ArrayList<Admin> adminsFromJson;
+    private static ArrayList<ProjectManager> projectManagersFromJson;
 
     public static void main(String[] args) {
         // app();
@@ -37,7 +43,7 @@ public class ProjectManagementSystem {
     
     private static void consoleTests() throws Exception {
         // testLogin();
-        testFileHandlerAsync();
+        testFileHandlerAsyncOperations();
         // testFileHandler();
         // testAES();
     }
@@ -48,8 +54,88 @@ public class ProjectManagementSystem {
         System.out.println(manager.login());
     }
 
-    private static void testFileHandlerAsync() {
+    private static void testFileHandlerAsyncOperations() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+        JsonHandler handler = new JsonHandler();
+        PasswordHandler pwHandler = new PasswordHandler("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
+
+        ArrayList<Student> students = new ArrayList<>();
+        ArrayList<Lecturer> lecturers = new ArrayList<>();
+        ArrayList<Admin> admins = new ArrayList<>();
+        ArrayList<ProjectManager> projectManagers = new ArrayList<>();
+
+        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Project>(), AssessmentType.FYP);
+        Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Project>(), AssessmentType.INVESTIGATIONREPORTS);
+        Lecturer lecturer1 = new Lecturer(2001, "Joshua", "11/01/1980", "joshua@lecturer.com", "josh_lecturer", "verySecurePasswordMate");
+        Lecturer lecturer2 = new Lecturer(2002, "Amardeep", "11/01/1980", "amardeep@lecturer.com", "somelecturer", "123qweasdzxc");
+        Admin admin1 = new Admin("admin", "OkayDude");
+        Admin admin2 = new Admin("heh", "test2");
+        ProjectManager projectManager1 = new ProjectManager(2001, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com", Role.SUPERVISOR, "josh_lecturerPM", "verySecurePasswordMate");
+        ProjectManager projectManager2 = new ProjectManager(2002, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com", Role.SECONDMARKER, "somelecturerPM", "123qweasdzxc");
+
+        students.add(student1);
+        students.add(student2);
+        lecturers.add(lecturer1);
+        lecturers.add(lecturer2);
+        admins.add(admin1);
+        admins.add(admin2);
+        projectManagers.add(projectManager1);
+        projectManagers.add(projectManager2);
         
+        CompletableFuture.allOf(
+            handler.writeJsonAsync(students),
+            handler.writeJsonAsync(lecturers),
+            handler.writeJsonAsync(admins),
+            handler.writeJsonAsync(projectManagers)
+        ).thenRun(() -> System.out.println("Json Written"));
+        
+        handler.readJsonAsync(FileName.STUDENTS)
+            .thenAccept(studentsFromJsonList -> {
+                studentsFromJson = new ArrayList<>();
+                for (User user : studentsFromJsonList) {
+                    if (user instanceof Student) {
+                        studentsFromJson.add((Student)user);
+                    } else {
+                        System.out.println(user + " was not added");
+                    }
+                }
+            })
+            .thenRun(() -> {
+                System.out.println("Json Read");
+                studentsFromJson.forEach(u -> System.out.println(u.getUsername() + ": " + u.getPassword() + " | " + u.getClass().getSimpleName()));
+            })
+            .exceptionally(ex -> {
+                ex.printStackTrace();
+                return null;
+            });
+
+        handler.readJsonAsync("Admin")
+            .thenAccept(adminsFromJsonList -> {
+                adminsFromJson = new ArrayList<>();
+                for (User user : adminsFromJsonList) {
+                    if (user instanceof Admin) {
+                        adminsFromJson.add((Admin)user);
+                    } else {
+                        System.out.println(user + " was not added");
+                    }
+                }
+            })
+            .thenRun(() -> {
+                System.out.println("Json Read");
+                adminsFromJson.forEach(u -> System.out.println(u.getUsername() + ": " + u.getPassword() + " | " + u.getClass().getSimpleName()));
+            })
+            .exceptionally(ex -> {
+                ex.printStackTrace();
+                return null;
+            });
+
+        
+        // Thread sleep required to run the async method I guess
+        // since the main thread dies before the async threads execute?
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void testFileHandler() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
@@ -73,7 +159,7 @@ public class ProjectManagementSystem {
         lecturers.add(lecturer2);
         
         Admin admin1 = new Admin("admin", "OkayDude");
-        Admin admin2 = new Admin("heh", "test2");
+        Admin admin2 = new Admin("heh_this_user_has_changed", "test2");
         admins.add(admin1);
         admins.add(admin2);
         
@@ -88,10 +174,10 @@ public class ProjectManagementSystem {
         handler.writeJson(projectManagers);
 
         // READ
-        ArrayList<Student> studentsFromJson = handler.readJson(FileName.STUDENTS, Student.class);
-        ArrayList<Admin> adminsFromJson = handler.readJson(FileName.ADMINS, Admin.class);
-        ArrayList<Lecturer> lecturersFromJson = handler.readJson(FileName.LECTURERS, Lecturer.class);
-        ArrayList<ProjectManager> projectManagersFromJson = handler.readJson(FileName.PROJECTMANAGERS, ProjectManager.class);
+        ArrayList<Student> studentsFromJson = handler.readJson(FileName.STUDENTS);
+        ArrayList<Admin> adminsFromJson = handler.readJson(FileName.ADMINS);
+        ArrayList<Lecturer> lecturersFromJson = handler.readJson(FileName.LECTURERS);
+        ArrayList<ProjectManager> projectManagersFromJson = handler.readJson(FileName.PROJECTMANAGERS);
         
         studentsFromJson.forEach(obj -> System.out.println(obj.getUsername() + ": " + obj.getPassword()));
         adminsFromJson.forEach(obj -> System.out.println(obj.getUsername() + ": " + obj.getPassword()));

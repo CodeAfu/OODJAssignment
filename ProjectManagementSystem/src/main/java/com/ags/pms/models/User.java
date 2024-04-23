@@ -117,7 +117,7 @@ public abstract class User implements AuthUser {
         @SuppressWarnings("unchecked")
         Class<T> userClass = (Class<T>)getClass();
         String classSimpleName = userClass.getSimpleName();
-        ArrayList<T> dataArrayList = handler.readJson(classSimpleName, userClass);
+        ArrayList<T> dataArrayList = handler.readJson(classSimpleName);
 
         HashMap<String, String> users = new HashMap<>();
 
