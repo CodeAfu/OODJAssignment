@@ -1,5 +1,46 @@
 # OODJ Assignment
 
+## VERY USEFUL METHODS
+
+```java
+// Import this package to read and write Json Data files
+import com.ags.pms.io.*;
+
+// I/O flow is simply:
+// - Fetch all the data into an ArrayList<T> where T is a class. eg: Student, Admin [readJson()]
+// - Modify the ArrayList<T> [custom logic]
+// - Save the ArrayList<T> to the data file [writeJson()]
+
+// 2 Core commands:
+// - writeJson(): Takes ArrayList<T> as parameter, write as json to relavant file. [1 overload]
+// - readJson(): Takes FileName OR classType as parameter, returns ArrayList<T>. [2 overloads] 
+
+// Example Usage:
+class Sample {
+    public void sampleMethod() {
+
+        // init JsonHandler
+        JsonHandler handler = new JsonHandler();  
+
+        // Read 
+        ArrayList<Student> students = handler.handler.readJson(FileName.STUDENTS); 
+        // OR
+        ArrayList<Student> students = handler.handler.readJson("Student");
+
+        // Modify the contents of students (just an example, idk if this works)
+        for (Student student : students) {
+            if (student.getName() == "Kurwa") {
+                student.setName("Helvette");
+            }
+        }
+
+        // Write modified students ArrayList to file
+        handler.writeJson(students);
+    }
+}
+
+```
+
 ## TODO
 - Build Models
     - Lecturer -> Ruhit
@@ -93,4 +134,3 @@
 ✅
 ❌
 ❗
-3gqnTZubvObeoO
