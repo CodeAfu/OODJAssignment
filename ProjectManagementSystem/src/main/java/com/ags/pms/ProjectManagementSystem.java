@@ -16,7 +16,9 @@ import java.util.concurrent.CompletableFuture;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.xml.crypto.Data;
 
+import com.ags.pms.data.DataContext;
 import com.ags.pms.forms.Login;
 import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
@@ -42,17 +44,17 @@ public class ProjectManagementSystem {
     }
     
     private static void consoleTests() throws Exception {
-        // smallerTests();
+        smallerTests();
         // testLogin();
-        testFileHandlerAsyncOperations();
+        // testFileHandlerAsyncOperations();
         // testFileHandler();
         // testAES();
     }
 
-    private static void smallerTests() {
-        JsonHandler handler = new JsonHandler();
-        ArrayList<? extends User> obj = handler.readJson(FileName.LECTURERS);
-        obj.forEach(s -> System.out.println(s.getUsername()));
+    private static void smallerTests() throws Exception {
+        DataContext context = new DataContext();
+        context.allFutures.join();
+        context.print();
     }
     
     private static void testLogin() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
@@ -118,7 +120,7 @@ public class ProjectManagementSystem {
                     if (user instanceof Student) {
                         studentsFromJson.add((Student)user);
                     } else {
-                        System.out.println(user + " was not added");
+                        System.out.println(user + " was not added (JsonRead)");
                     }
                 }
             })
@@ -138,7 +140,7 @@ public class ProjectManagementSystem {
                     if (user instanceof Admin) {
                         adminsFromJson.add((Admin)user);
                     } else {
-                        System.out.println(user + " was not added");
+                        System.out.println(user + " was not added (JsonRead)");
                     }
                 }
             })
