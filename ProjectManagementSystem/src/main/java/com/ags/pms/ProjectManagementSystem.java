@@ -1,11 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
-
 package com.ags.pms;
-
-import com.ags.pms.models.*;
-import com.ags.pms.services.*;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -17,6 +10,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import com.ags.pms.models.*;
+import com.ags.pms.services.*;
 import com.ags.pms.data.DataContext;
 import com.ags.pms.forms.Login;
 import com.ags.pms.io.FileName;

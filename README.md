@@ -22,7 +22,7 @@ class Sample {
         // init JsonHandler
         JsonHandler handler = new JsonHandler();  
 
-        // Call readJson() method and store it in an ArrayList<T> 
+        // Call readJson() method and store data in an ArrayList<T> 
         // USING:
         ArrayList<Student> students = handler.readJson(FileName.STUDENTS); 
         // OR
