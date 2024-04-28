@@ -2,7 +2,6 @@ package com.ags.pms;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.ags.pms.io.FileName;
@@ -10,8 +9,6 @@ import com.ags.pms.models.Admin;
 import com.ags.pms.models.Lecturer;
 import com.ags.pms.models.ProjectManager;
 import com.ags.pms.models.Student;
-import com.ags.pms.models.User;
-import com.ags.pms.services.PasswordHandler;
 
 public class Helper {
     

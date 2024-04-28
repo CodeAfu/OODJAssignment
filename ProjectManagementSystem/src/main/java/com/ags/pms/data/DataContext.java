@@ -1,6 +1,5 @@
 package com.ags.pms.data;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
@@ -10,7 +9,6 @@ import com.ags.pms.models.Admin;
 import com.ags.pms.models.Lecturer;
 import com.ags.pms.models.ProjectManager;
 import com.ags.pms.models.Student;
-import com.ags.pms.models.User;
 
 public class DataContext {
 
@@ -21,11 +19,11 @@ public class DataContext {
     private ArrayList<Admin> admins;
     private ArrayList<ProjectManager> projectManagers;
 
-    public CompletableFuture<Void> allFutures;
+    private CompletableFuture<Void> allFutures;
 
     public DataContext() {
         handler = new JsonHandler();
-        fetchAllDataAsync();
+        populateAllDataAsync();
     }
 
     public ArrayList<Lecturer> getLecturers() {
@@ -44,17 +42,57 @@ public class DataContext {
         return projectManagers;
     }
 
-    private void fetchAllDataAsync() {
+    private void populateAllDataAsync() {
         allFutures = CompletableFuture.allOf(
             populateStudentsAsync(),
             populateAdminsAsync(),
             populateLecturersAsync(),
             populateProjectManagersAsync()
         );
+        
+        allFutures.join();
     }
 
-    public <T extends User> void writeAsync(ArrayList<T> objTs) {
-        
+    public void writeAllDataAsync() {
+        allFutures = CompletableFuture.allOf(
+            saveAdminsAsync(),
+            saveStudentsAsync(),
+            saveLecturersAsync(),
+            saveProjectManagersAsync()
+        ).thenRun(() -> System.out.println("Json Written"))
+        .exceptionally(ex -> { ex.printStackTrace(); return null; });
+    }
+
+    public CompletableFuture<Void> saveStudentsAsync() {
+        return CompletableFuture.runAsync(() -> {
+            handler.writeJson(students);
+        })
+        .exceptionally(ex -> { ex.printStackTrace(); return null; });
+
+    }
+
+    public CompletableFuture<Void> saveLecturersAsync() {
+        return CompletableFuture.runAsync(() -> {
+            handler.writeJson(lecturers);
+        })
+        .exceptionally(ex -> { ex.printStackTrace(); return null; });
+
+    }
+
+    public CompletableFuture<Void> saveProjectManagersAsync() {
+        return CompletableFuture.runAsync(() -> {
+            handler.writeJson(projectManagers);
+        })
+        .exceptionally(ex -> { ex.printStackTrace(); return null; });
+
+    }
+
+    public CompletableFuture<Void> saveAdminsAsync() {
+        return CompletableFuture.runAsync(() -> {
+            handler.writeJson(admins);
+        })
+        .exceptionally(ex -> { ex.printStackTrace(); return null; });
+
     }
 
     public CompletableFuture<Void> populateProjectManagersAsync() {
@@ -66,10 +104,8 @@ public class DataContext {
             .thenRun(() -> {
                 System.out.println("ProjectManagers populated");
             })
-            .exceptionally(ex -> {
-                ex.printStackTrace();
-                return null;
-            });
+            .exceptionally(ex -> { ex.printStackTrace(); return null; });
+
     }
 
     public CompletableFuture<Void> populateStudentsAsync() {
@@ -81,10 +117,8 @@ public class DataContext {
             .thenRun(() -> {
                 System.out.println("Students populated");
             })
-            .exceptionally(ex -> {
-                ex.printStackTrace();
-                return null;
-            });
+            .exceptionally(ex -> { ex.printStackTrace(); return null; });
+
     }
 
     public CompletableFuture<Void> populateLecturersAsync() {
@@ -96,10 +130,8 @@ public class DataContext {
             .thenRun(() -> {
                 System.out.println("Lecturers populated");
             })
-            .exceptionally(ex -> {
-                ex.printStackTrace();
-                return null;
-            });
+            .exceptionally(ex -> { ex.printStackTrace(); return null; });
+
     }
 
     public CompletableFuture<Void> populateAdminsAsync() {
@@ -111,10 +143,8 @@ public class DataContext {
             .thenRun(() -> {
                 System.out.println("Admins populated");
             })
-            .exceptionally(ex -> {
-                ex.printStackTrace();
-                return null;
-            });
+            .exceptionally(ex -> { ex.printStackTrace(); return null; });
+
     }
 
     public void print() {
@@ -135,11 +165,7 @@ public class DataContext {
             projectManagers.forEach(x -> System.out.print(x.getUsername() + " "));
             System.out.println();
         })
-        .exceptionally(ex -> {
-            ex.printStackTrace();
-            return null;
-        });
-
+        .exceptionally(ex -> { ex.printStackTrace(); return null; });
 
     }
 }

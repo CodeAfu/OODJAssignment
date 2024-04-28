@@ -16,7 +16,6 @@ import java.util.concurrent.CompletableFuture;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.xml.crypto.Data;
 
 import com.ags.pms.data.DataContext;
 import com.ags.pms.forms.Login;
@@ -49,19 +48,21 @@ public class ProjectManagementSystem {
         // testFileHandlerAsyncOperations();
         // testFileHandler();
         // testAES();
+        // generateNewAESKey();
     }
 
     private static void smallerTests() throws Exception {
         DataContext context = new DataContext();
-        context.allFutures.join();
         context.print();
     }
     
+    @SuppressWarnings("unused")
     private static void testLogin() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         ProjectManager manager = new ProjectManager("somelecturerPM", "123qweasdzxc");
         System.out.println(manager.login());
     }
 
+    @SuppressWarnings("unused")
     private static void testFileHandlerAsyncOperations() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         JsonHandler handler = new JsonHandler();
         PasswordHandler pwHandler = new PasswordHandler("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
@@ -163,6 +164,7 @@ public class ProjectManagementSystem {
         }
     }
 
+    @SuppressWarnings("unused")
     private static void testFileHandler() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         JsonHandler handler = new JsonHandler();
         PasswordHandler pwHandler = new PasswordHandler("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
@@ -210,6 +212,7 @@ public class ProjectManagementSystem {
         projectManagersFromJson.forEach(obj -> System.out.println(obj.getUsername() + ": " + obj.getPassword()));
     }
 
+    @SuppressWarnings("unused")
     private static void testAES() throws Exception {
         PasswordHandler handler = new PasswordHandler();
 
@@ -221,6 +224,16 @@ public class ProjectManagementSystem {
 
         Helper.printErr("Encrypted: " + encryptedPassword);
         Helper.printErr("Decrypted: " + decryptedPassword);
+        Helper.printErr("Secret Key: " + handler.exportKeys()[0]);
+        Helper.printErr("IV: " + handler.exportKeys()[1]);
+    }
+
+    @SuppressWarnings("unused")
+    private static void generateNewAESKey() throws NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+        PasswordHandler handler = new PasswordHandler();
+        handler.init();
+        handler.encryptPassword(".");
+
         Helper.printErr("Secret Key: " + handler.exportKeys()[0]);
         Helper.printErr("IV: " + handler.exportKeys()[1]);
     }

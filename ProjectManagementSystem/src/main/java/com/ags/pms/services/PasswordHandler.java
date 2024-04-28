@@ -7,11 +7,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import com.ags.pms.models.AuthUser;
-
 public class PasswordHandler {
 
-    private String encryptedPassword;
     private AES aes;
 
     public PasswordHandler() {
@@ -38,10 +35,6 @@ public class PasswordHandler {
     
     public String decryptPassword(String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         return aes.decrypt(password);
-    }
-
-    public void setEncryptedPassword(String encryptedPassword) {
-        this.encryptedPassword = encryptedPassword;
     }
     
     public String[] exportKeys() {

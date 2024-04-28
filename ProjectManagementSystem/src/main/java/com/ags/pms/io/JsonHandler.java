@@ -12,7 +12,6 @@ import com.ags.pms.models.*;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
 public class JsonHandler {
 
     private String path = "ProjectManagementSystem/src/main/java/com/ags/pms/data/";
