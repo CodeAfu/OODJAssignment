@@ -38,7 +38,7 @@ public class DataContext {
 
     }
 
-    public Student getStudentByUsername() {
+    public Student getStudentByUsername(String username) {
         return students.stream().filter(s -> s.getUsername() == username).findFirst().orElse(null);
     }
 
@@ -71,11 +71,11 @@ public class DataContext {
     //     return foundUser.orElse(null);
     // }
 
-    public <T> Stream<T> getStudent(Expression<T> expression) {
-        return students.stream()
-                       .filter(t -> expression.action(t))
-                       .map(student -> (T) student);
-    }
+    // public <T> Stream<T> getStudent(Expression<T> expression) {
+    //     return students.stream()
+    //                    .filter(t -> expression.action(t))
+    //                    .map(student -> (T) student);
+    // }
 
     public void setLecturers(ArrayList<Lecturer> lecturers) {
         this.lecturers = lecturers;

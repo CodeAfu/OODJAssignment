@@ -59,7 +59,7 @@ public class ProjectManagementSystem {
         ArrayList<Lecturer> lecturers = context.getLecturers();
         lecturers.forEach(l -> System.out.println(l.getUsername()));
         Student student = context.getStudentByID(4020);
-        context.getStudent(s -> ((User) s).getId() == 4001);
+        // context.getStudent(s -> .getId() == 4001);
 
     }
 
