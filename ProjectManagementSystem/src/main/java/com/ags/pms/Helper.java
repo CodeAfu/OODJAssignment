@@ -5,10 +5,12 @@ import java.io.StringWriter;
 import java.util.HashMap;
 
 import com.ags.pms.io.FileName;
+import com.ags.pms.io.JsonHandler;
 import com.ags.pms.models.Admin;
 import com.ags.pms.models.Lecturer;
 import com.ags.pms.models.ProjectManager;
 import com.ags.pms.models.Student;
+import com.fasterxml.jackson.annotation.JsonAlias;
 
 public class Helper {
     
@@ -64,4 +66,29 @@ public class Helper {
         
         return hashMap.get(className);
     }
+
+    // public static Class<?> getClassByID(int id) {
+    //     String idToString = String.valueOf(id);
+    //     char firstCharacter = idToString.charAt(0);
+
+    //     if (firstCharacter == '2') {
+    //         if (isProjectManager(id)) {
+    //             return ProjectManager.class;
+    //         }
+    //         return Lecturer.class;
+    //     }
+
+    //     HashMap<Character, Class<?>> hashMap = new HashMap<>();
+    //     hashMap.put('4', Student.class);
+    //     hashMap.put('1', Admin.class);
+        
+    //     return hashMap.get(firstCharacter);
+    // }
+
+    // private static boolean isProjectManager(int id) {
+    //     JsonHandler handler = new JsonHandler();
+
+    // }
+
+
 }

@@ -1,14 +1,22 @@
 package com.ags.pms.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.stream.Stream;
+import java.util.Optional;
+import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
 
+import com.ags.pms.Helper;
 import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
 import com.ags.pms.models.Admin;
 import com.ags.pms.models.Lecturer;
 import com.ags.pms.models.ProjectManager;
 import com.ags.pms.models.Student;
+import com.ags.pms.models.User;
+import com.fasterxml.jackson.core.TSFBuilder;
+
 
 public class DataContext {
 
@@ -24,6 +32,65 @@ public class DataContext {
     public DataContext() {
         handler = new JsonHandler();
         populateAllDataAsync();
+    }
+
+    public void updateStudent() {
+
+    }
+
+    public Student getStudentByUsername() {
+        return students.stream().filter(s -> s.getUsername() == username).findFirst().orElse(null);
+    }
+
+    public Student getStudentByID(int id) {
+        return students.stream().filter(s -> s.getId() == id).findFirst().orElse(null);
+    }
+
+    public Lecturer getLecturerByID(int id) {
+        return lecturers.stream().filter(s -> s.getId() == id).findFirst().orElse(null);
+    }
+
+    public Admin getAdminByID(int id) {
+        return admins.stream().filter(s -> s.getId() == id).findFirst().orElse(null);
+    }
+
+    public ProjectManager getProjectManagerByID(int id) {
+        return projectManagers.stream().filter(s -> s.getId() == id).findFirst().orElse(null);
+    }
+
+    // public <T extends User> T getByID(int id) {
+    //     @SuppressWarnings("unchecked")
+    //     Optional<T> foundUser = (Optional<T>) Stream.of(
+    //             get(students.stream(), s -> s.getId() == id),
+    //             get(lecturers.stream(), l -> l.getId() == id),
+    //             get(admins.stream(), a -> a.getId() == id),
+    //             get(projectManagers.stream(), pm -> pm.getId() == id)
+    //     ).flatMap(Optional::stream)
+    //     .findFirst();
+
+    //     return foundUser.orElse(null);
+    // }
+
+    public <T> Stream<T> getStudent(Expression<T> expression) {
+        return students.stream()
+                       .filter(t -> expression.action(t))
+                       .map(student -> (T) student);
+    }
+
+    public void setLecturers(ArrayList<Lecturer> lecturers) {
+        this.lecturers = lecturers;
+    }
+
+    public void setStudents(ArrayList<Student> students) {
+        this.students = students;
+    }
+
+    public void setAdmins(ArrayList<Admin> admins) {
+        this.admins = admins;
+    }
+
+    public void setProjectManagers(ArrayList<ProjectManager> projectManagers) {
+        this.projectManagers = projectManagers;
     }
 
     public ArrayList<Lecturer> getLecturers() {
@@ -54,6 +121,7 @@ public class DataContext {
     }
 
     public void writeAllDataAsync() {
+
         allFutures = CompletableFuture.allOf(
             saveAdminsAsync(),
             saveStudentsAsync(),
@@ -68,7 +136,6 @@ public class DataContext {
             handler.writeJson(students);
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
-
     }
 
     public CompletableFuture<Void> saveLecturersAsync() {
@@ -167,6 +234,21 @@ public class DataContext {
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
+
+    public CompletableFuture<Void> sort() {
+        return CompletableFuture.runAsync(() -> {
+
+        });
+    }
+
+    // private void compare() {
+    //     Collections.sort( new Comparator<User>() {
+    //         @Override
+    //         public int compare(User user1, User user2) {
+    //             return Integer.compare(user1.getId(), user2.getId());
+    //         }
+    //     });
+    // }
 
     public void isValidUser(String username, String password) {
         

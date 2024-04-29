@@ -41,17 +41,28 @@ public class ProjectManagementSystem {
     private static void consoleTests() throws Exception {
         // smallerTests();
         // testLogin();
-        testFileHandlerAsyncOperations();
+        // testFileHandlerAsyncOperations();
         // testFileHandler();
         // testAES();
         // generateNewAESKey();
+        dataContextTest();
     }
 
+    @SuppressWarnings("unused")
     private static void smallerTests() throws Exception {
-        DataContext context = new DataContext();
-        context.print();
     }
     
+    @SuppressWarnings("unused")
+    private static void dataContextTest() {
+        DataContext context = new DataContext();
+        System.out.println("--------------------------");
+        ArrayList<Lecturer> lecturers = context.getLecturers();
+        lecturers.forEach(l -> System.out.println(l.getUsername()));
+        Student student = context.getStudentByID(4020);
+        context.getStudent(s -> ((User) s).getId() == 4001);
+
+    }
+
     @SuppressWarnings("unused")
     private static void testLogin() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         ProjectManager manager = new ProjectManager("somelecturerPM", "123qweasdzxc");
@@ -105,7 +116,6 @@ public class ProjectManagementSystem {
                 return null;
             });
 
-        
         // Thread sleep required to run the async method I guess
         // since the main thread dies before the async threads execute?
         try {

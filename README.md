@@ -128,9 +128,12 @@ class Sample {
         - LastName
         - DoB
 
-### Definitely High Fidelity Prototype
-![prototype](https://i.imgur.com/ICzJID8.png)
-
+### A more defined prototype that is very high quality
+![prototype](https://i.imgur.com/WVzjwj1.png)
+### Sample reference for navbar and titlebar
+![Sample](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.ijraset.com%2Fimages%2Ftext_version_uploads%2Fimag%25201_4136.png&f=1&nofb=1&ipt=5f5bd7f69bd30eba2e928849c826361dad820541aafe46b8ea2f463229e94754&ipo=images)<br>
+[Tutorial for this UI](https://youtube.com/playlist?list=PLjrrZBv_CFYQgCFsHTzfIqtypsWF2KBvJ&si=fGg8GQiqHL31PDAO)<br>
+Ignore unnecessary icons
 ### Copy pasta
 ✅
 ❌
