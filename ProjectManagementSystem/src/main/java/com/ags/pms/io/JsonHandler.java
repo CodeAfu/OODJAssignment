@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonHandler {
 
-    private String path = "ProjectManagementSystem/src/main/java/com/ags/pms/data/";
+    private String path = "ProjectManagementSystem/src/main/java/com/ags/pms/db/";
 
     public void initFile(String filename) {
         try {

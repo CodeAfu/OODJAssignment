@@ -166,6 +166,9 @@ public class DataContext {
             System.out.println();
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
+    }
 
+    public void isValidUser(String username, String password) {
+        
     }
 }

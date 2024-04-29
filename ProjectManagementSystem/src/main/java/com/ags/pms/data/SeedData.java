@@ -18,7 +18,6 @@ import com.ags.pms.models.Project;
 import com.ags.pms.models.ProjectManager;
 import com.ags.pms.models.Role;
 import com.ags.pms.models.Student;
-import com.ags.pms.services.PasswordHandler;
 
 // Seed all data here incase of complete data loss lol
 public class SeedData {
