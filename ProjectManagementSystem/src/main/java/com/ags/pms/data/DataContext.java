@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 import java.util.Optional;
 import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
+import java.util.NoSuchElementException;
 
 import com.ags.pms.Helper;
 import com.ags.pms.io.FileName;
@@ -71,11 +72,34 @@ public class DataContext {
     //     return foundUser.orElse(null);
     // }
 
-    // public <T> Stream<T> getStudent(Expression<T> expression) {
-    //     return students.stream()
-    //                    .filter(t -> expression.action(t))
-    //                    .map(student -> (T) student);
-    // }
+
+    public Student getStudent(Expression<Student> expression) {
+        return students.stream()
+                       .filter(student -> expression.action(student))
+                       .findFirst()
+                       .orElseThrow(() -> new NoSuchElementException("Student not found"));
+    }
+
+    public Lecturer getLecturer(Expression<Lecturer> expression) {
+        return lecturers.stream()
+                       .filter(lecturer -> expression.action(lecturer))
+                       .findFirst()
+                       .orElseThrow(() -> new NoSuchElementException("Lecturer not found"));
+    }
+
+    public Admin getAdmin(Expression<Admin> expression) {
+        return admins.stream()
+                       .filter(admin -> expression.action(admin))
+                       .findFirst()
+                       .orElseThrow(() -> new NoSuchElementException("Admin not found"));
+    }
+
+    public ProjectManager getProjectManager(Expression<ProjectManager> expression) {
+        return projectManagers.stream()
+                       .filter(projectManager -> expression.action(projectManager))
+                       .findFirst()
+                       .orElseThrow(() -> new NoSuchElementException("ProjectManager not found"));
+    }
 
     public void setLecturers(ArrayList<Lecturer> lecturers) {
         this.lecturers = lecturers;

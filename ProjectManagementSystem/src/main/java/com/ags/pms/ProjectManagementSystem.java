@@ -59,8 +59,8 @@ public class ProjectManagementSystem {
         ArrayList<Lecturer> lecturers = context.getLecturers();
         lecturers.forEach(l -> System.out.println(l.getUsername()));
         Student student = context.getStudentByID(4020);
-        // context.getStudent(s -> .getId() == 4001);
-
+        Student student2 = context.getStudent(s -> s.getId() == 4001);
+        Lecturer lecturer = context.getLecturer(l -> l.getId() == 2001);
     }
 
     @SuppressWarnings("unused")
