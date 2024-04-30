@@ -56,11 +56,15 @@ public class ProjectManagementSystem {
     private static void dataContextTest() {
         DataContext context = new DataContext();
         System.out.println("--------------------------");
+
         ArrayList<Lecturer> lecturers = context.getLecturers();
         lecturers.forEach(l -> System.out.println(l.getUsername()));
+
         Student student = context.getStudentByID(4020);
         Student student2 = context.getStudent(s -> s.getId() == 4001);
         Lecturer lecturer = context.getLecturer(l -> l.getId() == 2001);
+
+
     }
 
     @SuppressWarnings("unused")

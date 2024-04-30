@@ -51,12 +51,13 @@ class Sample {
 - Build GUI
     - Login -> Ruhit
     - Register -> Ruhit
-    - MainMenuBody -> NA
-    - StudentMenu -> NA
-    - LecturerMenu -> NA
-    - AdminMenu -> NA
+    - MainMenuBody -> Ibrahim
+    - StudentMenu -> Ibrahim
+    - LecturerMenu -> Ruhit
+    - AdminMenu -> Rion
 - Build Project Dependencies
-    - FileHandler -> Ibrahim
+    - DataContext (Optional) -> Ibrahim
+    - JsonHandler - Ibrahim ✅
     - PasswordHandler -> Ibrahim ✅
     
 

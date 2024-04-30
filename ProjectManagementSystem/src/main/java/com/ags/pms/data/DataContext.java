@@ -2,10 +2,13 @@ package com.ags.pms.data;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.Optional;
 import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.NoSuchElementException;
 
 import com.ags.pms.Helper;
@@ -33,14 +36,6 @@ public class DataContext {
     public DataContext() {
         handler = new JsonHandler();
         populateAllDataAsync();
-    }
-
-    public void updateStudent() {
-
-    }
-
-    public Student getStudentByUsername(String username) {
-        return students.stream().filter(s -> s.getUsername() == username).findFirst().orElse(null);
     }
 
     public Student getStudentByID(int id) {
@@ -71,7 +66,6 @@ public class DataContext {
 
     //     return foundUser.orElse(null);
     // }
-
 
     public Student getStudent(Expression<Student> expression) {
         return students.stream()
