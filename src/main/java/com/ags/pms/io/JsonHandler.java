@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class JsonHandler {
 
     private String absolutePath = new File("").getAbsolutePath();
-    private String path = "\\src\\resources\\db\\";
+    private String path = "\\src\\main\\java\\resources\\db\\";
 
     public void initFile(String filename) {
         try {

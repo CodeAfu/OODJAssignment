@@ -46,5 +46,13 @@
             <version>1.14.13</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.formdev/flatlaf -->
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>3.4.1</version>
+            <type>jar</type>
+        </dependency>
+
     </dependencies>
 </project>
