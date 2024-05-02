@@ -14,12 +14,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonHandler {
 
-    public String absolutePath = new File("").getAbsolutePath();
-    private String path = "ProjectManagementSystem/src/main/java/com/ags/pms/db/";
+    private String absolutePath = new File("").getAbsolutePath();
+    private String path = "\\src\\resources\\db\\";
 
     public void initFile(String filename) {
         try {
-            File file = new File(path + filename);
+            File file = new File(getPath(filename));
             if (file.createNewFile()) {
                 System.out.println("File Created: " + file.getName());   
             } else {
@@ -33,7 +33,7 @@ public class JsonHandler {
     public void writeData(String filename, String contents) {
         try {
 
-            FileWriter writer = new FileWriter(path + filename);
+            FileWriter writer = new FileWriter(getPath(filename));
             writer.write(contents);
             writer.close();
         } catch (Exception ex) {
@@ -44,7 +44,7 @@ public class JsonHandler {
     public String readData(String filename) {
         String output = "";
         try {
-            FileReader file = new FileReader(path + filename);
+            FileReader file = new FileReader(getPath(filename));
             Scanner reader = new Scanner(file);
             while (reader.hasNextLine()) {
                 output += reader.nextLine();
@@ -174,5 +174,9 @@ public class JsonHandler {
             }
             return jsonableList;
         });
+    }
+
+    private String getPath(String filename) {
+        return this.absolutePath + this.path + filename;
     }
 }

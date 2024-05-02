@@ -39,19 +39,18 @@ public class ProjectManagementSystem {
     }
     
     private static void consoleTests() throws Exception {
-        smallerTests();
+        // smallerTests();
         // testLogin();
         // testFileHandlerAsyncOperations();
         // testFileHandler();
         // testAES();
         // generateNewAESKey();
-        // dataContextTest();
+        dataContextTest();
     }
 
     @SuppressWarnings("unused")
     private static void smallerTests() throws Exception {
         JsonHandler handler = new JsonHandler();
-        System.out.println(handler.absolutePath);
     }
     
     @SuppressWarnings("unused")
