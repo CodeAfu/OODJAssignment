@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonHandler {
 
+    public String absolutePath = new File("").getAbsolutePath();
     private String path = "ProjectManagementSystem/src/main/java/com/ags/pms/db/";
 
     public void initFile(String filename) {
@@ -31,6 +32,7 @@ public class JsonHandler {
 
     public void writeData(String filename, String contents) {
         try {
+
             FileWriter writer = new FileWriter(path + filename);
             writer.write(contents);
             writer.close();
