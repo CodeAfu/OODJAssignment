@@ -13,8 +13,7 @@ public class Student extends User {
 
     private ArrayList<Report> reports;
     private ArrayList<PresentationSlot> presentationSlots;
-
-
+    private ArrayList<String> modules;
 
     // Debug
     public Student() {
@@ -40,6 +39,18 @@ public class Student extends User {
         this.reports = reports;
     }
 
+    public ArrayList<String> getModules() {
+        return modules;
+    }
+    
+    public void setModules(ArrayList<String> modules) {
+        this.modules = modules;
+    }
+    
+    public ArrayList<PresentationSlot> getPresentationSlots() {
+        return presentationSlots;
+    }
+
     public void addReport(Report report) {
         reports.add(report);
     }
@@ -50,10 +61,6 @@ public class Student extends User {
 
     public void submitReport(Report report) {
         
-    }
-    
-    public ArrayList<PresentationSlot> getPresentationSlots() {
-        return presentationSlots;
     }
 
     public void setPresentationSlots(ArrayList<PresentationSlot> presentationSlots) {
@@ -66,7 +73,11 @@ public class Student extends User {
     }
 
     public String retrieveReportDetails() {
-        return "";
+        StringBuilder stringBuilder = new StringBuilder();
+        reports.forEach(r -> {
+            stringBuilder.append(r.getReportDetails());
+        });
+        return stringBuilder.toString();
     }
 
     public ProjectManager retrieveSecondMarker() {
@@ -79,7 +90,7 @@ public class Student extends User {
         throw new UnsupportedOperationException("Unimplemented method 'getPresentationSlot'");
     }
 
-    public static String retrievePresentationRequestDetails() {
+    public String retrievePresentationRequestDetails() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'retrievePresentationRequestDetails'");
     }

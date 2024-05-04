@@ -9,7 +9,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
@@ -48,7 +47,7 @@ public class Lecturer extends User {
 
     public void viewSupervisees() {
         JsonHandler handler = new JsonHandler();
-        ArrayList<Student>supervisees = handler.readJson(FileName.STUDENTS);
+        ArrayList<Student> supervisees = handler.readJson(FileName.STUDENTS);
         System.out.println("Supervisees for " + this.getName() + ":");
 
         for (Student student : supervisees) {
@@ -58,7 +57,7 @@ public class Lecturer extends User {
 
     public void viewPresentationRequests() {
         JsonHandler handler = new JsonHandler();
-        ArrayList<Student>supervisees = handler.readJson(FileName.STUDENTS);
+        ArrayList<Student> supervisees = handler.readJson(FileName.STUDENTS);
         System.out.println("Presentation Requests for " + this.getName() + ":");
 
         for (Student student : supervisees) {
@@ -68,7 +67,7 @@ public class Lecturer extends User {
 
     public void viewAvailableSlots() {
         JsonHandler handler = new JsonHandler();
-        ArrayList<Student>supervisees = handler.readJson(FileName.STUDENTS);
+        ArrayList<Student> supervisees = handler.readJson(FileName.STUDENTS);
         System.out.println("Available slots for " + this.getName() + ":");
 
         for (Student student : supervisees) {
@@ -82,7 +81,7 @@ public class Lecturer extends User {
 
     public void viewSecondMarkerAcceptance() {
         JsonHandler handler = new JsonHandler();
-        ArrayList<Student>supervisees = handler.readJson(FileName.STUDENTS);
+        ArrayList<Student> supervisees = handler.readJson(FileName.STUDENTS);
         System.out.println("Second Marker Acceptance for " + this.getName() + ":");
 
         for (Student student : supervisees) {
@@ -101,9 +100,9 @@ public class Lecturer extends User {
 
     public void viewReport() {
         JsonHandler handler = new JsonHandler();
-        ArrayList<Student>supervisees = handler.readJson(FileName.STUDENTS);
+        ArrayList<Student> supervisees = handler.readJson(FileName.STUDENTS);
         System.out.println("Reports for " + this.getName() + ":");
-        
+
         for (Student student : supervisees) {
             System.out.println("- " + student.getName() + ": " + student.retrieveReportDetails());
         }

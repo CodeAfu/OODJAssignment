@@ -1,7 +1,5 @@
 package com.ags.pms.models;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.ags.pms.Helper;
@@ -32,12 +30,6 @@ public class Report {
         this.studentMark = studentMark;
         this.totalMark = totalMark;
         updateDateSubmitted();
-    }
-
-    private void updateDateSubmitted() {
-        if (!isSubmitted()) return; 
-        dateSubmitted = new Date();
-        System.out.println("Report submitted: " + Helper.getDateFormat().format(dateSubmitted));
     }
 
     public int getId() {
@@ -94,5 +86,16 @@ public class Report {
     }
     public void setTotalMark(int totalMark) {
         this.totalMark = totalMark;
+    }
+
+    public String getReportDetails() {
+        String output = "";
+        return output;
+    }
+
+    private void updateDateSubmitted() {
+        if (!isSubmitted()) return; 
+        dateSubmitted = new Date();
+        System.out.println("Report submitted: " + Helper.getDateFormat().format(dateSubmitted));
     }
 }

@@ -44,6 +44,7 @@ public class DataContext {
     public DataContext() {
         handler = new JsonHandler();
         populateAllDataAsync();
+        handler.readJson(FileName.REPORTS);
         getMaxIds();
     }
 
@@ -136,12 +137,41 @@ public class DataContext {
         return projectManagers;
     }
 
+    public ArrayList<Report> getReports() {
+        return reports;
+    }
+
+    public void setReports(ArrayList<Report> reports) {
+        this.reports = reports;
+    }
+
+    public void addStudent(Student student) {
+        students.add(student);
+    }
+
+    public void addAdmin(Admin admin) {
+        admins.add(admin);
+    }
+
+    public void addLecturer(Lecturer lecturer) {
+        lecturers.add(lecturer);
+    }
+
+    public void addProjectManager(ProjectManager projectManager) {
+        projectManagers.add(projectManager);
+    }
+
+    public void addReport(Report report) {
+        reports.add(report);
+    }
+
     private void populateAllDataAsync() {
         allFutures = CompletableFuture.allOf(
             populateStudentsAsync(),
             populateAdminsAsync(),
             populateLecturersAsync(),
-            populateProjectManagersAsync()
+            populateProjectManagersAsync(),
+            populateReportsAsync()
         );
         
         allFutures.join();
@@ -152,7 +182,8 @@ public class DataContext {
             saveAdminsAsync(),
             saveStudentsAsync(),
             saveLecturersAsync(),
-            saveProjectManagersAsync()
+            saveProjectManagersAsync(),
+            saveReportsAsync()
         ).thenRun(() -> System.out.println("Json Written"))
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
@@ -177,7 +208,6 @@ public class DataContext {
             handler.writeJson(projectManagers);
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
-
     }
 
     public CompletableFuture<Void> saveAdminsAsync() {
@@ -185,7 +215,13 @@ public class DataContext {
             handler.writeJson(admins);
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
+    }
 
+    public CompletableFuture<Void> saveReportsAsync() {
+        return CompletableFuture.runAsync(() -> {
+            handler.writeJson(reports);
+        })
+        .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
 
     public CompletableFuture<Void> populateProjectManagersAsync() {
@@ -234,7 +270,18 @@ public class DataContext {
                 System.out.println("Admins populated");
             })
             .exceptionally(ex -> { ex.printStackTrace(); return null; });
+    }
 
+    public CompletableFuture<Void> populateReportsAsync() {
+        return handler.readJsonAsync(FileName.REPORTS)
+            .thenAccept(reportList -> {
+                reports = new ArrayList<>();
+                reportList.forEach(r -> reports.add((Report) r));
+            })
+            .thenRun(() -> {
+                System.out.println("Reports populated");
+            })
+            .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
 
     public void print() {
@@ -253,6 +300,10 @@ public class DataContext {
     
             System.out.print("PROJECTMANAGERS: ");
             projectManagers.forEach(x -> System.out.print(x.getUsername() + " "));
+            System.out.println();
+    
+            System.out.print("REPORTS: ");
+            reports.forEach(x -> System.out.print(x.getMoodleLink() + " "));
             System.out.println();
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
@@ -280,27 +331,27 @@ public class DataContext {
     private void getMaxIds() {
         if (!admins.isEmpty()){
             idTracker.setAdminId(admins.stream().max(Comparator.comparingInt(Admin::getId)).isPresent() ? 
-                admins.stream().max(Comparator.comparingInt(Admin::getId)).get().getId() + 1 : -1);
+                admins.stream().max(Comparator.comparingInt(Admin::getId)).get().getId() + 1 : 1000);
         }
 
         if (!students.isEmpty()) {
             idTracker.setStudentId(students.stream().max(Comparator.comparingInt(Student::getId)).isPresent() ? 
-                students.stream().max(Comparator.comparingInt(Student::getId)).get().getId() + 1 : -1);
+                students.stream().max(Comparator.comparingInt(Student::getId)).get().getId() + 1 : 4000);
         }
 
         if (!lecturers.isEmpty()) {
             idTracker.setLecturerId(lecturers.stream().max(Comparator.comparingInt(Lecturer::getId)).isPresent() ? 
-                lecturers.stream().max(Comparator.comparingInt(Lecturer::getId)).get().getId() + 1 : -1);
+                lecturers.stream().max(Comparator.comparingInt(Lecturer::getId)).get().getId() + 1 : 2000);
         }
 
         if (!projectManagers.isEmpty()) {
             idTracker.setProjectManagerId(projectManagers.stream().max(Comparator.comparingInt(ProjectManager::getId)).isPresent() ? 
-                projectManagers.stream().max(Comparator.comparingInt(ProjectManager::getId)).get().getId() + 1 : -1);
+                projectManagers.stream().max(Comparator.comparingInt(ProjectManager::getId)).get().getId() + 1 : 2000);
         }
 
         if (!reports.isEmpty()) {
             idTracker.setReportId(reports.stream().max(Comparator.comparingInt(Report::getId)).isPresent() ? 
-                reports.stream().max(Comparator.comparingInt(Report::getId)).get().getId() + 1 : -1);
+                reports.stream().max(Comparator.comparingInt(Report::getId)).get().getId() + 1 : 8000);
         }
     }
 }

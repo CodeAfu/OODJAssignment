@@ -41,8 +41,8 @@ public class ProjectManagementSystem {
     private static void consoleTests() throws Exception {
         // smallerTests();
         // testLogin();
-        testFileHandlerAsyncOperations();
-        testFileHandler();
+        // testFileHandlerAsyncOperations();
+        // testFileHandler();
         // testAES();
         // generateNewAESKey();
         dataContextTest();
@@ -64,6 +64,7 @@ public class ProjectManagementSystem {
         }
 
         DataContext context = new DataContext();
+        // context.print();
         System.out.println("--------------------------");
 
         ArrayList<Lecturer> lecturers = context.getLecturers();

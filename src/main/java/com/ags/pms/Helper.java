@@ -11,6 +11,7 @@ import com.ags.pms.io.JsonHandler;
 import com.ags.pms.models.Admin;
 import com.ags.pms.models.Lecturer;
 import com.ags.pms.models.ProjectManager;
+import com.ags.pms.models.Report;
 import com.ags.pms.models.Student;
 import com.fasterxml.jackson.annotation.JsonAlias;
 
@@ -57,6 +58,7 @@ public class Helper {
         hashMap.put(FileName.LECTURERS, Lecturer.class);
         hashMap.put(FileName.ADMINS, Admin.class);
         hashMap.put(FileName.PROJECTMANAGERS, ProjectManager.class);
+        hashMap.put(FileName.REPORTS, Report.class);
 
         return hashMap.get(filename);
     }
