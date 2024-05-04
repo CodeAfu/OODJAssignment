@@ -25,9 +25,9 @@ public class Student extends User {
         reports = new ArrayList<Report>();
     }
     
-    public Student(int id, String name, String dob, String email, String username, String password, ArrayList<Report> projects, AssessmentType assessmentType) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+    public Student(int id, String name, String dob, String email, String username, String password, ArrayList<Report> reports, AssessmentType assessmentType) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         super(id, name, dob, email, username, password);
-        this.reports = projects;
+        this.reports = reports;
         this.assessmentType = assessmentType;
     }
 
@@ -35,25 +35,22 @@ public class Student extends User {
         return reports;
     }
 
-    public void setReports(ArrayList<Report> projects) {
-        this.reports = projects;
+    public void setReports(ArrayList<Report> reports) {
+        this.reports = reports;
     }
 
-    public void addProject(Report project) {
-        reports.add(project);
+    public void addReport(Report report) {
+        reports.add(report);
     }
 
-    public void submitProject() {
+    public void submitReport() {
         
     }
 
-    public void submitProject(Report project) {
+    public void submitReport(Report report) {
         
     }
 
-    public void editStudent(Student student) {
-        
-    }
     
     public AssessmentType getAssessmentType() {
         return assessmentType;

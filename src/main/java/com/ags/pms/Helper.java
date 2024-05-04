@@ -2,6 +2,8 @@ package com.ags.pms;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
 import com.ags.pms.io.FileName;
@@ -65,6 +67,10 @@ public class Helper {
         hashMap.put("ProjectManager", ProjectManager.class);
         
         return hashMap.get(className);
+    }
+
+    public static DateFormat getDateFormat() {
+        return new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     }
 
     // public static Class<?> getClassByID(int id) {
