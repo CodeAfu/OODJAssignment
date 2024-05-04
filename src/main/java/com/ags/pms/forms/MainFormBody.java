@@ -5,6 +5,7 @@
 package com.ags.pms.forms;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import java.awt.Dimension;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -22,7 +23,11 @@ public class MainFormBody extends javax.swing.JFrame {
      * Creates new form MainFormBody
      */
     public MainFormBody() {
-        initComponents();
+        initComponents();   
+        
+        ComponentResizer cr = new ComponentResizer();
+        cr.setSnapSize(new Dimension(10, 10));
+        cr.registerComponent(this, jPanelTitle, jPanelDragLeft);
     }
 
     /**
@@ -35,7 +40,7 @@ public class MainFormBody extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanelTitle = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        jLabelTitle = new javax.swing.JLabel();
         jButtonMinimize = new javax.swing.JButton();
         jButtonClose = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
@@ -50,8 +55,8 @@ public class MainFormBody extends javax.swing.JFrame {
 
         jPanelTitle.setBackground(new java.awt.Color(245, 246, 248));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
-        jLabel1.setText("Project Management System");
+        jLabelTitle.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
+        jLabelTitle.setText("Project Management System");
 
         jButtonMinimize.setBackground(new java.awt.Color(245, 246, 248));
         jButtonMinimize.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/Horizontal Line_2.png"))); // NOI18N
@@ -77,7 +82,7 @@ public class MainFormBody extends javax.swing.JFrame {
             jPanelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelTitleLayout.createSequentialGroup()
                 .addGap(38, 38, 38)
-                .addComponent(jLabel1)
+                .addComponent(jLabelTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButtonMinimize, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -90,7 +95,7 @@ public class MainFormBody extends javax.swing.JFrame {
                 .addGroup(jPanelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelTitleLayout.createSequentialGroup()
                         .addGap(25, 25, 25)
-                        .addComponent(jLabel1))
+                        .addComponent(jLabelTitle))
                     .addGroup(jPanelTitleLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -130,29 +135,29 @@ public class MainFormBody extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(jLabel2))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(43, 43, 43)
-                        .addComponent(jLabel3)))
-                .addContainerGap(73, Short.MAX_VALUE))
+            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
             .addComponent(jPanelDragLeft, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addComponent(jLabel2)
+                .addGap(31, 31, 31)
+                .addComponent(jLabel3)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jPanelDragLeft, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
-                .addComponent(jLabel2)
-                .addGap(94, 94, 94)
-                .addComponent(jLabel3)
-                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel2))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3)))
+                .addGap(116, 116, 116)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(319, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
@@ -233,7 +238,10 @@ public class MainFormBody extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 MainFormBody mainFormBody = new MainFormBody();
+
+
                 setTheme(mainFormBody);
+                
                 mainFormBody.setVisible(true);    
             }
 
@@ -259,10 +267,10 @@ public class MainFormBody extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonClose;
     private javax.swing.JButton jButtonMinimize;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabelTitle;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanelDragLeft;
