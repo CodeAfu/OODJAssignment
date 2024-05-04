@@ -41,11 +41,11 @@ public class ProjectManagementSystem {
     private static void consoleTests() throws Exception {
         // smallerTests();
         // testLogin();
-        // testFileHandlerAsyncOperations();
+        testFileHandlerAsyncOperations();
         // testFileHandler();
         // testAES();
         // generateNewAESKey();
-        dataContextTest();
+        // dataContextTest();
     }
 
     @SuppressWarnings("unused")
@@ -92,7 +92,7 @@ public class ProjectManagementSystem {
         handler.readJsonAsync(FileName.STUDENTS)
             .thenAccept(studentsFromJsonList -> {
                 studentsFromJson = new ArrayList<>();
-                for (User user : studentsFromJsonList) {
+                for (Object user : studentsFromJsonList) {
                     if (user instanceof Student) {
                         studentsFromJson.add((Student)user);
                     } else {
@@ -112,7 +112,7 @@ public class ProjectManagementSystem {
         handler.readJsonAsync("Admin")
             .thenAccept(adminsFromJsonList -> {
                 adminsFromJson = new ArrayList<>();
-                for (User user : adminsFromJsonList) {
+                for (Object user : adminsFromJsonList) {
                     if (user instanceof Admin) {
                         adminsFromJson.add((Admin)user);
                     } else {

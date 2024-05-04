@@ -190,7 +190,6 @@ public class DataContext {
                 System.out.println("ProjectManagers populated");
             })
             .exceptionally(ex -> { ex.printStackTrace(); return null; });
-
     }
 
     public CompletableFuture<Void> populateStudentsAsync() {
@@ -203,7 +202,6 @@ public class DataContext {
                 System.out.println("Students populated");
             })
             .exceptionally(ex -> { ex.printStackTrace(); return null; });
-
     }
 
     public CompletableFuture<Void> populateLecturersAsync() {
@@ -216,7 +214,6 @@ public class DataContext {
                 System.out.println("Lecturers populated");
             })
             .exceptionally(ex -> { ex.printStackTrace(); return null; });
-
     }
 
     public CompletableFuture<Void> populateAdminsAsync() {

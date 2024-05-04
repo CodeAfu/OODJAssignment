@@ -123,7 +123,7 @@ public class JsonHandler {
         return jsonableList;
     }
 
-    public <T extends User> ArrayList<T> readJson(String className) {
+    public <T> ArrayList<T> readJson(String className) {
         ObjectMapper mapper = new ObjectMapper();
         ArrayList<T> jsonableList = new ArrayList<>();
         String json = readData(Helper.getFilenameByClassName(className));
@@ -148,14 +148,15 @@ public class JsonHandler {
         });
     }
 
-    public <T extends User> CompletableFuture<Void> writeJsonAsync(ArrayList<T> objTs) {
+    public <T> CompletableFuture<Void> writeJsonAsync(ArrayList<T> objTs) {
         return CompletableFuture.runAsync(() -> {
             writeJson(objTs);
         });
     }
 
-    public <T extends User> CompletableFuture<ArrayList<T>> readJsonAsync(FileName filename) {
+    public <T> CompletableFuture<ArrayList<T>> readJsonAsync(FileName filename) {
         return CompletableFuture.supplyAsync(() -> {
+
             ObjectMapper mapper = new ObjectMapper();
             ArrayList<T> jsonableList = new ArrayList<>();
             String json = readDataAsync(Helper.getFilenameByEnum(filename)).join(); // Wait for readDataAsync to complete
@@ -170,8 +171,9 @@ public class JsonHandler {
         });
     }
 
-    public <T extends User> CompletableFuture<ArrayList<T>> readJsonAsync(String className) {
+    public <T> CompletableFuture<ArrayList<T>> readJsonAsync(String className) {
         return CompletableFuture.supplyAsync(() -> {
+            
             ObjectMapper mapper = new ObjectMapper();
             ArrayList<T> jsonableList = new ArrayList<>();
             String json = readDataAsync(Helper.getFilenameByClassName(className)).join(); // Wait for readDataAsync to complete
