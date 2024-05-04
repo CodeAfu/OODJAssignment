@@ -11,43 +11,43 @@ import javax.crypto.NoSuchPaddingException;
 
 public class Student extends User {
 
-    private ArrayList<Project> projects;
+    private ArrayList<Report> reports;
     private AssessmentType assessmentType;
 
     // Debug
     public Student() {
         super();
-        projects = new ArrayList<Project>();
+        reports = new ArrayList<Report>();
     }
     
     public Student(int id, String name, String dob, String email, String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         super(id, name, dob, email, username, password);
-        projects = new ArrayList<Project>();
+        reports = new ArrayList<Report>();
     }
     
-    public Student(int id, String name, String dob, String email, String username, String password, ArrayList<Project> projects, AssessmentType assessmentType) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+    public Student(int id, String name, String dob, String email, String username, String password, ArrayList<Report> projects, AssessmentType assessmentType) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         super(id, name, dob, email, username, password);
-        this.projects = projects;
+        this.reports = projects;
         this.assessmentType = assessmentType;
     }
 
-    public ArrayList<Project> getProjects() {
-        return projects;
+    public ArrayList<Report> getReports() {
+        return reports;
     }
 
-    public void setProjects(ArrayList<Project> projects) {
-        this.projects = projects;
+    public void setReports(ArrayList<Report> projects) {
+        this.reports = projects;
     }
 
-    public void addProject(Project project) {
-        projects.add(project);
+    public void addProject(Report project) {
+        reports.add(project);
     }
 
     public void submitProject() {
         
     }
 
-    public void submitProject(Project project) {
+    public void submitProject(Report project) {
         
     }
 
