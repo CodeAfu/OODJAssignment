@@ -71,6 +71,8 @@ public class SeedData {
         projectManagers.add(projectManager2);
         projectManagers.add(projectManager3);
         projectManagers.add(projectManager4);
+        
+        handler.writeJson(admins);
 
         futures = CompletableFuture.allOf(
             handler.writeJsonAsync(students),

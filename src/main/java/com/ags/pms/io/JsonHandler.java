@@ -57,7 +57,7 @@ public class JsonHandler {
         return output;
     }
 
-    public <T extends User> void writeJson(ArrayList<T> objTs) {
+    public <T> void writeJson(ArrayList<T> objTs) {
         if (objTs.isEmpty()) {
             throw new NullPointerException("writeJson() objTs is null.");
         }
@@ -67,7 +67,11 @@ public class JsonHandler {
             T firstObj = objTs.get(0); 
             String className = firstObj.getClass().getSimpleName();
             String jsonData;
-            objTs.forEach(obj -> obj.encryptPassword());
+            objTs.forEach(obj -> {
+                if (obj instanceof User) {
+                    ((User) obj).encryptPassword();
+                }
+            });
             
             switch (className) {
                 case "Student":
@@ -94,13 +98,19 @@ public class JsonHandler {
                     jsonData = mapper.writeValueAsString(admins);
                     writeData(Helper.getFilenameByClassName(className), jsonData);
                     break;
+                case "Report":
+                    @SuppressWarnings("unchecked") 
+                    ArrayList<Report> reports = new ArrayList<>((ArrayList<Report>) objTs);
+                    jsonData = mapper.writeValueAsString(reports);
+                    writeData(Helper.getFilenameByClassName(className), jsonData);
+                    break;
             }
         } catch (Exception ex) {
             Helper.printErr(Helper.getStackTraceString(ex));
         }
     }
 
-    public <T extends User> ArrayList<T> readJson(FileName filename) {
+    public <T> ArrayList<T> readJson(FileName filename) {
         ObjectMapper mapper = new ObjectMapper();
         ArrayList<T> jsonableList = new ArrayList<>();
         String json = readData(Helper.getFilenameByEnum(filename));
