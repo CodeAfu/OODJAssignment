@@ -5,8 +5,12 @@ import java.util.Collections;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.management.openmbean.ArrayType;
+
 import java.util.Optional;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.NoSuchElementException;
@@ -17,6 +21,7 @@ import com.ags.pms.io.JsonHandler;
 import com.ags.pms.models.Admin;
 import com.ags.pms.models.Lecturer;
 import com.ags.pms.models.ProjectManager;
+import com.ags.pms.models.Report;
 import com.ags.pms.models.Student;
 import com.ags.pms.models.User;
 import com.fasterxml.jackson.core.TSFBuilder;
@@ -26,16 +31,20 @@ public class DataContext {
 
     private JsonHandler handler;
 
-    private ArrayList<Lecturer> lecturers;
-    private ArrayList<Student> students;
-    private ArrayList<Admin> admins;
-    private ArrayList<ProjectManager> projectManagers;
+    private ArrayList<Lecturer> lecturers = new ArrayList<>();
+    private ArrayList<Student> students = new ArrayList<>();
+    private ArrayList<Admin> admins = new ArrayList<>();
+    private ArrayList<ProjectManager> projectManagers = new ArrayList<>();
+    private ArrayList<Report> reports = new ArrayList<>();
 
+    private IDTracker idTracker = new IDTracker();
+    
     private CompletableFuture<Void> allFutures;
 
     public DataContext() {
         handler = new JsonHandler();
         populateAllDataAsync();
+        getMaxIds();
     }
 
     public Student getStudentByID(int id) {
@@ -139,7 +148,6 @@ public class DataContext {
     }
 
     public void writeAllDataAsync() {
-
         allFutures = CompletableFuture.allOf(
             saveAdminsAsync(),
             saveStudentsAsync(),
@@ -267,5 +275,32 @@ public class DataContext {
 
     public void isValidUser(String username, String password) {
         
+    }
+
+    private void getMaxIds() {
+        if (!admins.isEmpty()){
+            idTracker.setAdminId(admins.stream().max(Comparator.comparingInt(Admin::getId)).isPresent() ? 
+                admins.stream().max(Comparator.comparingInt(Admin::getId)).get().getId() + 1 : -1);
+        }
+
+        if (!students.isEmpty()) {
+            idTracker.setStudentId(students.stream().max(Comparator.comparingInt(Student::getId)).isPresent() ? 
+                students.stream().max(Comparator.comparingInt(Student::getId)).get().getId() + 1 : -1);
+        }
+
+        if (!lecturers.isEmpty()) {
+            idTracker.setLecturerId(lecturers.stream().max(Comparator.comparingInt(Lecturer::getId)).isPresent() ? 
+                lecturers.stream().max(Comparator.comparingInt(Lecturer::getId)).get().getId() + 1 : -1);
+        }
+
+        if (!projectManagers.isEmpty()) {
+            idTracker.setProjectManagerId(projectManagers.stream().max(Comparator.comparingInt(ProjectManager::getId)).isPresent() ? 
+                projectManagers.stream().max(Comparator.comparingInt(ProjectManager::getId)).get().getId() + 1 : -1);
+        }
+
+        if (!reports.isEmpty()) {
+            idTracker.setReportId(reports.stream().max(Comparator.comparingInt(Report::getId)).isPresent() ? 
+                reports.stream().max(Comparator.comparingInt(Report::getId)).get().getId() + 1 : -1);
+        }
     }
 }
