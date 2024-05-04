@@ -41,11 +41,11 @@ public class ProjectManagementSystem {
     private static void consoleTests() throws Exception {
         // smallerTests();
         // testLogin();
-        testFileHandlerAsyncOperations();
+        // testFileHandlerAsyncOperations();
         // testFileHandler();
         // testAES();
         // generateNewAESKey();
-        // dataContextTest();
+        dataContextTest();
     }
 
     @SuppressWarnings("unused")
