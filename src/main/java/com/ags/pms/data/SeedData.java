@@ -37,10 +37,10 @@ public class SeedData {
         ArrayList<Admin> admins = new ArrayList<>();
         ArrayList<ProjectManager> projectManagers = new ArrayList<>();
         
-        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Report>(), AssessmentType.FYP);
-        Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Report>(), AssessmentType.INVESTIGATIONREPORTS);
-        Student student3 = new Student(4003, "Emma Smith", "05/08/2023", "emma@email.com", "emma_smith", "P@ssw0rd", new ArrayList<Report>(), AssessmentType.FYP);
-        Student student4 = new Student(4004, "Michael Johnson", "12/11/2023", "michael@email.com", "michael_j", "secure123", new ArrayList<Report>(), AssessmentType.INVESTIGATIONREPORTS);
+        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Report>());
+        Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Report>());
+        Student student3 = new Student(4003, "Emma Smith", "05/08/2023", "emma@email.com", "emma_smith", "P@ssw0rd", new ArrayList<Report>());
+        Student student4 = new Student(4004, "Michael Johnson", "12/11/2023", "michael@email.com", "michael_j", "secure123", new ArrayList<Report>());
         Lecturer lecturer1 = new Lecturer(2001, "Joshua", "11/01/1980", "joshua@lecturer.com", "josh_lecturer", "verySecurePasswordMate");
         Lecturer lecturer2 = new Lecturer(2002, "Amardeep", "11/01/1980", "amardeep@lecturer.com", "somelecturer", "123qweasdzxc");
         Lecturer lecturer3 = new Lecturer(2003, "Sophie Williams", "03/07/1975", "sophie@email.com", "sophie_will", "Passw0rd");

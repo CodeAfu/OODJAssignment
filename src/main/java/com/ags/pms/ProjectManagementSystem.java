@@ -148,8 +148,8 @@ public class ProjectManagementSystem {
         ArrayList<Admin> admins = new ArrayList<>();
         ArrayList<ProjectManager> projectManagers = new ArrayList<>();
 
-        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Report>(), AssessmentType.FYP);
-        Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Report>(), AssessmentType.INVESTIGATIONREPORTS);
+        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Report>());
+        Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Report>());
         students.add(student1);
         students.add(student2);
 
