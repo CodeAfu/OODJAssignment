@@ -60,14 +60,17 @@ public class ProjectManagementSystem {
             // SeedData.init();
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
                 | BadPaddingException | InvalidAlgorithmParameterException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Helper.printErr(Helper.getStackTraceString(e));
         }
 
         DataContext context = new DataContext();
         ProjectManager projectManager1 = new ProjectManager(context.fetchNextLecturerId(), "Michael Myers", "17/04/1972", "michael@email.com", Role.SECONDMARKER, "michael_myers", "asdfpass");
         ProjectManager projectManager2 = new ProjectManager(context.fetchNextLecturerId(), "Hehe My Man", "17/04/1972", "michael@email.com", Role.SECONDMARKER, "michael_myers", "asdfpass");
-
+        
+        context.addProjectManager(projectManager1);
+        context.addProjectManager(projectManager2);
+        
+        context.writeAllDataAsync();
         // context.print();
         System.out.println("--------------------------");
 

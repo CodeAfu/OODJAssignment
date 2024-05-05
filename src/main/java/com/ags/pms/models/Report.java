@@ -29,7 +29,27 @@ public class Report implements Identifiable {
         this.moodleLink = moodleLink;
         this.studentMark = studentMark;
         this.totalMark = totalMark;
-        updateDateSubmitted();
+    }
+
+    public Report(int id, Student student, String module, AssessmentType assessmentType,
+            int studentMark, int totalMark) {
+        this.id = id;
+        this.student = student;
+        this.module = module;
+        this.assessmentType = assessmentType;
+        this.moodleLink = "https://sample.moodle.com/test-report";
+        this.studentMark = studentMark;
+        this.totalMark = totalMark;
+    }
+
+    public Report(int id, Student student, String module, AssessmentType assessmentType,
+            String moodleLink, int totalMark) {
+        this.id = id;
+        this.student = student;
+        this.module = module;
+        this.assessmentType = assessmentType;
+        this.moodleLink = moodleLink;
+        this.totalMark = totalMark;
     }
 
     public int getId() {

@@ -149,6 +149,13 @@ public class JsonHandler {
         } catch (Exception ex) {
             Helper.printErr(Helper.getStackTraceString(ex));
         }
+
+        jsonableList.forEach(obj -> {
+            if (obj instanceof User) {
+                ((User) obj).decryptPassword();
+            }
+        });
+
         return jsonableList;
     }
 
@@ -162,6 +169,13 @@ public class JsonHandler {
         } catch (Exception ex) {
             Helper.printErr(Helper.getStackTraceString(ex));
         }
+
+        jsonableList.forEach(obj -> {
+            if (obj instanceof User) {
+                ((User) obj).decryptPassword();
+            }
+        });
+
         return jsonableList;
     }
 
@@ -196,6 +210,13 @@ public class JsonHandler {
             } catch (Exception ex) {
                 Helper.printErr(Helper.getStackTraceString(ex));
             }
+
+            jsonableList.forEach(obj -> {
+                if (obj instanceof User) {
+                    ((User) obj).decryptPassword();
+                }
+            });
+
             return jsonableList;
         });
     }
@@ -213,6 +234,13 @@ public class JsonHandler {
             } catch (Exception ex) {
                 Helper.printErr(Helper.getStackTraceString(ex));
             }
+
+            jsonableList.forEach(obj -> {
+                if (obj instanceof User) {
+                    ((User) obj).decryptPassword();
+                }
+            });
+            
             return jsonableList;
         });
     }

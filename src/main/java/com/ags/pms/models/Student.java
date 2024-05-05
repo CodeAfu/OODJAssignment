@@ -6,11 +6,13 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.DelayQueue;
 import java.util.stream.Collectors;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.xml.crypto.Data;
 
 import com.ags.pms.data.DataContext;
 
@@ -20,6 +22,7 @@ public class Student extends User {
     private ArrayList<PresentationSlot> presentationSlots;
     private ArrayList<String> modules;
     private ProjectManager superviser;
+    private ProjectManager secondMarker;
 
     // Debug
     public Student() {
@@ -69,11 +72,16 @@ public class Student extends User {
         this.superviser = superviser;
     }
 
+    public ProjectManager getSecondMarker() {
+        return secondMarker;
+    }
+
+    public void setSecondMarker(ProjectManager secondMarker) {
+        this.secondMarker = secondMarker;
+    }
+
     private void assignSuperviser() {
         DataContext context = new DataContext();
-        ArrayList<ProjectManager> supervisers = new ArrayList<>(context.getProjectManagers().stream()
-            .filter(pm -> pm.getRole() == Role.SUPERVISER)
-            .collect(Collectors.toList()));
 
         this.superviser = context.getProjectManagers().stream()
             .filter(pm -> pm.getRole() == Role.SUPERVISER)
@@ -82,25 +90,25 @@ public class Student extends User {
             .orElse(null);
     }
 
+    private Report createReport(String module, AssessmentType assessmentType, String moodleLink, int totalMarks) {
+        DataContext context = new DataContext();
+        int id = context.fetchNextReportId();
+        Report report = new Report(id, this, module, assessmentType, moodleLink, totalMarks);
+        return report;
+    }
+
     public void addReport(Report report) {
         reports.add(report);
     }
 
-    public void submitReport() {
-        
-    }
-
     public void submitReport(Report report) {
-        
+        DataContext context = new DataContext();
+        context.addReport(report);
+        context.writeAllDataAsync();
     }
 
     public void setPresentationSlots(ArrayList<PresentationSlot> presentationSlots) {
         this.presentationSlots = presentationSlots;
-    }
-
-    public void assignPresentationSlot(PresentationSlot slot) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setPresentationSlot'");
     }
 
     public String retrieveReportDetails() {
@@ -111,19 +119,18 @@ public class Student extends User {
         return stringBuilder.toString();
     }
 
-    public ProjectManager retrieveSecondMarker() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSecondMarker'");
-    }
-
-    public String retrievePresentationSlot() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPresentationSlot'");
-    }
-
     public String retrievePresentationRequestDetails() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'retrievePresentationRequestDetails'");
+        StringBuilder details = new StringBuilder();
+        for (PresentationSlot slot : presentationSlots) {
+            details.append(slot.getId())
+                   .append(", ")
+                   .append(slot.getStudent().getName())
+                   .append(", ")
+                   .append(slot.getPresentationDate().toString())
+                   .append("\n");
+        }
+        return details.toString();
     }
+    
 
 }

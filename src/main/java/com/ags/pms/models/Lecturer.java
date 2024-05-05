@@ -75,10 +75,10 @@ public class Lecturer extends User {
         System.out.println("Available slots for " + this.getName() + ":");
 
         for (Student student : supervisees) {
-            if (student.retrievePresentationSlot() == null) {
+            if (student.getPresentationSlots() == null) {
                 System.out.println("- " + student.getName() + ": Available");
             } else {
-                System.out.println("- " + student.getName() + ": " + student.retrievePresentationSlot());
+                System.out.println("- " + student.getName() + ": " + student.getPresentationSlots());
             }
         }
     }
@@ -89,8 +89,8 @@ public class Lecturer extends User {
         System.out.println("Second Marker Acceptance for " + this.getName() + ":");
 
         for (Student student : supervisees) {
-            if (student.retrieveSecondMarker() != null) {
-                System.out.println("- " + student.getName() + ": " + student.retrieveSecondMarker().getName() + " accepted");
+            if (student.getSecondMarker() != null) {
+                System.out.println("- " + student.getName() + ": " + student.getSecondMarker().getName() + " accepted");
             } else {
                 System.out.println("- " + student.getName() + ": Not accepted yet");
             }
@@ -98,7 +98,6 @@ public class Lecturer extends User {
     }
 
     public void assignPresentationSlot(Student student, PresentationSlot slot) {
-        student.assignPresentationSlot(slot);
         System.out.println("Presentation slot for " + student.getName() + " set to " + slot);
     }
 
