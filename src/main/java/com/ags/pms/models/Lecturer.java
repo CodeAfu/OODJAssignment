@@ -9,6 +9,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.ags.pms.data.DataContext;
 import com.ags.pms.io.FileName;
@@ -46,13 +47,16 @@ public class Lecturer extends User {
         System.out.println("Project Manager: " + isProjectManager);
     }
 
-    public void viewSupervisees() {
+    public HashMap<Integer, Integer> viewSupervisees() {
         DataContext context = new DataContext();
         ArrayList<Student> students = context.getStudents();
+        HashMap<Integer, Integer> supervisees = new HashMap<>();
 
-        students.forEach(s -> {
-            
-        });
+        for (Student s : students) {
+            supervisees.put(s.getId(), s.getSuperviser().getId());
+        }
+        
+        return supervisees;
     }
 
     public void viewPresentationRequests() {

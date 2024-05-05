@@ -54,9 +54,10 @@ public class ProjectManagementSystem {
     }
     
     @SuppressWarnings("unused")
-    private static void dataContextTest() {
+    private static void dataContextTest() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         try {
             SeedData.executeWithContext();
+            // SeedData.init();
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
                 | BadPaddingException | InvalidAlgorithmParameterException e) {
             // TODO Auto-generated catch block
@@ -64,6 +65,9 @@ public class ProjectManagementSystem {
         }
 
         DataContext context = new DataContext();
+        ProjectManager projectManager1 = new ProjectManager(context.fetchNextLecturerId(), "Michael Myers", "17/04/1972", "michael@email.com", Role.SECONDMARKER, "michael_myers", "asdfpass");
+        ProjectManager projectManager2 = new ProjectManager(context.fetchNextLecturerId(), "Hehe My Man", "17/04/1972", "michael@email.com", Role.SECONDMARKER, "michael_myers", "asdfpass");
+
         // context.print();
         System.out.println("--------------------------");
 
@@ -86,7 +90,7 @@ public class ProjectManagementSystem {
         JsonHandler handler = new JsonHandler();
         PasswordHandler pwHandler = new PasswordHandler("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
 
-        SeedData.execute();
+        SeedData.init();
         
         handler.readJsonAsync(FileName.STUDENTS)
             .thenAccept(studentsFromJsonList -> {

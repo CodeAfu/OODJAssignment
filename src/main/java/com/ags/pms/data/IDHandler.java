@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.xml.crypto.Data;
 
+import com.ags.pms.io.JsonHandler;
 import com.ags.pms.models.Admin;
 import com.ags.pms.models.Lecturer;
 import com.ags.pms.models.Report;
@@ -27,28 +28,38 @@ public class IDHandler {
         populateMaxIds();
     }
 
+    public void initFromFile() {
+        JsonHandler handler = new JsonHandler();
+        IDHandler idHandler = handler.getIds();
+
+        this.nextStudentId = idHandler.getNextStudentId();
+        this.nextLecturerId = idHandler.getNextLecturerId();
+        this.nextAdminId = idHandler.getNextAdminId();
+        this.nextReportId = idHandler.getNextReportId();
+    }
+
     public int getNextStudentId() {
         return nextStudentId;
     }
-    private void setNextStudentId(int nextStudentId) {
+    void setNextStudentId(int nextStudentId) {
         this.nextStudentId = nextStudentId;
     }
     public int getNextLecturerId() {
         return nextLecturerId;
     }
-    private void setNextLecturerId(int nextLecturerId) {
+    void setNextLecturerId(int nextLecturerId) {
         this.nextLecturerId = nextLecturerId;
     }
     public int getNextAdminId() {
         return nextAdminId;
     }
-    private void setNextAdminId(int nextAdminId) {
+    void setNextAdminId(int nextAdminId) {
         this.nextAdminId = nextAdminId;
     }
     public int getNextReportId() {
         return nextReportId;
     }
-    private void setNextReportId(int nextReportId) {
+    void setNextReportId(int nextReportId) {
         this.nextReportId = nextReportId;
     }
 
@@ -65,7 +76,7 @@ public class IDHandler {
         return nextReportId++;
     }
 
-    private void populateMaxIds() {
+    void populateMaxIds() {
         if (!context.getAdmins().isEmpty()){
             this.setNextAdminId(context.getAdmins().stream().max(Comparator.comparingInt(Admin::getId)).isPresent() ? 
                 context.getAdmins().stream().max(Comparator.comparingInt(Admin::getId)).get().getId() + 1 : 1000);

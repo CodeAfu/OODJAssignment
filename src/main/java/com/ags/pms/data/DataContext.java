@@ -23,6 +23,7 @@ import com.ags.pms.models.ProjectManager;
 import com.ags.pms.models.Report;
 import com.ags.pms.models.Student;
 import com.ags.pms.models.User;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.core.TSFBuilder;
 
 
@@ -49,7 +50,13 @@ public class DataContext {
 
     // Only call on constructor
     private void initIds() {
-        idHandler = handler.getIds();
+        IDHandler savedIdHandler = handler.getIds();
+        idHandler = new IDHandler(this);
+
+        idHandler.setNextStudentId(Math.max(savedIdHandler.getNextStudentId(), idHandler.getNextStudentId()));
+        idHandler.setNextLecturerId(Math.max(savedIdHandler.getNextLecturerId(), idHandler.getNextLecturerId()));
+        idHandler.setNextAdminId(Math.max(savedIdHandler.getNextAdminId(), idHandler.getNextAdminId()));
+        idHandler.setNextReportId(Math.max(savedIdHandler.getNextReportId(), idHandler.getNextReportId()));
         
         ids.put(FileName.STUDENTS, idHandler.getNextStudentId());
         ids.put(FileName.ADMINS, idHandler.getNextAdminId());
@@ -65,8 +72,22 @@ public class DataContext {
         ids.put(FileName.ADMINS, idHandler.getNextAdminId());
         ids.put(FileName.LECTURERS, idHandler.getNextLecturerId());
         ids.put(FileName.REPORTS, idHandler.getNextReportId());
+    }
 
-        handler.updateIds(idHandler);
+    public int fetchNextStudentId() {
+        return idHandler.assignStudentId();
+    }
+
+    public int fetchNextAdminId() {
+        return idHandler.assignAdminId();
+    }
+
+    public int fetchNextLecturerId() {
+        return idHandler.assignLecturerId();
+    }
+
+    public int fetchNextReportId() {
+        return idHandler.assignReportId();
     }
 
     public Student getStudentByID(int id) {
@@ -174,26 +195,31 @@ public class DataContext {
     public void addStudent(Student student) {
         if (checkDuplicateId(students, student)) return;;
         students.add(student);
+        updateIds();
     }
 
     public void addAdmin(Admin admin) {
         if (checkDuplicateId(admins, admin)) return;;
         admins.add(admin);
+        updateIds();
     }
 
     public void addLecturer(Lecturer lecturer) {
         if (checkDuplicateId(lecturers, lecturer)) return;;
         lecturers.add(lecturer);
+        updateIds();
     }
 
     public void addProjectManager(ProjectManager projectManager) {
         if (checkDuplicateId(projectManagers, projectManager)) return;;
         projectManagers.add(projectManager);
+        updateIds();
     }
 
     public void addReport(Report report) {
         if (checkDuplicateId(reports, report)) return;;
         reports.add(report);
+        updateIds();
     }
 
     private void populateAllDataAsync() {
@@ -209,7 +235,7 @@ public class DataContext {
     }
 
     public void writeAllDataAsync() {
-        this.sort();
+        this.sortAll();
         allFutures = CompletableFuture.allOf(
             saveAdminsAsync(),
             saveStudentsAsync(),
@@ -218,10 +244,14 @@ public class DataContext {
             saveReportsAsync()
         ).thenRun(() -> System.out.println("Json Written"))
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
+        allFutures.join();
+
+        handler.updateIds(idHandler);
     }
 
     public CompletableFuture<Void> saveStudentsAsync() {
         return CompletableFuture.runAsync(() -> {
+            sort(students);
             handler.writeJson(students);
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
@@ -229,6 +259,7 @@ public class DataContext {
 
     public CompletableFuture<Void> saveLecturersAsync() {
         return CompletableFuture.runAsync(() -> {
+            sort(lecturers);
             handler.writeJson(lecturers);
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
@@ -237,6 +268,7 @@ public class DataContext {
 
     public CompletableFuture<Void> saveProjectManagersAsync() {
         return CompletableFuture.runAsync(() -> {
+            sort(projectManagers);
             handler.writeJson(projectManagers);
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
@@ -244,6 +276,7 @@ public class DataContext {
 
     public CompletableFuture<Void> saveAdminsAsync() {
         return CompletableFuture.runAsync(() -> {
+            sort(admins);
             handler.writeJson(admins);
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
@@ -251,6 +284,7 @@ public class DataContext {
 
     public CompletableFuture<Void> saveReportsAsync() {
         return CompletableFuture.runAsync(() -> {
+            sort(reports);
             handler.writeJson(reports);
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
@@ -341,12 +375,16 @@ public class DataContext {
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
 
-    public void sort() {
+    public void sortAll() {
         Collections.sort(students, Comparator.comparingInt(Student::getId));
         Collections.sort(lecturers, Comparator.comparingInt(Lecturer::getId));
         Collections.sort(projectManagers, Comparator.comparingInt(ProjectManager::getId));
         Collections.sort(admins, Comparator.comparingInt(Admin::getId));
         Collections.sort(reports, Comparator.comparingInt(Report::getId));
+    }
+
+    public <T extends Identifiable> void sort(ArrayList<T> objTs) {
+        Collections.sort(objTs, Comparator.comparingInt(T::getId));
     }
 
     public void isValidUser(String username, String password) {
