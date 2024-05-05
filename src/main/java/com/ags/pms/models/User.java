@@ -15,7 +15,7 @@ import com.ags.pms.Helper;
 import com.ags.pms.io.JsonHandler;
 import com.ags.pms.services.PasswordHandler;
 
-public abstract class User implements AuthUser {
+public abstract class User implements Identifiable {
     
     protected int id;
     protected String name;
@@ -110,7 +110,6 @@ public abstract class User implements AuthUser {
         }
     }
 
-    @Override
     public <T extends User> boolean login() {
         JsonHandler handler = new JsonHandler();
 

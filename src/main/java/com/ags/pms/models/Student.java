@@ -106,7 +106,7 @@ public class Student extends User {
     public String retrieveReportDetails() {
         StringBuilder stringBuilder = new StringBuilder();
         reports.forEach(r -> {
-            stringBuilder.append(r.getReportDetails());
+            stringBuilder.append(r.retrieveReportDetails());
         });
         return stringBuilder.toString();
     }

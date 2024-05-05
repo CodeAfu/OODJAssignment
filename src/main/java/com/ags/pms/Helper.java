@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
+import com.ags.pms.data.IDHandler;
 import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
 import com.ags.pms.models.Admin;
@@ -37,6 +38,7 @@ public class Helper {
         hashMap.put(FileName.PROJECTMANAGERS, "ProjectManagers.txt");
         hashMap.put(FileName.ADMINS, "Admins.txt");
         hashMap.put(FileName.REPORTS, "Reports.txt");
+        hashMap.put(FileName.IDHANDLER, "IDHandler.txt");
         
         return hashMap.get(filename);
     }
@@ -48,6 +50,7 @@ public class Helper {
         hashMap.put("ProjectManager", "ProjectManagers.txt");
         hashMap.put("Admin", "Admins.txt");
         hashMap.put("Report", "Reports.txt");
+        hashMap.put("IDHandler", "IDHandler.txt");
         
         return hashMap.get(className);
     }
@@ -59,6 +62,7 @@ public class Helper {
         hashMap.put(FileName.ADMINS, Admin.class);
         hashMap.put(FileName.PROJECTMANAGERS, ProjectManager.class);
         hashMap.put(FileName.REPORTS, Report.class);
+        hashMap.put(FileName.IDHANDLER, IDHandler.class);
 
         return hashMap.get(filename);
     }
@@ -69,6 +73,7 @@ public class Helper {
         hashMap.put("Lecturer", Lecturer.class);
         hashMap.put("Admin", Admin.class);
         hashMap.put("ProjectManager", ProjectManager.class);
+        hashMap.put("IDHandler", IDHandler.class);
         
         return hashMap.get(className);
     }

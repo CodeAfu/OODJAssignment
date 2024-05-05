@@ -19,6 +19,9 @@ public class IDHandler {
     private int nextAdminId;
     private int nextReportId;
 
+    // For Jackson's Databind package
+    public IDHandler() { }
+
     public IDHandler(DataContext context) {
         this.context = context;
         populateMaxIds();

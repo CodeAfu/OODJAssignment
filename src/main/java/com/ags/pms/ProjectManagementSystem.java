@@ -41,8 +41,8 @@ public class ProjectManagementSystem {
     private static void consoleTests() throws Exception {
         // smallerTests();
         // testLogin();
-        testFileHandlerAsyncOperations();
-        testFileHandler();
+        // testFileHandlerAsyncOperations();
+        // testFileHandler();
         // testAES();
         // generateNewAESKey();
         dataContextTest();
@@ -56,7 +56,7 @@ public class ProjectManagementSystem {
     @SuppressWarnings("unused")
     private static void dataContextTest() {
         try {
-            SeedData.execute();
+            SeedData.executeWithContext();
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
                 | BadPaddingException | InvalidAlgorithmParameterException e) {
             // TODO Auto-generated catch block
@@ -73,8 +73,6 @@ public class ProjectManagementSystem {
         Student student = context.getStudentByID(4020);
         Student student2 = context.getStudent(s -> s.getId() == 4001);
         Lecturer lecturer = context.getLecturer(l -> l.getId() == 2001);
-
-
     }
 
     @SuppressWarnings("unused")

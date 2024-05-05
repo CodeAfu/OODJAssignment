@@ -4,7 +4,7 @@ import java.util.Date;
 
 import com.ags.pms.Helper;
 
-public class Report {
+public class Report implements Identifiable {
 
     private int id;
     private Student student;
@@ -88,7 +88,7 @@ public class Report {
         this.totalMark = totalMark;
     }
 
-    public String getReportDetails() {
+    public String retrieveReportDetails() {
         String output = "";
         return output;
     }

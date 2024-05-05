@@ -16,8 +16,6 @@ public class ProjectManager extends Lecturer {
     private Role role;
     private ArrayList<Student> supervisees;
 
-
-
     public ProjectManager() {
         super();
     }

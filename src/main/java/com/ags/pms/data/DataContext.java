@@ -17,6 +17,7 @@ import com.ags.pms.Helper;
 import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
 import com.ags.pms.models.Admin;
+import com.ags.pms.models.Identifiable;
 import com.ags.pms.models.Lecturer;
 import com.ags.pms.models.ProjectManager;
 import com.ags.pms.models.Report;
@@ -43,15 +44,29 @@ public class DataContext {
     public DataContext() {
         handler = new JsonHandler();
         populateAllDataAsync();
-        populateIds();
+        initIds();
     }
-    
-    private void populateIds() {
-        idHandler = new IDHandler(this);
+
+    // Only call on constructor
+    private void initIds() {
+        idHandler = handler.getIds();
+        
         ids.put(FileName.STUDENTS, idHandler.getNextStudentId());
         ids.put(FileName.ADMINS, idHandler.getNextAdminId());
         ids.put(FileName.LECTURERS, idHandler.getNextLecturerId());
         ids.put(FileName.REPORTS, idHandler.getNextReportId());
+    }
+
+    // Call after all write operations
+    private void updateIds() {
+        idHandler = new IDHandler(this);
+
+        ids.put(FileName.STUDENTS, idHandler.getNextStudentId());
+        ids.put(FileName.ADMINS, idHandler.getNextAdminId());
+        ids.put(FileName.LECTURERS, idHandler.getNextLecturerId());
+        ids.put(FileName.REPORTS, idHandler.getNextReportId());
+
+        handler.updateIds(idHandler);
     }
 
     public Student getStudentByID(int id) {
@@ -146,27 +161,38 @@ public class DataContext {
         return ids;
     }
 
-    // public void setIds(HashMap<String, Integer> ids) {
-    //     this.ids = ids;
-    // }
+    private <T extends Identifiable> boolean checkDuplicateId(ArrayList<T> objTs, T obj) {
+        for (T o : objTs) {
+            if (o.getId() == obj.getId()) {
+                Helper.printErr("Error: Duplicate object. ID=" + obj.getId());
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void addStudent(Student student) {
+        if (checkDuplicateId(students, student)) return;;
         students.add(student);
     }
 
     public void addAdmin(Admin admin) {
+        if (checkDuplicateId(admins, admin)) return;;
         admins.add(admin);
     }
 
     public void addLecturer(Lecturer lecturer) {
+        if (checkDuplicateId(lecturers, lecturer)) return;;
         lecturers.add(lecturer);
     }
 
     public void addProjectManager(ProjectManager projectManager) {
+        if (checkDuplicateId(projectManagers, projectManager)) return;;
         projectManagers.add(projectManager);
     }
 
     public void addReport(Report report) {
+        if (checkDuplicateId(reports, report)) return;;
         reports.add(report);
     }
 
@@ -177,12 +203,13 @@ public class DataContext {
             populateLecturersAsync(),
             populateProjectManagersAsync(),
             populateReportsAsync()
-        );
-        
+        )
+        .exceptionally(ex -> { ex.printStackTrace(); return null; });
         allFutures.join();
     }
 
     public void writeAllDataAsync() {
+        this.sort();
         allFutures = CompletableFuture.allOf(
             saveAdminsAsync(),
             saveStudentsAsync(),
@@ -314,10 +341,12 @@ public class DataContext {
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
 
-    public CompletableFuture<Void> sort() {
-        return CompletableFuture.runAsync(() -> {
-
-        });
+    public void sort() {
+        Collections.sort(students, Comparator.comparingInt(Student::getId));
+        Collections.sort(lecturers, Comparator.comparingInt(Lecturer::getId));
+        Collections.sort(projectManagers, Comparator.comparingInt(ProjectManager::getId));
+        Collections.sort(admins, Comparator.comparingInt(Admin::getId));
+        Collections.sort(reports, Comparator.comparingInt(Report::getId));
     }
 
     public void isValidUser(String username, String password) {

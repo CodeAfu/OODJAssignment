@@ -10,6 +10,7 @@ import java.util.concurrent.CompletableFuture;
 import com.ags.pms.Helper;
 import com.ags.pms.data.IDHandler;
 import com.ags.pms.models.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -56,6 +57,27 @@ public class JsonHandler {
         }
 
         return output;
+    }
+
+    public void updateIds(IDHandler idHandler) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonData = mapper.writeValueAsString(idHandler);
+            writeData(Helper.getFilenameByEnum(FileName.IDHANDLER), jsonData);
+        } catch (JsonProcessingException e) {
+            Helper.printErr(Helper.getStackTraceString(e));
+        }
+    }
+
+    public IDHandler getIds() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String json = readData(Helper.getFilenameByEnum(FileName.IDHANDLER));
+            return mapper.readValue(json, IDHandler.class);
+        } catch (JsonProcessingException e) {
+            Helper.printErr(Helper.getStackTraceString(e));
+        }
+        throw new NullPointerException("No IDs fetched (JsonHandler.getIds())");
     }
 
     public <T> void writeJson(ArrayList<T> objTs) {
@@ -198,4 +220,8 @@ public class JsonHandler {
     private String getPath(String filename) {
         return this.absolutePath + this.path + filename;
     }
+
+
+
+
 }
