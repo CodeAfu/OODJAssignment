@@ -41,8 +41,8 @@ public class ProjectManagementSystem {
     private static void consoleTests() throws Exception {
         // smallerTests();
         // testLogin();
-        // testFileHandlerAsyncOperations();
-        // testFileHandler();
+        testFileHandlerAsyncOperations();
+        testFileHandler();
         // testAES();
         // generateNewAESKey();
         dataContextTest();
@@ -165,7 +165,7 @@ public class ProjectManagementSystem {
         admins.add(admin1);
         admins.add(admin2);
         
-        ProjectManager projectManager1 = new ProjectManager(2001, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com", Role.SUPERVISOR, "josh_lecturerPM", "verySecurePasswordMate");
+        ProjectManager projectManager1 = new ProjectManager(2001, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com", Role.SUPERVISER, "josh_lecturerPM", "verySecurePasswordMate");
         ProjectManager projectManager2 = new ProjectManager(2002, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com", Role.SECONDMARKER, "somelecturerPM", "123qweasdzxc");
         projectManagers.add(projectManager1);
         projectManagers.add(projectManager2);

@@ -1,19 +1,25 @@
 package com.ags.pms.models;
 
+import java.lang.reflect.Array;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+
+import com.ags.pms.data.DataContext;
 
 public class Student extends User {
 
     private ArrayList<Report> reports;
     private ArrayList<PresentationSlot> presentationSlots;
     private ArrayList<String> modules;
+    private ProjectManager superviser;
 
     // Debug
     public Student() {
@@ -23,12 +29,16 @@ public class Student extends User {
     
     public Student(int id, String name, String dob, String email, String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         super(id, name, dob, email, username, password);
-        reports = new ArrayList<Report>();
+        reports = new ArrayList<>();
+        presentationSlots = new ArrayList<>();
+        modules = new ArrayList<>();
     }
     
     public Student(int id, String name, String dob, String email, String username, String password, ArrayList<Report> reports) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         super(id, name, dob, email, username, password);
         this.reports = reports;
+        presentationSlots = new ArrayList<>();
+        modules = new ArrayList<>();
     }
 
     public ArrayList<Report> getReports() {
@@ -49,6 +59,27 @@ public class Student extends User {
     
     public ArrayList<PresentationSlot> getPresentationSlots() {
         return presentationSlots;
+    }
+
+    public ProjectManager getSuperviser() {
+        return superviser;
+    }
+
+    public void setSuperviser(ProjectManager superviser) {
+        this.superviser = superviser;
+    }
+
+    private void assignSuperviser() {
+        DataContext context = new DataContext();
+        ArrayList<ProjectManager> supervisers = new ArrayList<>(context.getProjectManagers().stream()
+            .filter(pm -> pm.getRole() == Role.SUPERVISER)
+            .collect(Collectors.toList()));
+
+        this.superviser = context.getProjectManagers().stream()
+            .filter(pm -> pm.getRole() == Role.SUPERVISER)
+            .filter(sp -> sp.getSupervisees().contains(this))
+            .findFirst()
+            .orElse(null);
     }
 
     public void addReport(Report report) {

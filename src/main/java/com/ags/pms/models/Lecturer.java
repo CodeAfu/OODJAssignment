@@ -10,6 +10,7 @@ import javax.crypto.NoSuchPaddingException;
 
 import java.util.ArrayList;
 
+import com.ags.pms.data.DataContext;
 import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
 
@@ -46,13 +47,12 @@ public class Lecturer extends User {
     }
 
     public void viewSupervisees() {
-        JsonHandler handler = new JsonHandler();
-        ArrayList<Student> supervisees = handler.readJson(FileName.STUDENTS);
-        System.out.println("Supervisees for " + this.getName() + ":");
+        DataContext context = new DataContext();
+        ArrayList<Student> students = context.getStudents();
 
-        for (Student student : supervisees) {
-            System.out.println("- " + student.getName());
-        }
+        students.forEach(s -> {
+            
+        });
     }
 
     public void viewPresentationRequests() {

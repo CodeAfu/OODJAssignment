@@ -6,8 +6,6 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.management.openmbean.ArrayType;
-
 import java.util.Optional;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -36,16 +34,24 @@ public class DataContext {
     private ArrayList<Admin> admins = new ArrayList<>();
     private ArrayList<ProjectManager> projectManagers = new ArrayList<>();
     private ArrayList<Report> reports = new ArrayList<>();
+    protected HashMap<FileName, Integer> ids = new HashMap<>();
 
-    private IDTracker idTracker = new IDTracker();
+    private IDHandler idHandler;
     
     private CompletableFuture<Void> allFutures;
 
     public DataContext() {
         handler = new JsonHandler();
         populateAllDataAsync();
-        handler.readJson(FileName.REPORTS);
-        getMaxIds();
+        populateIds();
+    }
+    
+    private void populateIds() {
+        idHandler = new IDHandler(this);
+        ids.put(FileName.STUDENTS, idHandler.getNextStudentId());
+        ids.put(FileName.ADMINS, idHandler.getNextAdminId());
+        ids.put(FileName.LECTURERS, idHandler.getNextLecturerId());
+        ids.put(FileName.REPORTS, idHandler.getNextReportId());
     }
 
     public Student getStudentByID(int id) {
@@ -64,24 +70,11 @@ public class DataContext {
         return projectManagers.stream().filter(s -> s.getId() == id).findFirst().orElse(null);
     }
 
-    // public <T extends User> T getByID(int id) {
-    //     @SuppressWarnings("unchecked")
-    //     Optional<T> foundUser = (Optional<T>) Stream.of(
-    //             get(students.stream(), s -> s.getId() == id),
-    //             get(lecturers.stream(), l -> l.getId() == id),
-    //             get(admins.stream(), a -> a.getId() == id),
-    //             get(projectManagers.stream(), pm -> pm.getId() == id)
-    //     ).flatMap(Optional::stream)
-    //     .findFirst();
-
-    //     return foundUser.orElse(null);
-    // }
-
     public Student getStudent(Expression<Student> expression) {
         return students.stream()
-                       .filter(student -> expression.action(student))
-                       .findFirst()
-                       .orElseThrow(() -> new NoSuchElementException("Student not found"));
+                        .filter(student -> expression.action(student))
+                        .findFirst()
+                        .orElseThrow(() -> new NoSuchElementException("Student not found"));
     }
 
     public Lecturer getLecturer(Expression<Lecturer> expression) {
@@ -144,6 +137,18 @@ public class DataContext {
     public void setReports(ArrayList<Report> reports) {
         this.reports = reports;
     }
+
+    public IDHandler getIdHandler() {
+        return idHandler;
+    }
+
+    public HashMap<FileName, Integer> getIds() {
+        return ids;
+    }
+
+    // public void setIds(HashMap<String, Integer> ids) {
+    //     this.ids = ids;
+    // }
 
     public void addStudent(Student student) {
         students.add(student);
@@ -315,43 +320,7 @@ public class DataContext {
         });
     }
 
-    // private void compare() {
-    //     Collections.sort( new Comparator<User>() {
-    //         @Override
-    //         public int compare(User user1, User user2) {
-    //             return Integer.compare(user1.getId(), user2.getId());
-    //         }
-    //     });
-    // }
-
     public void isValidUser(String username, String password) {
         
-    }
-
-    private void getMaxIds() {
-        if (!admins.isEmpty()){
-            idTracker.setAdminId(admins.stream().max(Comparator.comparingInt(Admin::getId)).isPresent() ? 
-                admins.stream().max(Comparator.comparingInt(Admin::getId)).get().getId() + 1 : 1000);
-        }
-
-        if (!students.isEmpty()) {
-            idTracker.setStudentId(students.stream().max(Comparator.comparingInt(Student::getId)).isPresent() ? 
-                students.stream().max(Comparator.comparingInt(Student::getId)).get().getId() + 1 : 4000);
-        }
-
-        if (!lecturers.isEmpty()) {
-            idTracker.setLecturerId(lecturers.stream().max(Comparator.comparingInt(Lecturer::getId)).isPresent() ? 
-                lecturers.stream().max(Comparator.comparingInt(Lecturer::getId)).get().getId() + 1 : 2000);
-        }
-
-        if (!projectManagers.isEmpty()) {
-            idTracker.setProjectManagerId(projectManagers.stream().max(Comparator.comparingInt(ProjectManager::getId)).isPresent() ? 
-                projectManagers.stream().max(Comparator.comparingInt(ProjectManager::getId)).get().getId() + 1 : 2000);
-        }
-
-        if (!reports.isEmpty()) {
-            idTracker.setReportId(reports.stream().max(Comparator.comparingInt(Report::getId)).isPresent() ? 
-                reports.stream().max(Comparator.comparingInt(Report::getId)).get().getId() + 1 : 8000);
-        }
     }
 }

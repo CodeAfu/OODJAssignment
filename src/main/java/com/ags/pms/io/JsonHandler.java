@@ -8,6 +8,7 @@ import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 
 import com.ags.pms.Helper;
+import com.ags.pms.data.IDHandler;
 import com.ags.pms.models.*;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -102,6 +103,12 @@ public class JsonHandler {
                     @SuppressWarnings("unchecked") 
                     ArrayList<Report> reports = new ArrayList<>((ArrayList<Report>) objTs);
                     jsonData = mapper.writeValueAsString(reports);
+                    writeData(Helper.getFilenameByClassName(className), jsonData);
+                    break;
+                case "IDHandler":
+                    @SuppressWarnings("unchecked") 
+                    ArrayList<IDHandler> idHandlers = new ArrayList<>((ArrayList<IDHandler>) objTs);
+                    jsonData = mapper.writeValueAsString(idHandlers);
                     writeData(Helper.getFilenameByClassName(className), jsonData);
                     break;
             }

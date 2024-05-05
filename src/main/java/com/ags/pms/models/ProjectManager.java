@@ -8,14 +8,16 @@ import java.util.ArrayList;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.xml.datatype.DatatypeConfigurationException;
 
 import com.ags.pms.data.DataContext;
 
 public class ProjectManager extends Lecturer {
 
     private Role role;
-    
+    private ArrayList<Student> supervisees;
+
+
+
     public ProjectManager() {
         super();
     }
@@ -28,6 +30,26 @@ public class ProjectManager extends Lecturer {
 
     public ProjectManager(String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         super(username, password);
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public ArrayList<Student> getSupervisees() {
+        return supervisees;
+    }
+
+    public void setSupervisees(ArrayList<Student> supervisees) {
+        this.supervisees = supervisees;
+    }
+
+    public void addSupervisee(Student student) {
+        supervisees.add(student);
     }
     
     public void createProject() {
