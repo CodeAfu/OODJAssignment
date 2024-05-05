@@ -98,16 +98,14 @@ public class Lecturer extends User {
     }
 
     public void assignPresentationSlot(Student student, PresentationSlot slot) {
-        System.out.println("Presentation slot for " + student.getName() + " set to " + slot);
+        student.addPresentationSlot(slot);
     }
 
-    public void viewReport() {
-        JsonHandler handler = new JsonHandler();
-        ArrayList<Student> supervisees = handler.readJson(FileName.STUDENTS);
-        System.out.println("Reports for " + this.getName() + ":");
-
-        for (Student student : supervisees) {
-            System.out.println("- " + student.getName() + ": " + student.retrieveReportDetails());
+    public ArrayList<Report> viewReport(Student student) {
+        ArrayList<Report> reports = new ArrayList<>();
+        for (Report report : student.getReports()) {
+            reports.add(report);
         }
+        return reports;
     }
 }

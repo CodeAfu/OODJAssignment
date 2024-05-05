@@ -38,7 +38,7 @@ public class Helper {
         hashMap.put(FileName.PROJECTMANAGERS, "ProjectManagers.txt");
         hashMap.put(FileName.ADMINS, "Admins.txt");
         hashMap.put(FileName.REPORTS, "Reports.txt");
-        hashMap.put(FileName.IDHANDLER, "IDHandler.txt");
+        hashMap.put(FileName.IDHANDLER, "IDs.txt");
         
         return hashMap.get(filename);
     }
@@ -50,7 +50,7 @@ public class Helper {
         hashMap.put("ProjectManager", "ProjectManagers.txt");
         hashMap.put("Admin", "Admins.txt");
         hashMap.put("Report", "Reports.txt");
-        hashMap.put("IDHandler", "IDHandler.txt");
+        hashMap.put("IDHandler", "IDs.txt");
         
         return hashMap.get(className);
     }

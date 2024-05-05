@@ -1,18 +1,15 @@
 package com.ags.pms.models;
 
-import java.lang.reflect.Array;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.DelayQueue;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.xml.crypto.Data;
+import javax.swing.text.html.Option;
 
 import com.ags.pms.data.DataContext;
 
@@ -28,6 +25,8 @@ public class Student extends User {
     public Student() {
         super();
         reports = new ArrayList<Report>();
+        presentationSlots = new ArrayList<>();
+        modules = new ArrayList<>();
     }
     
     public Student(int id, String name, String dob, String email, String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
@@ -80,14 +79,16 @@ public class Student extends User {
         this.secondMarker = secondMarker;
     }
 
-    private void assignSuperviser() {
+    private void fetchSupervisor() {
         DataContext context = new DataContext();
 
-        this.superviser = context.getProjectManagers().stream()
-            .filter(pm -> pm.getRole() == Role.SUPERVISER)
-            .filter(sp -> sp.getSupervisees().contains(this))
-            .findFirst()
-            .orElse(null);
+        Optional<ProjectManager> superviser = context.getProjectManagers().stream()
+            .filter(pm -> pm.getRole() == Role.SUPERVISOR)
+            .filter(sp -> {
+                ArrayList<Student> supervisees = sp.getSupervisees();
+                return supervisees != null && supervisees.contains(this);
+            })
+            .findFirst();
     }
 
     private Report createReport(String module, AssessmentType assessmentType, String moodleLink, int totalMarks) {
@@ -111,6 +112,10 @@ public class Student extends User {
         this.presentationSlots = presentationSlots;
     }
 
+    public void addPresentationSlot(PresentationSlot slot) {
+        this.presentationSlots.add(slot);
+    }
+
     public String retrieveReportDetails() {
         StringBuilder stringBuilder = new StringBuilder();
         reports.forEach(r -> {
@@ -131,6 +136,4 @@ public class Student extends User {
         }
         return details.toString();
     }
-    
-
 }

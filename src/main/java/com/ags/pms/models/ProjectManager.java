@@ -14,7 +14,7 @@ import com.ags.pms.data.DataContext;
 public class ProjectManager extends Lecturer {
 
     private Role role;
-    private ArrayList<Student> supervisees;
+    private ArrayList<Student> supervisees = new ArrayList<>();
 
     public ProjectManager() {
         super();

@@ -32,7 +32,7 @@ public class ProjectManagementSystem {
         } catch (Exception ex) {
             Helper.printErr(Helper.getStackTraceString(ex));
         }
-    }
+}
     
     private static void app() {
         new Login().setVisible(true);
@@ -64,11 +64,11 @@ public class ProjectManagementSystem {
         }
 
         DataContext context = new DataContext();
-        ProjectManager projectManager1 = new ProjectManager(context.fetchNextLecturerId(), "Michael Myers", "17/04/1972", "michael@email.com", Role.SECONDMARKER, "michael_myers", "asdfpass");
-        ProjectManager projectManager2 = new ProjectManager(context.fetchNextLecturerId(), "Hehe My Man", "17/04/1972", "michael@email.com", Role.SECONDMARKER, "michael_myers", "asdfpass");
+        // ProjectManager projectManager1 = new ProjectManager(context.fetchNextLecturerId(), "Michael Myers", "17/04/1972", "michael@email.com", Role.SECONDMARKER, "michael_myers", "asdfpass");
+        // ProjectManager projectManager2 = new ProjectManager(context.fetchNextLecturerId(), "Hehe My Man", "17/04/1972", "michael@email.com", Role.SECONDMARKER, "michael_myers", "asdfpass");
         
-        context.addProjectManager(projectManager1);
-        context.addProjectManager(projectManager2);
+        // context.addProjectManager(projectManager1);
+        // context.addProjectManager(projectManager2);
         
         context.writeAllDataAsync();
         // context.print();
@@ -170,7 +170,7 @@ public class ProjectManagementSystem {
         admins.add(admin1);
         admins.add(admin2);
         
-        ProjectManager projectManager1 = new ProjectManager(2001, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com", Role.SUPERVISER, "josh_lecturerPM", "verySecurePasswordMate");
+        ProjectManager projectManager1 = new ProjectManager(2001, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com", Role.SUPERVISOR, "josh_lecturerPM", "verySecurePasswordMate");
         ProjectManager projectManager2 = new ProjectManager(2002, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com", Role.SECONDMARKER, "somelecturerPM", "123qweasdzxc");
         projectManagers.add(projectManager1);
         projectManagers.add(projectManager2);

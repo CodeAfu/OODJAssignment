@@ -17,7 +17,6 @@ public class Report implements Identifiable {
     private int totalMark;
 
     public Report() {
-        updateDateSubmitted();
     }
 
     public Report(int id, Student student, String module, AssessmentType assessmentType,
@@ -116,6 +115,6 @@ public class Report implements Identifiable {
     private void updateDateSubmitted() {
         if (!isSubmitted()) return; 
         dateSubmitted = new Date();
-        System.out.println("Report submitted: " + Helper.getDateFormat().format(dateSubmitted));
+        // System.out.println(this.getId() + " Report submitted: " + Helper.getDateFormat().format(dateSubmitted));
     }
 }

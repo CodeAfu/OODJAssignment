@@ -133,6 +133,12 @@ public class JsonHandler {
                     jsonData = mapper.writeValueAsString(idHandlers);
                     writeData(Helper.getFilenameByClassName(className), jsonData);
                     break;
+                case "PresentationSlot":
+                    @SuppressWarnings("unchecked") 
+                    ArrayList<PresentationSlot> presentationSlots = new ArrayList<>((ArrayList<PresentationSlot>) objTs);
+                    jsonData = mapper.writeValueAsString(presentationSlots);
+                    writeData(Helper.getFilenameByClassName(className), jsonData);
+                    break;
             }
         } catch (Exception ex) {
             Helper.printErr(Helper.getStackTraceString(ex));
