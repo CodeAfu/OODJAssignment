@@ -6,10 +6,10 @@ import java.util.Optional;
 import com.ags.pms.io.JsonHandler;
 import com.ags.pms.models.Admin;
 import com.ags.pms.models.Lecturer;
-import com.ags.pms.models.PresentationRequest;
 import com.ags.pms.models.PresentationSlot;
 import com.ags.pms.models.Project;
 import com.ags.pms.models.Report;
+import com.ags.pms.models.Request;
 import com.ags.pms.models.Student;
 
 public class IDHandler {
@@ -131,9 +131,9 @@ public class IDHandler {
                 context.getPresentationSlots().stream().max(Comparator.comparingInt(PresentationSlot::getId)).get().getId() + 1 : 5000);
         } else { this.setNextPresentationSlotId(5000); }
 
-        if (!context.getPresentationRequests().isEmpty()) {
-            this.setNextRequestId(context.getPresentationRequests().stream().max(Comparator.comparingInt(PresentationRequest::getId)).isPresent() ? 
-                context.getPresentationRequests().stream().max(Comparator.comparingInt(PresentationRequest::getId)).get().getId() + 1 : 6000);
+        if (!context.getRequests().isEmpty()) {
+            this.setNextRequestId(context.getRequests().stream().max(Comparator.comparingInt(Request::getId)).isPresent() ? 
+                context.getRequests().stream().max(Comparator.comparingInt(Request::getId)).get().getId() + 1 : 6000);
         } else { this.setNextRequestId(6000); }
 
         if (!context.getProjects().isEmpty()) {

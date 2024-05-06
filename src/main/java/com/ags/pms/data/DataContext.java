@@ -2,12 +2,15 @@ package com.ags.pms.data;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
 import java.util.Optional;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.NoSuchElementException;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 import com.ags.pms.Helper;
 import com.ags.pms.io.FileName;
@@ -15,11 +18,11 @@ import com.ags.pms.io.JsonHandler;
 import com.ags.pms.models.Admin;
 import com.ags.pms.models.Identifiable;
 import com.ags.pms.models.Lecturer;
-import com.ags.pms.models.PresentationRequest;
 import com.ags.pms.models.PresentationSlot;
 import com.ags.pms.models.Project;
 import com.ags.pms.models.ProjectManager;
 import com.ags.pms.models.Report;
+import com.ags.pms.models.Request;
 import com.ags.pms.models.Student;
 
 
@@ -27,13 +30,15 @@ public class DataContext {
 
     private JsonHandler handler;
 
+    private Map<String, List<? extends Identifiable>> collections = new HashMap<>();
+
     private ArrayList<Lecturer> lecturers = new ArrayList<>();
     private ArrayList<Student> students = new ArrayList<>();
     private ArrayList<Admin> admins = new ArrayList<>();
     private ArrayList<ProjectManager> projectManagers = new ArrayList<>();
     private ArrayList<Report> reports = new ArrayList<>();
     private ArrayList<PresentationSlot> presentationSlots = new ArrayList<>();
-    private ArrayList<PresentationRequest> presentationRequests = new ArrayList<>();
+    private ArrayList<Request> presentationRequests = new ArrayList<>();
     private ArrayList<Project> projects = new ArrayList<>();
 
     private IDHandler idHandler;
@@ -43,7 +48,19 @@ public class DataContext {
     public DataContext() {
         handler = new JsonHandler();
         populateAllDataAsync();
+        populateCollection();
         initIds();
+    }
+
+    private void populateCollection() {
+        collections.put("lecturers", lecturers);
+        collections.put("students", students);
+        collections.put("admins", admins);
+        collections.put("projectManagers", projectManagers);
+        collections.put("reports", reports);
+        collections.put("presentationSlots", presentationSlots);
+        collections.put("presentationRequests", presentationRequests);
+        collections.put("projects", projects);
     }
 
     // Only call on constructor
@@ -144,6 +161,15 @@ public class DataContext {
                     .orElseThrow(() -> new NoSuchElementException("Object not found"));
     }
 
+    public <T extends Identifiable> T getById(int id) {
+        return collections.values().stream()
+                .flatMap(Collection::stream)
+                .filter(o -> o.getId() == id)
+                .map(obj -> (T) obj)
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Object not found"));
+    }
+
     public void setLecturers(ArrayList<Lecturer> lecturers) {
         this.lecturers = lecturers;
     }
@@ -191,11 +217,11 @@ public class DataContext {
         this.presentationSlots = presentationSlots;
     }
 
-    public ArrayList<PresentationRequest> getPresentationRequests() {
+    public ArrayList<Request> getRequests() {
         return presentationRequests;
     }
 
-    public void setPresentationRequests(ArrayList<PresentationRequest> presentationRequests) {
+    public void setRequests(ArrayList<Request> presentationRequests) {
         this.presentationRequests = presentationRequests;
     }
 
@@ -251,7 +277,7 @@ public class DataContext {
         updateIds();
     }
 
-    public void addRequest(PresentationRequest request) {
+    public void addRequest(Request request) {
         if (checkDuplicateId(presentationRequests, request)) return;
         presentationRequests.add(request);
         updateIds();

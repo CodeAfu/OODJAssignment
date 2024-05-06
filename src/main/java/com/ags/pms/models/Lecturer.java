@@ -15,6 +15,7 @@ import java.util.HashMap;
 import com.ags.pms.data.DataContext;
 import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
+import com.fasterxml.jackson.databind.deser.std.CollectionDeserializer;
 
 public class Lecturer extends User {
     
@@ -59,23 +60,25 @@ public class Lecturer extends User {
         return supervisees;
     }
 
-    public ArrayList<PresentationRequest> viewPresentationRequests() {
+    public ArrayList<Request> viewPresentationRequests() {
         DataContext context = new DataContext();
-        ArrayList<PresentationRequest> presentationRequests = context.getPresentationRequests();
+        ArrayList<Request> presentationRequests = (ArrayList<Request>) context.getRequests().stream()
+                                                            .filter(r -> r.getRequestType() == RequestType.PRESENTATION)
+                                                            .collect(Collectors.toList());
         return presentationRequests;
     }
 
     public ArrayList<PresentationSlot> viewAvailableSlots() {
         DataContext context = new DataContext();
         ArrayList<PresentationSlot> availableSlots = (ArrayList<PresentationSlot>) context.getPresentationSlots().stream()
-                                                                .filter(s -> s.isAvailable() == true)
+                                                                .filter(r -> r.isAvailable() == true)
                                                                 .collect(Collectors.toList());
         return availableSlots;
     }
 
     public void viewSecondMarkerAcceptance() {
         DataContext context = new DataContext();
-        
+
 
 
         JsonHandler handler = new JsonHandler();

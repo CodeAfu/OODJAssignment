@@ -1,6 +1,6 @@
 package com.ags.pms.models;
 
-public abstract class Request implements Identifiable {
+public class Request implements Identifiable {
 
     private int id;
     private User user;
@@ -11,9 +11,11 @@ public abstract class Request implements Identifiable {
     public Request() {
     }
 
-    public Request(int id, User user) {
+    public Request(int id, User user, RequestType requestType, String module) {
         this.id = id;
         this.user = user;
+        this.requestType = requestType;
+        this.module = module;
     }   
     
     @Override
@@ -29,6 +31,30 @@ public abstract class Request implements Identifiable {
     }
     public void setUser(User user) {
         this.user = user;
+    }
+    
+    public RequestType getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(RequestType requestType) {
+        this.requestType = requestType;
+    }
+
+    public String getModule() {
+        return module;
+    }
+
+    public void setModule(String module) {
+        this.module = module;
+    }
+
+    public boolean isApproved() {
+        return isApproved;
+    }
+
+    public void setApproved(boolean isApproved) {
+        this.isApproved = isApproved;
     }
 
 }

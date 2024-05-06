@@ -11,6 +11,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.swing.text.html.Option;
 
+import com.ags.pms.Helper;
 import com.ags.pms.data.DataContext;
 
 public class Student extends User {
@@ -121,8 +122,12 @@ public class Student extends User {
     }
 
     private void requestPresentation(String module) {
+        if (!modules.contains(module)) {
+            Helper.printErr("Student is not enrolled in module: " + module);
+            return;
+        }
         DataContext context = new DataContext();
-        PresentationRequest request = new PresentationRequest(context.fetchNextRequestId(), this, module);
+        Request request = new Request(context.fetchNextRequestId(), this, RequestType.PRESENTATION, module);
         context.addRequest(request);
         context.writeAllDataAsync();
     }

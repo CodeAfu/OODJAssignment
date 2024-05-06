@@ -12,6 +12,7 @@ import javax.crypto.NoSuchPaddingException;
 
 import com.ags.pms.models.*;
 import com.ags.pms.services.*;
+import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
 import com.ags.pms.data.DataContext;
 import com.ags.pms.data.SeedData;
 import com.ags.pms.forms.Login;
@@ -39,18 +40,20 @@ public class ProjectManagementSystem {
     }
     
     private static void consoleTests() throws Exception {
-        // smallerTests();
         // testLogin();
         // testFileHandlerAsyncOperations();
         // testFileHandler();
         // testAES();
         // generateNewAESKey();
-        dataContextTest();
+        smallTests();
+        // dataContextTest();
     }
 
+
     @SuppressWarnings("unused")
-    private static void smallerTests() throws Exception {
-        JsonHandler handler = new JsonHandler();
+    private static void smallTests() throws Exception {
+        DataContext context = new DataContext();
+        System.out.println(context.getById(2003).getClass().getSimpleName());
     }
     
     @SuppressWarnings("unused")

@@ -5,7 +5,10 @@ import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import com.ags.pms.data.DataContext;
 import com.ags.pms.data.IDHandler;
 import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
@@ -100,25 +103,40 @@ public class Helper {
     // public static Class<?> getClassByID(int id) {
     //     String idToString = String.valueOf(id);
     //     char firstCharacter = idToString.charAt(0);
-
+        
     //     if (firstCharacter == '2') {
-    //         if (isProjectManager(id)) {
-    //             return ProjectManager.class;
-    //         }
-    //         return Lecturer.class;
+    //         return assessLecturerOrPM(id);
     //     }
 
     //     HashMap<Character, Class<?>> hashMap = new HashMap<>();
-    //     hashMap.put('4', Student.class);
     //     hashMap.put('1', Admin.class);
-        
-    //     return hashMap.get(firstCharacter);
+    //     hashMap.put('4', Student.class);
+
+    //     Class<?> result = hashMap.get(firstCharacter);
+    //     if (result == null) {
+    //         throw new IllegalArgumentException("No PM found (Helper)");
+    //     }
+    //     return result;        
     // }
+    
 
-    // private static boolean isProjectManager(int id) {
-    //     JsonHandler handler = new JsonHandler();
+    // private static Class<?> assessLecturerOrPM(int id) {
+    //     DataContext context = new DataContext();
+    //     List<Integer> lecturerIds = context.getLecturers().stream()
+    //                                         .map(l -> l.getId())
+    //                                         .collect(Collectors.toList());
+    //     List<Integer> projectManagerIds = context.getProjectManagers().stream()
+    //                                         .map(l -> l.getId())
+    //                                         .collect(Collectors.toList());
 
+    //     if (lecturerIds.contains(id)) {
+    //         return Lecturer.class;
+    //     } else if (projectManagerIds.contains(id)) {
+    //         return ProjectManager.class;
+    //     } else {
+    //         throw new IllegalArgumentException("No PM found (Helper)");
+    //         // return null;
+    //     }
     // }
-
 
 }
