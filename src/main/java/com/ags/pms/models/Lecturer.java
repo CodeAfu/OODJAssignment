@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.ags.pms.Helper;
 import com.ags.pms.data.DataContext;
 import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
@@ -76,26 +77,18 @@ public class Lecturer extends User {
         return availableSlots;
     }
 
-    public void viewSecondMarkerAcceptance() {
+    public Request viewSecondMarkerAcceptance() {
         DataContext context = new DataContext();
-
-
-
-        JsonHandler handler = new JsonHandler();
-        ArrayList<Student> supervisees = handler.readJson(FileName.STUDENTS);
-        System.out.println("Second Marker Acceptance for " + this.getName() + ":");
-
-        for (Student student : supervisees) {
-            if (student.getSecondMarker() != null) {
-                System.out.println("- " + student.getName() + ": " + student.getSecondMarker().getName() + " accepted");
-            } else {
-                System.out.println("- " + student.getName() + ": Not accepted yet");
-            }
-        }
+        Request request = context.getRequest(r -> r.getUser().getId() == this.id);
+        return request;
     }
 
-    public void assignPresentationSlot(Student student, PresentationSlot slot) {
+    public boolean assignPresentationSlot(Student student, PresentationSlot slot) {
+        if (!slot.isAvailable()) {
+            return false;
+        }
         student.addPresentationSlot(slot);
+        return true;
     }
 
     public ArrayList<Report> viewReport(Student student) {

@@ -154,6 +154,13 @@ public class DataContext {
                        .orElseThrow(() -> new NoSuchElementException("ProjectManager not found"));
     }
 
+    public Request getRequest(Expression<Request> expression) {
+        return requests.stream()
+                       .filter(request -> expression.action(request))
+                       .findFirst()
+                       .orElseThrow(() -> new NoSuchElementException("ProjectManager not found"));
+    }
+
     public <T extends Identifiable> T getById(ArrayList<T> objTs, int id) {
         return objTs.stream()
                     .filter(o -> o.getId() == id)

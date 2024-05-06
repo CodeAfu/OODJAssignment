@@ -18,6 +18,7 @@ public class Student extends User {
 
     private ArrayList<Report> reports;
     private ArrayList<PresentationSlot> presentationSlots;
+    private ArrayList<Project> projects;
     private ArrayList<String> modules;
     private ProjectManager supervisor;
     private ProjectManager secondMarker;
@@ -50,6 +51,14 @@ public class Student extends User {
 
     public void setReports(ArrayList<Report> reports) {
         this.reports = reports;
+    }
+
+    public ArrayList<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(ArrayList<Project> projects) {
+        this.projects = projects;
     }
 
     public ArrayList<String> getModules() {
@@ -105,6 +114,10 @@ public class Student extends User {
 
     public void addReport(Report report) {
         reports.add(report);
+    }
+
+    public void addProject(Project project) {
+        projects.add(project);
     }
 
     public void submitReport(Report report) {

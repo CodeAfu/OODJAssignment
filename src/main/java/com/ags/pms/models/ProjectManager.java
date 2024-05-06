@@ -10,6 +10,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import com.ags.pms.data.DataContext;
+import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
 
 public class ProjectManager extends Lecturer {
 
@@ -54,25 +55,31 @@ public class ProjectManager extends Lecturer {
         supervisees.add(student);
     }
     
-    public void createProject() {
+    public void createProject(String module, String details) {
         DataContext context = new DataContext();
-        Report report = new Report();
-
-        context.addReport(report);
-        context.saveReportsAsync();
+        Project project = new Project(context.fetchNextProjectId(), module, details);
+        context.addProject(project);
+        context.writeAllDataAsync();
     }
     
-    public void assignProject(String moduleName, Report report) {
+    public void assignProject(int studentId, Project project) {
         DataContext context = new DataContext();
         ArrayList<Student> students = context.getStudents();
 
         students.forEach(student -> {
-            if (student.getModules().contains(moduleName)) {
-                student.addReport(report);
+            if (student.getId() == id) {
+                student.addProject(project);
+                return;
             }
         });
-
         context.saveStudentsAsync();
     }
-    
+
+    public ArrayList<Report> viewReports() {
+        DataContext context = new DataContext();
+        ArrayList<Report> reports = context.getReports();
+        return reports;
+    }
+
+    // Assign Supervisor and Marker
 }

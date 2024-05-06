@@ -80,9 +80,9 @@ public class ProjectManagementSystem {
         Request request = new Request(context.fetchNextRequestId(), student1, "Computer Science");
         Project project = new Project(context.fetchNextProjectId(), "Computer Science", "You must do this project!!!!!!!!!!!!!!!");
 
-        context.addPresentationSlot(slot);
-        context.addRequest(request);
-        context.addProject(project);
+        // context.addPresentationSlot(slot);
+        // context.addRequest(request);
+        // context.addProject(project);
 
         // context.writeAllDataAsync();
         
@@ -101,6 +101,22 @@ public class ProjectManagementSystem {
         Lecturer lecturer = context.getLecturer(l -> l.getId() == 2001);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     @SuppressWarnings("unused")
     private static void testLogin() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         ProjectManager manager = new ProjectManager("somelecturerPM", "123qweasdzxc");
