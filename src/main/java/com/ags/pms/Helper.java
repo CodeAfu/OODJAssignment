@@ -11,8 +11,10 @@ import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
 import com.ags.pms.models.Admin;
 import com.ags.pms.models.Lecturer;
+import com.ags.pms.models.Project;
 import com.ags.pms.models.ProjectManager;
 import com.ags.pms.models.Report;
+import com.ags.pms.models.Request;
 import com.ags.pms.models.Student;
 import com.fasterxml.jackson.annotation.JsonAlias;
 
@@ -39,6 +41,8 @@ public class Helper {
         hashMap.put(FileName.ADMINS, "Admins.txt");
         hashMap.put(FileName.REPORTS, "Reports.txt");
         hashMap.put(FileName.IDHANDLER, "IDs.txt");
+        hashMap.put(FileName.REQUESTS, "Requests.txt");
+        hashMap.put(FileName.PROJECTS, "Projects.txt");
         
         return hashMap.get(filename);
     }
@@ -51,6 +55,8 @@ public class Helper {
         hashMap.put("Admin", "Admins.txt");
         hashMap.put("Report", "Reports.txt");
         hashMap.put("IDHandler", "IDs.txt");
+        hashMap.put("Request", "Requests.txt");
+        hashMap.put("Project", "Projects.txt");
         
         return hashMap.get(className);
     }
@@ -63,6 +69,8 @@ public class Helper {
         hashMap.put(FileName.PROJECTMANAGERS, ProjectManager.class);
         hashMap.put(FileName.REPORTS, Report.class);
         hashMap.put(FileName.IDHANDLER, IDHandler.class);
+        hashMap.put(FileName.REQUESTS, Request.class);
+        hashMap.put(FileName.PROJECTS, Project.class);
 
         return hashMap.get(filename);
     }
@@ -74,6 +82,8 @@ public class Helper {
         hashMap.put("Admin", Admin.class);
         hashMap.put("ProjectManager", ProjectManager.class);
         hashMap.put("IDHandler", IDHandler.class);
+        hashMap.put("Request", Request.class);
+        hashMap.put("Project", Project.class);
         
         return hashMap.get(className);
     }

@@ -1,5 +1,13 @@
 # OODJ Assignment
 
+## ID SCHEME
+- Student: 4xxx
+- Admin: 1xxx
+- Lecturer: 2xxx
+- Report: 8xxx
+- Project: 7xxx
+- Request: 6xxx
+
 ## VERY USEFUL METHODS
 
 ```java
