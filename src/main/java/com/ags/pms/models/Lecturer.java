@@ -8,6 +8,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -55,35 +56,28 @@ public class Lecturer extends User {
         for (Student s : students) {
             supervisees.put(s.getId(), s.getSuperviser().getId());
         }
-        
         return supervisees;
     }
 
-    public void viewPresentationRequests() {
-        JsonHandler handler = new JsonHandler();
-        ArrayList<Student> supervisees = handler.readJson(FileName.STUDENTS);
-        System.out.println("Presentation Requests for " + this.getName() + ":");
-
-        for (Student student : supervisees) {
-            System.out.println("- " + student.retrievePresentationRequestDetails());
-        }
+    public ArrayList<PresentationRequest> viewPresentationRequests() {
+        DataContext context = new DataContext();
+        ArrayList<PresentationRequest> presentationRequests = context.getPresentationRequests();
+        return presentationRequests;
     }
 
-    public void viewAvailableSlots() {
-        JsonHandler handler = new JsonHandler();
-        ArrayList<Student> supervisees = handler.readJson(FileName.STUDENTS);
-        System.out.println("Available slots for " + this.getName() + ":");
-
-        for (Student student : supervisees) {
-            if (student.getPresentationSlots() == null) {
-                System.out.println("- " + student.getName() + ": Available");
-            } else {
-                System.out.println("- " + student.getName() + ": " + student.getPresentationSlots());
-            }
-        }
+    public ArrayList<PresentationSlot> viewAvailableSlots() {
+        DataContext context = new DataContext();
+        ArrayList<PresentationSlot> availableSlots = (ArrayList<PresentationSlot>) context.getPresentationSlots().stream()
+                                                                .filter(s -> s.isAvailable() == true)
+                                                                .collect(Collectors.toList());
+        return availableSlots;
     }
 
     public void viewSecondMarkerAcceptance() {
+        DataContext context = new DataContext();
+        
+
+
         JsonHandler handler = new JsonHandler();
         ArrayList<Student> supervisees = handler.readJson(FileName.STUDENTS);
         System.out.println("Second Marker Acceptance for " + this.getName() + ":");

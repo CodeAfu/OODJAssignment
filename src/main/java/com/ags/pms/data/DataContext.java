@@ -77,6 +77,18 @@ public class DataContext {
         return idHandler.assignLecturerId();
     }
 
+    public int fetchNextPresentationSlotId() {
+        return idHandler.assignPresentationSlotId();
+    }
+
+    public int fetchNextRequestId() {
+        return idHandler.assignRequestid();
+    }
+
+    public int fetchNextProject() {
+        return idHandler.assingProjectId();
+    }
+
     public int fetchNextReportId() {
         return idHandler.assignReportId();
     }
@@ -230,6 +242,24 @@ public class DataContext {
     public void addProjectManager(ProjectManager projectManager) {
         if (checkDuplicateId(projectManagers, projectManager)) return;;
         projectManagers.add(projectManager);
+        updateIds();
+    }
+
+    public void addPresentationSlot(PresentationSlot presentationSlot) {
+        if (checkDuplicateId(presentationSlots, presentationSlot)) return;;
+        presentationSlots.add(presentationSlot);
+        updateIds();
+    }
+
+    public void addRequest(PresentationRequest request) {
+        if (checkDuplicateId(presentationRequests, request)) return;
+        presentationRequests.add(request);
+        updateIds();
+    }
+
+    public void addProject(Project project) {
+        if (checkDuplicateId(projects, project)) return;;
+        projects.add(project);
         updateIds();
     }
 

@@ -11,7 +11,7 @@ public class PresentationSlot implements Identifiable {
     private Student student;
     private String module;
     private Date presentationDate;
-    private boolean isApproved;
+    private boolean isAvailable;
 
     public PresentationSlot() {
     }
@@ -53,12 +53,12 @@ public class PresentationSlot implements Identifiable {
         this.presentationDate = presentationDate;
     }
 
-    public boolean isApproved() {
-        return isApproved;
+    public boolean isAvailable() {
+        return isAvailable;
     }
 
-    public void setApproved(boolean isApproved) {
-        this.isApproved = isApproved;
+    public void setAvailable(boolean isAvailable) {
+        this.isAvailable = isAvailable;
     }
 
 

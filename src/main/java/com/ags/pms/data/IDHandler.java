@@ -88,14 +88,23 @@ public class IDHandler {
         this.nextProjectId = nextProjectId;
     }
 
-    public int assignStudentId() {
-        return nextStudentId++;
+    public int assignAdminId() {
+        return nextAdminId++;
     }
     public int assignLecturerId() {
         return nextLecturerId++;
     }
-    public int assignAdminId() {
-        return nextAdminId++;
+    public int assignStudentId() {
+        return nextStudentId++;
+    }
+    public int assignPresentationSlotId() {
+        return nextPresentationSlotId++;
+    }
+    public int assignRequestid() {
+        return nextRequestId++;
+    }
+    public int assingProjectId() {
+        return nextProjectId++;
     }
     public int assignReportId() {
         return nextReportId++;

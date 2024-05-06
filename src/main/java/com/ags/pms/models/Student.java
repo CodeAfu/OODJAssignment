@@ -89,6 +89,10 @@ public class Student extends User {
                 return supervisees != null && supervisees.contains(this);
             })
             .findFirst();
+
+        if (!superviser.isEmpty()) {
+            this.superviser = superviser.get();
+        }
     }
 
     private Report createReport(String module, AssessmentType assessmentType, String moodleLink, int totalMarks) {
@@ -116,7 +120,18 @@ public class Student extends User {
         this.presentationSlots.add(slot);
     }
 
-    public String retrieveReportDetails() {
+    private void requestPresentation(String module) {
+        DataContext context = new DataContext();
+        PresentationRequest request = new PresentationRequest(context.fetchNextRequestId(), this, module);
+        context.addRequest(request);
+        context.writeAllDataAsync();
+    }
+
+    public String retrieveReportDetails(Report report) {
+        if (reports.contains(report)) {
+
+        }
+
         StringBuilder stringBuilder = new StringBuilder();
         reports.forEach(r -> {
             stringBuilder.append(r.retrieveReportDetails());
