@@ -20,9 +20,7 @@ import com.ags.pms.models.PresentationSlot;
 import com.ags.pms.models.Project;
 import com.ags.pms.models.ProjectManager;
 import com.ags.pms.models.Report;
-import com.ags.pms.models.Request;
 import com.ags.pms.models.Student;
-import com.fasterxml.jackson.core.TSFBuilder;
 
 
 public class DataContext {
@@ -37,7 +35,6 @@ public class DataContext {
     private ArrayList<PresentationSlot> presentationSlots = new ArrayList<>();
     private ArrayList<PresentationRequest> presentationRequests = new ArrayList<>();
     private ArrayList<Project> projects = new ArrayList<>();
-    protected HashMap<FileName, Integer> ids = new HashMap<>();
 
     private IDHandler idHandler;
     
@@ -54,25 +51,18 @@ public class DataContext {
         IDHandler savedIdHandler = handler.getIds();
         idHandler = new IDHandler(this);
 
-        idHandler.setNextStudentId(Math.max(savedIdHandler.getNextStudentId(), idHandler.getNextStudentId()));
-        idHandler.setNextLecturerId(Math.max(savedIdHandler.getNextLecturerId(), idHandler.getNextLecturerId()));
         idHandler.setNextAdminId(Math.max(savedIdHandler.getNextAdminId(), idHandler.getNextAdminId()));
+        idHandler.setNextLecturerId(Math.max(savedIdHandler.getNextLecturerId(), idHandler.getNextLecturerId()));
+        idHandler.setNextStudentId(Math.max(savedIdHandler.getNextStudentId(), idHandler.getNextStudentId()));
+        idHandler.setNextPresentationSlotId(Math.max(savedIdHandler.getNextPresentationSlotId(), idHandler.getNextPresentationSlotId()));
+        idHandler.setNextRequestId(Math.max(savedIdHandler.getNextRequestId(), idHandler.getNextRequestId()));
+        idHandler.setNextProjectId(Math.max(savedIdHandler.getNextProjectId(), idHandler.getNextProjectId()));
         idHandler.setNextReportId(Math.max(savedIdHandler.getNextReportId(), idHandler.getNextReportId()));
-        
-        ids.put(FileName.STUDENTS, idHandler.getNextStudentId());
-        ids.put(FileName.ADMINS, idHandler.getNextAdminId());
-        ids.put(FileName.LECTURERS, idHandler.getNextLecturerId());
-        ids.put(FileName.REPORTS, idHandler.getNextReportId());
     }
 
     // Call after all write operations
     private void updateIds() {
         idHandler = new IDHandler(this);
-
-        ids.put(FileName.STUDENTS, idHandler.getNextStudentId());
-        ids.put(FileName.ADMINS, idHandler.getNextAdminId());
-        ids.put(FileName.LECTURERS, idHandler.getNextLecturerId());
-        ids.put(FileName.REPORTS, idHandler.getNextReportId());
     }
 
     public int fetchNextStudentId() {
@@ -133,6 +123,13 @@ public class DataContext {
                        .filter(projectManager -> expression.action(projectManager))
                        .findFirst()
                        .orElseThrow(() -> new NoSuchElementException("ProjectManager not found"));
+    }
+
+    public <T extends Identifiable> T getById(ArrayList<T> objTs, int id) {
+        return objTs.stream()
+                    .filter(o -> o.getId() == id)
+                    .findFirst()
+                    .orElseThrow(() -> new NoSuchElementException("Object not found"));
     }
 
     public void setLecturers(ArrayList<Lecturer> lecturers) {
@@ -200,10 +197,6 @@ public class DataContext {
 
     public IDHandler getIdHandler() {
         return idHandler;
-    }
-
-    public HashMap<FileName, Integer> getIds() {
-        return ids;
     }
 
     private <T extends Identifiable> boolean checkDuplicateId(ArrayList<T> objTs, T obj) {
