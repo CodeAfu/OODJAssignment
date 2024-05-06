@@ -19,7 +19,7 @@ public class Student extends User {
     private ArrayList<Report> reports;
     private ArrayList<PresentationSlot> presentationSlots;
     private ArrayList<String> modules;
-    private ProjectManager superviser;
+    private ProjectManager supervisor;
     private ProjectManager secondMarker;
 
     // Debug
@@ -64,12 +64,12 @@ public class Student extends User {
         return presentationSlots;
     }
 
-    public ProjectManager getSuperviser() {
-        return superviser;
+    public ProjectManager getSupervisor() {
+        return supervisor;
     }
 
-    public void setSuperviser(ProjectManager superviser) {
-        this.superviser = superviser;
+    public void setSupervisor(ProjectManager superviser) {
+        this.supervisor = superviser;
     }
 
     public ProjectManager getSecondMarker() {
@@ -92,7 +92,7 @@ public class Student extends User {
             .findFirst();
 
         if (!superviser.isEmpty()) {
-            this.superviser = superviser.get();
+            this.supervisor = superviser.get();
         }
     }
 
@@ -127,7 +127,7 @@ public class Student extends User {
             return;
         }
         DataContext context = new DataContext();
-        Request request = new Request(context.fetchNextRequestId(), this, RequestType.PRESENTATION, module);
+        Request request = new Request(context.fetchNextRequestId(), this, module);
         context.addRequest(request);
         context.writeAllDataAsync();
     }

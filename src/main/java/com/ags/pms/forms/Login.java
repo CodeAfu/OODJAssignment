@@ -4,6 +4,8 @@
  */
 package com.ags.pms.forms;
 import javax.swing.JOptionPane;
+
+import com.ags.pms.models.User;
 /**
  *
  * @author Genzoku
@@ -188,4 +190,8 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JTextField userField;
     private javax.swing.JLabel userName;
     // End of variables declaration//GEN-END:variables
+    public User getUser() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getUser'");
+    }
 }

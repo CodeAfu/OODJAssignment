@@ -55,7 +55,7 @@ public class Lecturer extends User {
         HashMap<Integer, Integer> supervisees = new HashMap<>();
 
         for (Student s : students) {
-            supervisees.put(s.getId(), s.getSuperviser().getId());
+            supervisees.put(s.getId(), s.getSupervisor().getId());
         }
         return supervisees;
     }

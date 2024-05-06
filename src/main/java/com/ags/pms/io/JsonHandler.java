@@ -127,29 +127,29 @@ public class JsonHandler {
                     jsonData = mapper.writeValueAsString(reports);
                     writeData(Helper.getFilenameByClassName(className), jsonData);
                     break;
-                case "IDHandler":
-                    @SuppressWarnings("unchecked") 
-                    ArrayList<IDHandler> idHandlers = new ArrayList<>((ArrayList<IDHandler>) objTs);
-                    jsonData = mapper.writeValueAsString(idHandlers);
-                    writeData(Helper.getFilenameByClassName(className), jsonData);
-                    break;
                 case "PresentationSlot":
                     @SuppressWarnings("unchecked") 
                     ArrayList<PresentationSlot> presentationSlots = new ArrayList<>((ArrayList<PresentationSlot>) objTs);
                     jsonData = mapper.writeValueAsString(presentationSlots);
-                    writeData(Helper.getFilenameByEnum(FileName.PRESENTATIONSLOTS), jsonData);
+                    writeData(Helper.getFilenameByClassName(className), jsonData);
                     break;
                 case "Request":
                     @SuppressWarnings("unchecked") 
                     ArrayList<Request> requests = new ArrayList<>((ArrayList<Request>) objTs);
                     jsonData = mapper.writeValueAsString(requests);
-                    writeData(Helper.getFilenameByEnum(FileName.REQUESTS), jsonData);
+                    writeData(Helper.getFilenameByClassName(className), jsonData);
                     break;
                 case "Project":
                     @SuppressWarnings("unchecked") 
                     ArrayList<Project> projects = new ArrayList<>((ArrayList<Project>) objTs);
                     jsonData = mapper.writeValueAsString(projects);
-                    writeData(Helper.getFilenameByEnum(FileName.PROJECTS), jsonData);
+                    writeData(Helper.getFilenameByClassName(className), jsonData);
+                    break;
+                case "IDHandler":
+                    @SuppressWarnings("unchecked") 
+                    ArrayList<IDHandler> idHandlers = new ArrayList<>((ArrayList<IDHandler>) objTs);
+                    jsonData = mapper.writeValueAsString(idHandlers);
+                    writeData(Helper.getFilenameByClassName(className), jsonData);
                     break;
             }
         } catch (Exception ex) {

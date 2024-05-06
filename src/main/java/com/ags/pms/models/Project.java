@@ -4,7 +4,23 @@ public class Project implements Identifiable {
 
     private int id;
     private String module;
+    private String details;
 
+    public Project() {
+    }
+
+    public Project(int id, String module, String details) {
+        this.id = id;
+        this.module = module;
+        this.details = details;    
+    }
+
+    public String getDetails() {
+        return details;
+    }
+    public void setDetails(String details) {
+        this.details = details;
+    }
     public int getId() {
         return id;
     }

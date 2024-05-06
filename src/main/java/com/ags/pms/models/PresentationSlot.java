@@ -14,9 +14,16 @@ public class PresentationSlot implements Identifiable {
     private boolean isAvailable;
 
     public PresentationSlot() {
+        this.isAvailable = true;
+    }
+
+    public PresentationSlot(int id) {
+        this.isAvailable = true;
+        this.id = id;
     }
 
     public PresentationSlot(Student student, Date presentationDate) {
+        this.isAvailable = false;
         this.student = student;
         this.presentationDate = presentationDate;
     }

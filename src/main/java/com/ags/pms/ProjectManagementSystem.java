@@ -13,9 +13,14 @@ import javax.crypto.NoSuchPaddingException;
 import com.ags.pms.models.*;
 import com.ags.pms.services.*;
 import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
+import com.formdev.flatlaf.json.Json;
+
+import net.bytebuddy.build.HashCodeAndEqualsPlugin;
+
 import com.ags.pms.data.DataContext;
 import com.ags.pms.data.SeedData;
 import com.ags.pms.forms.Login;
+import com.ags.pms.forms.MainFormBody;
 import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
 
@@ -45,8 +50,8 @@ public class ProjectManagementSystem {
         // testFileHandler();
         // testAES();
         // generateNewAESKey();
-        smallTests();
-        // dataContextTest();
+        // smallTests();
+        dataContextTest();
     }
 
 
@@ -58,17 +63,28 @@ public class ProjectManagementSystem {
     
     @SuppressWarnings("unused")
     private static void dataContextTest() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
-        try {
-            SeedData.executeWithContext();
-            // SeedData.init();
-        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
-                | BadPaddingException | InvalidAlgorithmParameterException e) {
-            Helper.printErr(Helper.getStackTraceString(e));
-        }
+        // try {
+        //     SeedData.executeWithContext();
+        //     // SeedData.init();
+        // } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
+        //         | BadPaddingException | InvalidAlgorithmParameterException e) {
+        //     Helper.printErr(Helper.getStackTraceString(e));
+        // }
 
         DataContext context = new DataContext();
+        
+        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Report>());
         ProjectManager projectManager1 = new ProjectManager(context.fetchNextLecturerId(), "Michael Myers", "17/04/1972", "michael@email.com", Role.SECONDMARKER, "michael_myers", "asdfpass");
-        // ProjectManager projectManager2 = new ProjectManager(context.fetchNextLecturerId(), "Hehe My Man", "17/04/1972", "michael@email.com", Role.SECONDMARKER, "michael_myers", "asdfpass");
+        ProjectManager projectManager2 = new ProjectManager(context.fetchNextLecturerId(), "Hehe My Man", "17/04/1972", "michael@email.com", Role.SECONDMARKER, "michael_myers", "asdfpass");
+        PresentationSlot slot = new PresentationSlot(context.fetchNextPresentationSlotId());
+        Request request = new Request(context.fetchNextRequestId(), student1, "Computer Science");
+        Project project = new Project(context.fetchNextProjectId(), "Computer Science", "You must do this project!!!!!!!!!!!!!!!");
+
+        context.addPresentationSlot(slot);
+        context.addRequest(request);
+        context.addProject(project);
+
+        // context.writeAllDataAsync();
         
         // context.addProjectManager(projectManager1);
         // context.addProjectManager(projectManager2);

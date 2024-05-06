@@ -4,6 +4,7 @@
  */
 package com.ags.pms.forms;
 
+import com.ags.pms.models.User;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Dimension;
 import java.util.logging.Level;
@@ -19,15 +20,18 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class MainFormBody extends javax.swing.JFrame {
 
+    private User user;
+    
+    public MainFormBody() {
+        initComponents();   
+    }
     /**
      * Creates new form MainFormBody
      */
-    public MainFormBody() {
+    public MainFormBody(User user) {
         initComponents();   
-        
-        ComponentResizer cr = new ComponentResizer();
-        cr.setSnapSize(new Dimension(10, 10));
-        cr.registerComponent(this, jPanelTitle, jPanelDragLeft);
+        this.user = user;
+        user.getEmail();
     }
 
     /**
@@ -109,6 +113,11 @@ public class MainFormBody extends javax.swing.JFrame {
         jButton1.setBackground(new java.awt.Color(110, 139, 251));
         jButton1.setText("jButton1");
         jButton1.setBorderPainted(false);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("MenuType");
 
@@ -207,6 +216,9 @@ public class MainFormBody extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_jButtonCloseActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -238,7 +250,6 @@ public class MainFormBody extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 MainFormBody mainFormBody = new MainFormBody();
-
 
                 setTheme(mainFormBody);
                 

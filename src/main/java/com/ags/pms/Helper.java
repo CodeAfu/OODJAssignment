@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Date;
 
 import com.ags.pms.data.DataContext;
 import com.ags.pms.data.IDHandler;
@@ -21,6 +22,7 @@ import com.ags.pms.models.Report;
 import com.ags.pms.models.Request;
 import com.ags.pms.models.Student;
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.formdev.flatlaf.json.ParseException;
 
 public class Helper {
     
@@ -46,7 +48,7 @@ public class Helper {
         hashMap.put(FileName.REPORTS, "Reports.txt");
         hashMap.put(FileName.IDHANDLER, "IDs.txt");
         hashMap.put(FileName.REQUESTS, "Requests.txt");
-        hashMap.put(FileName.PRESENTATIONSLOTS, "PresentationSlot.txt");
+        hashMap.put(FileName.PRESENTATIONSLOTS, "PresentationSlots.txt");
         hashMap.put(FileName.PROJECTS, "Projects.txt");
         
         return hashMap.get(filename);
@@ -98,6 +100,15 @@ public class Helper {
 
     public static DateFormat getDateFormat() {
         return new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    }
+
+    public static Date parseDate(String date) {
+        try {
+            return new SimpleDateFormat("dd/MM/yyyy").parse(date);
+        } catch (ParseException | java.text.ParseException e) {
+            Helper.printErr(Helper.getStackTraceString(e));
+            return null;
+        }
     }
 
     // public static Class<?> getClassByID(int id) {

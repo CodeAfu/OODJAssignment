@@ -38,7 +38,7 @@ public class DataContext {
     private ArrayList<ProjectManager> projectManagers = new ArrayList<>();
     private ArrayList<Report> reports = new ArrayList<>();
     private ArrayList<PresentationSlot> presentationSlots = new ArrayList<>();
-    private ArrayList<Request> presentationRequests = new ArrayList<>();
+    private ArrayList<Request> requests = new ArrayList<>();
     private ArrayList<Project> projects = new ArrayList<>();
 
     private IDHandler idHandler;
@@ -59,7 +59,7 @@ public class DataContext {
         collections.put("projectManagers", projectManagers);
         collections.put("reports", reports);
         collections.put("presentationSlots", presentationSlots);
-        collections.put("presentationRequests", presentationRequests);
+        collections.put("requests", requests);
         collections.put("projects", projects);
     }
 
@@ -102,8 +102,8 @@ public class DataContext {
         return idHandler.assignRequestid();
     }
 
-    public int fetchNextProject() {
-        return idHandler.assingProjectId();
+    public int fetchNextProjectId() {
+        return idHandler.assignProjectId();
     }
 
     public int fetchNextReportId() {
@@ -218,11 +218,11 @@ public class DataContext {
     }
 
     public ArrayList<Request> getRequests() {
-        return presentationRequests;
+        return requests;
     }
 
     public void setRequests(ArrayList<Request> presentationRequests) {
-        this.presentationRequests = presentationRequests;
+        this.requests = presentationRequests;
     }
 
     public ArrayList<Project> getProjects() {
@@ -278,8 +278,8 @@ public class DataContext {
     }
 
     public void addRequest(Request request) {
-        if (checkDuplicateId(presentationRequests, request)) return;
-        presentationRequests.add(request);
+        if (checkDuplicateId(requests, request)) return;
+        requests.add(request);
         updateIds();
     }
 
@@ -301,7 +301,10 @@ public class DataContext {
             populateAdminsAsync(),
             populateLecturersAsync(),
             populateProjectManagersAsync(),
-            populateReportsAsync()
+            populateReportsAsync(),
+            populatePresentationSlotsAsync(),
+            populateRequestsAsync(),
+            populateProjectsAsync()
         )
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
         allFutures.join();
@@ -314,7 +317,10 @@ public class DataContext {
             saveStudentsAsync(),
             saveLecturersAsync(),
             saveProjectManagersAsync(),
-            saveReportsAsync()
+            saveReportsAsync(),
+            savePresentationSlotsAsync(),
+            saveRequestsAsync(),
+            saveProjectsAsync()
         ).thenRun(() -> System.out.println("Json Written"))
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
         allFutures.join();
@@ -359,6 +365,30 @@ public class DataContext {
         return CompletableFuture.runAsync(() -> {
             sort(reports);
             handler.writeJson(reports);
+        })
+        .exceptionally(ex -> { ex.printStackTrace(); return null; });
+    }
+
+    public CompletableFuture<Void> savePresentationSlotsAsync() {
+        return CompletableFuture.runAsync(() -> {
+            sort(presentationSlots);
+            handler.writeJson(presentationSlots);
+        })
+        .exceptionally(ex -> { ex.printStackTrace(); return null; });
+    }
+
+    public CompletableFuture<Void> saveRequestsAsync() {
+        return CompletableFuture.runAsync(() -> {
+            sort(requests);
+            handler.writeJson(requests);
+        })
+        .exceptionally(ex -> { ex.printStackTrace(); return null; });
+    }
+
+    public CompletableFuture<Void> saveProjectsAsync() {
+        return CompletableFuture.runAsync(() -> {
+            sort(projects);
+            handler.writeJson(projects);
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
@@ -419,6 +449,40 @@ public class DataContext {
             })
             .thenRun(() -> {
                 System.out.println("Reports populated");
+            })
+            .exceptionally(ex -> { ex.printStackTrace(); return null; });
+    }
+    public CompletableFuture<Void> populatePresentationSlotsAsync() {
+        return handler.readJsonAsync(FileName.PRESENTATIONSLOTS)
+            .thenAccept(psList -> {
+                presentationSlots = new ArrayList<>();
+                psList.forEach(ps -> presentationSlots.add((PresentationSlot) ps));
+            })
+            .thenRun(() -> {
+                System.out.println("PresentationSlots populated");
+            })
+            .exceptionally(ex -> { ex.printStackTrace(); return null; });
+    }
+    public CompletableFuture<Void> populateRequestsAsync() {
+        return handler.readJsonAsync(FileName.REQUESTS)
+            .thenAccept(requestList -> {
+                requests = new ArrayList<>();
+                requestList.forEach(r -> requests.add((Request) r));
+            })
+            .thenRun(() -> {
+                System.out.println("Requests populated");
+            })
+            .exceptionally(ex -> { ex.printStackTrace(); return null; });
+    }
+    
+    public CompletableFuture<Void> populateProjectsAsync() {
+        return handler.readJsonAsync(FileName.PROJECTS)
+            .thenAccept(projectList -> {
+                projects = new ArrayList<>();
+                projectList.forEach(p -> projects.add((Project) p));
+            })
+            .thenRun(() -> {
+                System.out.println("Projects populated");
             })
             .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }

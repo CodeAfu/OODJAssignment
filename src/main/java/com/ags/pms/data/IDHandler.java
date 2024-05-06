@@ -103,7 +103,7 @@ public class IDHandler {
     public int assignRequestid() {
         return nextRequestId++;
     }
-    public int assingProjectId() {
+    public int assignProjectId() {
         return nextProjectId++;
     }
     public int assignReportId() {

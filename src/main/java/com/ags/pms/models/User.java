@@ -15,7 +15,14 @@ import com.ags.pms.Helper;
 import com.ags.pms.io.JsonHandler;
 import com.ags.pms.services.PasswordHandler;
 
-public abstract class User implements Identifiable {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+
+public class User implements Identifiable {
     
     protected int id;
     protected String name;
