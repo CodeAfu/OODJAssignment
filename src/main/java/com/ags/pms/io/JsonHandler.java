@@ -145,7 +145,6 @@ public class JsonHandler {
                     jsonData = mapper.writeValueAsString(requests);
                     writeData(Helper.getFilenameByEnum(FileName.REQUESTS), jsonData);
                     break;
-                    break;
                 case "Project":
                     @SuppressWarnings("unchecked") 
                     ArrayList<Project> projects = new ArrayList<>((ArrayList<Project>) objTs);
