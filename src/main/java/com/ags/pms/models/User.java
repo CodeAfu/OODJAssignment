@@ -92,6 +92,14 @@ public class User implements Identifiable {
         this.email = email;
     }
 
+    void setUsername(String username) {
+        this.username = username;
+    }
+
+    void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getUsername() {
         return username;
     }
