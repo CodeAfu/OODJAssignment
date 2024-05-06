@@ -1,6 +1,6 @@
 package com.ags.pms.models;
 
-public class Project {
+public class Project implements Identifiable {
 
     private int id;
     private String module;

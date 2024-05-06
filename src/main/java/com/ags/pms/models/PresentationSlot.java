@@ -4,10 +4,12 @@ import java.util.Date;
 
 import com.ags.pms.data.DataContext;
 
-public class PresentationSlot {
+// CREATED BY PROJECTMANAGER - Free Slots for students to apply
+public class PresentationSlot implements Identifiable {
 
     private int id;
     private Student student;
+    private String module;
     private Date presentationDate;
     private boolean isApproved;
 
@@ -15,7 +17,6 @@ public class PresentationSlot {
     }
 
     public PresentationSlot(Student student, Date presentationDate) {
-        DataContext context = new DataContext();
         this.student = student;
         this.presentationDate = presentationDate;
     }
@@ -34,6 +35,14 @@ public class PresentationSlot {
 
     public void setStudent(Student student) {
         this.student = student;
+    }
+
+    public String getModule() {
+        return module;
+    }
+
+    public void setModule(String module) {
+        this.module = module;
     }
 
     public Date getPresentationDate() {

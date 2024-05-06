@@ -52,6 +52,7 @@ public abstract class User implements Identifiable {
         this.password = password;
     }
     
+    @Override
     public int getId() {
         return id;
     }

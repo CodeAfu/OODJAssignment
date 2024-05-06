@@ -2,15 +2,11 @@ package com.ags.pms.data;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import java.util.Optional;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 import java.util.NoSuchElementException;
 
 import com.ags.pms.Helper;
@@ -19,11 +15,13 @@ import com.ags.pms.io.JsonHandler;
 import com.ags.pms.models.Admin;
 import com.ags.pms.models.Identifiable;
 import com.ags.pms.models.Lecturer;
+import com.ags.pms.models.PresentationRequest;
+import com.ags.pms.models.PresentationSlot;
+import com.ags.pms.models.Project;
 import com.ags.pms.models.ProjectManager;
 import com.ags.pms.models.Report;
+import com.ags.pms.models.Request;
 import com.ags.pms.models.Student;
-import com.ags.pms.models.User;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.core.TSFBuilder;
 
 
@@ -36,6 +34,9 @@ public class DataContext {
     private ArrayList<Admin> admins = new ArrayList<>();
     private ArrayList<ProjectManager> projectManagers = new ArrayList<>();
     private ArrayList<Report> reports = new ArrayList<>();
+    private ArrayList<PresentationSlot> presentationSlots = new ArrayList<>();
+    private ArrayList<PresentationRequest> presentationRequests = new ArrayList<>();
+    private ArrayList<Project> projects = new ArrayList<>();
     protected HashMap<FileName, Integer> ids = new HashMap<>();
 
     private IDHandler idHandler;
@@ -172,6 +173,29 @@ public class DataContext {
 
     public void setReports(ArrayList<Report> reports) {
         this.reports = reports;
+    }
+    public ArrayList<PresentationSlot> getPresentationSlots() {
+        return presentationSlots;
+    }
+
+    public void setPresentationSlots(ArrayList<PresentationSlot> presentationSlots) {
+        this.presentationSlots = presentationSlots;
+    }
+
+    public ArrayList<PresentationRequest> getPresentationRequests() {
+        return presentationRequests;
+    }
+
+    public void setPresentationRequests(ArrayList<PresentationRequest> presentationRequests) {
+        this.presentationRequests = presentationRequests;
+    }
+
+    public ArrayList<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(ArrayList<Project> projects) {
+        this.projects = projects;
     }
 
     public IDHandler getIdHandler() {
