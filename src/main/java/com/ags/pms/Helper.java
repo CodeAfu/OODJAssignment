@@ -11,6 +11,7 @@ import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
 import com.ags.pms.models.Admin;
 import com.ags.pms.models.Lecturer;
+import com.ags.pms.models.PresentationSlot;
 import com.ags.pms.models.Project;
 import com.ags.pms.models.ProjectManager;
 import com.ags.pms.models.Report;
@@ -42,6 +43,7 @@ public class Helper {
         hashMap.put(FileName.REPORTS, "Reports.txt");
         hashMap.put(FileName.IDHANDLER, "IDs.txt");
         hashMap.put(FileName.REQUESTS, "Requests.txt");
+        hashMap.put(FileName.PRESENTATIONSLOTS, "PresentationSlot.txt");
         hashMap.put(FileName.PROJECTS, "Projects.txt");
         
         return hashMap.get(filename);
@@ -56,6 +58,7 @@ public class Helper {
         hashMap.put("Report", "Reports.txt");
         hashMap.put("IDHandler", "IDs.txt");
         hashMap.put("Request", "Requests.txt");
+        hashMap.put("PresentationSlot", "PresentationSlots.txt");
         hashMap.put("Project", "Projects.txt");
         
         return hashMap.get(className);
@@ -70,6 +73,7 @@ public class Helper {
         hashMap.put(FileName.REPORTS, Report.class);
         hashMap.put(FileName.IDHANDLER, IDHandler.class);
         hashMap.put(FileName.REQUESTS, Request.class);
+        hashMap.put(FileName.PRESENTATIONSLOTS, PresentationSlot.class);
         hashMap.put(FileName.PROJECTS, Project.class);
 
         return hashMap.get(filename);
@@ -83,6 +87,7 @@ public class Helper {
         hashMap.put("ProjectManager", ProjectManager.class);
         hashMap.put("IDHandler", IDHandler.class);
         hashMap.put("Request", Request.class);
+        hashMap.put("PresentationSlot", PresentationSlot.class);
         hashMap.put("Project", Project.class);
         
         return hashMap.get(className);

@@ -137,7 +137,20 @@ public class JsonHandler {
                     @SuppressWarnings("unchecked") 
                     ArrayList<PresentationSlot> presentationSlots = new ArrayList<>((ArrayList<PresentationSlot>) objTs);
                     jsonData = mapper.writeValueAsString(presentationSlots);
-                    writeData(Helper.getFilenameByClassName(className), jsonData);
+                    writeData(Helper.getFilenameByEnum(FileName.PRESENTATIONSLOTS), jsonData);
+                    break;
+                case "Request":
+                    @SuppressWarnings("unchecked") 
+                    ArrayList<Request> requests = new ArrayList<>((ArrayList<Request>) objTs);
+                    jsonData = mapper.writeValueAsString(requests);
+                    writeData(Helper.getFilenameByEnum(FileName.REQUESTS), jsonData);
+                    break;
+                    break;
+                case "Project":
+                    @SuppressWarnings("unchecked") 
+                    ArrayList<Project> projects = new ArrayList<>((ArrayList<Project>) objTs);
+                    jsonData = mapper.writeValueAsString(projects);
+                    writeData(Helper.getFilenameByEnum(FileName.PROJECTS), jsonData);
                     break;
             }
         } catch (Exception ex) {
