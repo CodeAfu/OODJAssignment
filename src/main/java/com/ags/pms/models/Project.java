@@ -4,15 +4,17 @@ public class Project implements Identifiable {
 
     private int id;
     private String module;
+    private AssessmentType assessmentType;
     private String details;
 
     public Project() {
     }
 
-    public Project(int id, String module, String details) {
+    public Project(int id, String module, AssessmentType assessmentType, String details) {
         this.id = id;
         this.module = module;
-        this.details = details;    
+        this.assessmentType = assessmentType;
+        this.details = details;
     }
 
     public String getDetails() {
@@ -32,5 +34,11 @@ public class Project implements Identifiable {
     }
     public void setModule(String module) {
         this.module = module;
+    }
+    public AssessmentType getAssessmentType() {
+        return assessmentType;
+    }
+    public void setAssessmentType(AssessmentType assessmentType) {
+        this.assessmentType = assessmentType;
     }
 }

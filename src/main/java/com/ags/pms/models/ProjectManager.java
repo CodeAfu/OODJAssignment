@@ -57,7 +57,7 @@ public class ProjectManager extends Lecturer {
     
     public void createProject(String module, String details) {
         DataContext context = new DataContext();
-        Project project = new Project(context.fetchNextProjectId(), module, details);
+        Project project = new Project(context.fetchNextProjectId(), module, AssessmentType.CP1, details);
         context.addProject(project);
         context.writeAllDataAsync();
     }

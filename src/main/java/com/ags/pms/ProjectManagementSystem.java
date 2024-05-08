@@ -78,7 +78,7 @@ public class ProjectManagementSystem {
         ProjectManager projectManager2 = new ProjectManager(context.fetchNextLecturerId(), "Hehe My Man", "17/04/1972", "michael@email.com", Role.SECONDMARKER, "michael_myers", "asdfpass");
         PresentationSlot slot = new PresentationSlot(context.fetchNextPresentationSlotId());
         Request request = new Request(context.fetchNextRequestId(), student1, "Computer Science");
-        Project project = new Project(context.fetchNextProjectId(), "Computer Science", "You must do this project!!!!!!!!!!!!!!!");
+        Project project = new Project(context.fetchNextProjectId(), "Computer Science", AssessmentType.CP1, "You must do this project!!!!!!!!!!!!!!!");
 
         // context.addPresentationSlot(slot);
         // context.addRequest(request);

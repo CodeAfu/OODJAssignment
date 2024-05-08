@@ -25,7 +25,6 @@ import com.ags.pms.models.Report;
 import com.ags.pms.models.Request;
 import com.ags.pms.models.Student;
 
-
 public class DataContext {
 
     private JsonHandler handler;
@@ -168,6 +167,32 @@ public class DataContext {
                     .orElseThrow(() -> new NoSuchElementException("Object not found"));
     }
 
+    public <T extends Identifiable> T getObj(T objToFind) {
+        return collections.values().stream()
+                .flatMap(Collection::stream)
+                .filter(o -> o == objToFind)
+                .map(obj-> (T) obj)
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Object not found"));
+    }
+
+    public <T extends Identifiable> CompletableFuture<T> getObjAsync(T objToFind) {
+        return CompletableFuture.supplyAsync(() -> {
+            T result = collections.values().stream()
+                    .flatMap(Collection::stream)
+                    .filter(o -> o == objToFind)
+                    .map(obj-> (T) obj)
+                    .findFirst()
+                    .orElseThrow(() -> new NoSuchElementException("Object not found"));
+
+            return result;
+        })
+        .exceptionallyAsync(ex -> {
+            ex.printStackTrace();
+            return null;
+        });
+    }
+
     public <T extends Identifiable> T getById(int id) {
         return collections.values().stream()
                 .flatMap(Collection::stream)
@@ -175,6 +200,23 @@ public class DataContext {
                 .map(obj -> (T) obj)
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Object not found"));
+    }
+
+    public <T extends Identifiable> T removeById(int id) {
+        for (List<? extends Identifiable> list: collections.values()) {
+            Optional<? extends Identifiable> optional = list.stream()
+                    .filter(obj -> obj.getId() == id)
+                    .findFirst();
+
+            if (optional.isPresent()) {
+                @SuppressWarnings("unchecked")
+                T objToRemove = (T) optional.get();
+                list.removeIf(obj -> obj.getId() == id);
+                return objToRemove;
+            }
+        }
+        Helper.printErr("Null value not found. ID: " + id);
+        return null;
     }
 
     public void setLecturers(ArrayList<Lecturer> lecturers) {
@@ -291,13 +333,13 @@ public class DataContext {
     }
 
     public void addProject(Project project) {
-        if (checkDuplicateId(projects, project)) return;;
+        if (checkDuplicateId(projects, project)) return;
         projects.add(project);
         updateIds();
     }
 
     public void addReport(Report report) {
-        if (checkDuplicateId(reports, report)) return;;
+        if (checkDuplicateId(reports, report)) return;
         reports.add(report);
         updateIds();
     }
@@ -459,6 +501,7 @@ public class DataContext {
             })
             .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
+
     public CompletableFuture<Void> populatePresentationSlotsAsync() {
         return handler.readJsonAsync(FileName.PRESENTATIONSLOTS)
             .thenAccept(psList -> {
@@ -525,6 +568,9 @@ public class DataContext {
         Collections.sort(projectManagers, Comparator.comparingInt(ProjectManager::getId));
         Collections.sort(admins, Comparator.comparingInt(Admin::getId));
         Collections.sort(reports, Comparator.comparingInt(Report::getId));
+        Collections.sort(projects, Comparator.comparingInt(Project::getId));
+        Collections.sort(presentationSlots, Comparator.comparingInt(PresentationSlot::getId));
+        Collections.sort(requests, Comparator.comparingInt(Request::getId));
     }
 
     public <T extends Identifiable> void sort(ArrayList<T> objTs) {
