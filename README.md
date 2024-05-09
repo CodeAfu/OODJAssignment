@@ -1,74 +1,89 @@
 # OODJ Assignment
 
+## VERY USEFUL METHODS
+
+```java
+// I/O flow is simply:
+// - FETCH all the data into an ArrayList<T> where T is a class. eg: Student, Admin
+// - MODIFY the ArrayList<T> [custom logic]
+// - SAVE the ArrayList<T> to the data file
+
+// Import package
+import com.ags.pms.data.*;
+
+class Sample {
+    public void sampleMethod() {
+        ///-------------------------------------------------
+        /// [FETCH]
+        // Initialize context
+        DataContext context = new DataContext();
+
+        ///-------------------------------------------------
+        /// [MODIFY]
+        // Operations: Getters, Setters, Add, Remove, Update
+        context.addStudent(newStudentObj);
+        context.removeById(1004);
+        context.updateById(1004, a -> a.setName("TestName"));
+
+        // To modify, you are free to change the following properties inside the 
+        // DataContext class however you want:
+        //
+        // private ArrayList<Lecturer> lecturers = new ArrayList<>();
+        // private ArrayList<Student> students = new ArrayList<>();
+        // private ArrayList<Admin> admins = new ArrayList<>();
+        // private ArrayList<ProjectManager> projectManagers = new ArrayList<>();
+        // private ArrayList<Report> reports = new ArrayList<>();
+        // private ArrayList<PresentationSlot> presentationSlots = new ArrayList<>();
+        // private ArrayList<Request> requests = new ArrayList<>();
+        // private ArrayList<Project> projects = new ArrayList<>();
+        //
+        // example:
+        ArrayList<Student> students = context.getStudents();
+
+        for (Student student : students) {
+            if (student.getName() == "Bob")
+            student.setName("Joey");
+        }
+        context.setStudents(students);
+        // REFER ABOVE FOR ALL 'DataContext' PROPERTIES, CHECK IN THE CLASS FOR UPDATED LIST
+
+        ///-------------------------------------------------
+        /// [SAVE]
+        // Write modified students ArrayList to file
+        context.writeAllChangesAsync();
+    }
+}
+```
+
 ## ID SCHEME
 - Admin: 1xxx
-- Lecturer: 2xxx
+- Lecturer / ProjectManager: 2xxx
 - Student: 4xxx
 - PresentationSlot: 5xxx
 - Request: 6xxx
 - Project: 7xxx
 - Report: 8xxx
 
-## VERY USEFUL METHODS
-
-```java
-// Import this package to read and write Json Data files
-import com.ags.pms.io.*;
-
-// I/O flow is simply:
-// - Fetch all the data into an ArrayList<T> where T is a class. eg: Student, Admin [readJson()]
-// - Modify the ArrayList<T> [custom logic]
-// - Save the ArrayList<T> to the data file [writeJson()]
-
-// 2 Core commands:
-// - writeJson(): Takes ArrayList<T> as parameter, write as json to relavant file. [1 overload]
-// - readJson(): Takes FileName OR classType as parameter, returns ArrayList<T>. [2 overloads] 
-
-// Example Usage:
-class Sample {
-    public void sampleMethod() {
-
-        // init JsonHandler
-        JsonHandler handler = new JsonHandler();  
-
-        // Call readJson() method and store data in an ArrayList<T> 
-        // USING:
-        ArrayList<Student> students = handler.readJson(FileName.STUDENTS); 
-        // OR
-        ArrayList<Student> students = handler.readJson("Student");
-
-        // Modify the contents of students (just an example, idk if this works)
-        for (Student student : students) {
-            if (student.getName() == "Kurwa") {
-                student.setName("Helvette");
-            }
-        }
-
-        // Write modified students ArrayList to file
-        handler.writeJson(students);
-    }
-}
-
-```
-
 ## TODO
 - Build Models
-    - Lecturer -> Ruhit
-    - ProjectManager -> Ruhit
-    - Admin -> Rion
-    - Student -> Rion
+    - Lecturer -> Ruhit ❗
+    - ProjectManager -> Ibrahim ❗
+    - Admin -> Ibrahim ❗
+    - Student -> Ibrahim ❗
 - Build GUI
     - Login -> Ruhit
     - Register -> Ruhit
-    - MainMenuBody -> Ibrahim
-    - StudentMenu -> Ibrahim
+    - MainMenuBody -> Ruhit
+    - StudentMenu -> Rion
     - LecturerMenu -> Ruhit
     - AdminMenu -> Rion
 - Build Project Dependencies
-    - DataContext (Optional) -> Ibrahim
+    - DataContext (Optional) -> Ibrahim ✅
     - JsonHandler - Ibrahim ✅
     - PasswordHandler -> Ibrahim ✅
-    
+- Documentation
+    - Use Case Diagram -> Rion
+    - Class Diagram -> Rion
 
 ### GUI
 - Login

@@ -11,6 +11,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.NoSuchElementException;
 import java.util.Collection;
 import java.util.stream.Collectors;
+import java.util.function.Consumer;
+
 
 import com.ags.pms.Helper;
 import com.ags.pms.io.FileName;
@@ -24,6 +26,7 @@ import com.ags.pms.models.ProjectManager;
 import com.ags.pms.models.Report;
 import com.ags.pms.models.Request;
 import com.ags.pms.models.Student;
+import com.ags.pms.models.User;
 
 public class DataContext {
 
@@ -160,31 +163,87 @@ public class DataContext {
                        .orElseThrow(() -> new NoSuchElementException("ProjectManager not found"));
     }
 
-    public <T extends Identifiable> T getById(ArrayList<T> objTs, int id) {
-        return objTs.stream()
-                    .filter(o -> o.getId() == id)
-                    .findFirst()
-                    .orElseThrow(() -> new NoSuchElementException("Object not found"));
+    public void updateAdminById(int id, Consumer<Admin> updater) {
+        Optional<Admin> obj = admins.stream()
+                .filter(o -> o.getId() == id)
+                .findFirst();
+        obj.ifPresent(updater);
     }
 
-    public <T extends Identifiable> T getObj(T objToFind) {
+    public void updateLecturerById(int id, Consumer<Lecturer> updater) {
+        Optional<Lecturer> obj = lecturers.stream()
+                .filter(o -> o.getId() == id)
+                .findFirst();
+        obj.ifPresent(updater);
+    }
+
+    public void updateProjectManagerById(int id, Consumer<ProjectManager> updater) {
+        Optional<ProjectManager> obj = projectManagers.stream()
+                .filter(o -> o.getId() == id)
+                .findFirst();
+        obj.ifPresent(updater);
+    }
+
+    public void updateStudentById(int id, Consumer<Student> updater) {
+        Optional<Student> obj = students.stream()
+                .filter(o -> o.getId() == id)
+                .findFirst();
+        obj.ifPresent(updater);
+    }
+
+    public void updatePresentationSlotById(int id, Consumer<PresentationSlot> updater) {
+        Optional<PresentationSlot> obj = presentationSlots.stream()
+                .filter(o -> o.getId() == id)
+                .findFirst();
+        obj.ifPresent(updater);
+    }
+
+    public void updateRequestById(int id, Consumer<Request> updater) {
+        Optional<Request> obj = requests.stream()
+                .filter(o -> o.getId() == id)
+                .findFirst();
+        obj.ifPresent(updater);
+    }
+    
+    public void updateProjectById(int id, Consumer<Project> updater) {
+        Optional<Project> obj = projects.stream()
+                .filter(o -> o.getId() == id)
+                .findFirst();
+        obj.ifPresent(updater);
+    }
+    
+    public void updateReportById(int id, Consumer<Report> updater) {
+        Optional<Report> obj = reports.stream()
+                .filter(o -> o.getId() == id)
+                .findFirst();
+        obj.ifPresent(updater);
+    }
+
+    // public <T extends Identifiable> T getById(ArrayList<T> objTs, int id) {
+    //     return objTs.stream()
+    //                 .filter(o -> o.getId() == id)
+    //                 .findFirst()
+    //                 .orElseThrow(() -> new NoSuchElementException("Object not found"));
+    // }
+
+    public <T extends Identifiable> T getById(int id) {
         return collections.values().stream()
                 .flatMap(Collection::stream)
-                .filter(o -> o == objToFind)
-                .map(obj-> (T) obj)
+                .filter(o -> o.getId() == id)
+                .map(obj -> {
+                    if (Helper.isIdentifiableInstance(obj.getClass())) {
+                        return (T) obj;
+                    } else {
+                        throw new IllegalArgumentException("Unsupported class type");
+                    }
+                })
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Object not found"));
     }
 
-    public <T extends Identifiable> CompletableFuture<T> getObjAsync(T objToFind) {
+    public <T extends Identifiable> CompletableFuture<T> getByIdAsync(int id) {
         return CompletableFuture.supplyAsync(() -> {
-            T result = collections.values().stream()
-                    .flatMap(Collection::stream)
-                    .filter(o -> o == objToFind)
-                    .map(obj-> (T) obj)
-                    .findFirst()
-                    .orElseThrow(() -> new NoSuchElementException("Object not found"));
-
+            T result = getById(id);
             return result;
         })
         .exceptionallyAsync(ex -> {
@@ -193,17 +252,38 @@ public class DataContext {
         });
     }
 
-    public <T extends Identifiable> T getById(int id) {
-        return collections.values().stream()
-                .flatMap(Collection::stream)
-                .filter(o -> o.getId() == id)
-                .map(obj -> (T) obj)
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Object not found"));
-    }
+    // public <T extends Identifiable> T getObj(T objToFind) {
+    //     return collections.values().stream()
+    //             .flatMap(Collection::stream)
+    //             .filter(o -> o == objToFind)
+    //             .map(obj-> (T) obj)
+    //             .findFirst()
+    //             .orElseThrow(() -> new NoSuchElementException("Object not found"));
+    // }
+
+    // @SuppressWarnings("unchecked")
+    // private <T> List<T> getListFromClass(Class<?> classType) {
+    //     if (classType == Student.class) {
+    //         return (List<T>) students;
+    //     } else if (classType == Lecturer.class || classType == ProjectManager.class) {
+    //         return (List<T>) lecturers;
+    //     } else if (classType == Admin.class) {
+    //         return (List<T>) admins;
+    //     } else if (classType == Report.class) {
+    //         return (List<T>) reports;
+    //     } else if (classType == PresentationSlot.class) {
+    //         return (List<T>) presentationSlots;
+    //     } else if (classType == Request.class) {
+    //         return (List<T>) requests;
+    //     } else if (classType == Project.class) {
+    //         return (List<T>) projects;
+    //     } else {
+    //         throw new IllegalArgumentException("Unsupported class type");
+    //     }
+    // }
 
     public <T extends Identifiable> T removeById(int id) {
-        for (List<? extends Identifiable> list: collections.values()) {
+        for (List<? extends Identifiable> list : collections.values()) {
             Optional<? extends Identifiable> optional = list.stream()
                     .filter(obj -> obj.getId() == id)
                     .findFirst();

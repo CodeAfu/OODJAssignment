@@ -14,6 +14,7 @@ import com.ags.pms.data.IDHandler;
 import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
 import com.ags.pms.models.Admin;
+import com.ags.pms.models.Identifiable;
 import com.ags.pms.models.Lecturer;
 import com.ags.pms.models.PresentationSlot;
 import com.ags.pms.models.Project;
@@ -111,43 +112,46 @@ public class Helper {
         }
     }
 
-    // public static Class<?> getClassByID(int id) {
-    //     String idToString = String.valueOf(id);
-    //     char firstCharacter = idToString.charAt(0);
-        
-    //     if (firstCharacter == '2') {
-    //         return assessLecturerOrPM(id);
-    //     }
+    public static Class<?> getClassTypeFromId(int id) {
+        if (id >= 1000 && id < 2000) {
+            return Admin.class;
+        } else if (id >= 2000 && id < 3000) {
+            return assessLecturerOrPM(id);
+        } else if (id >= 4000 && id < 5000) {
+            return Student.class;
+        } else if (id >= 5000 && id < 6000) {
+            return PresentationSlot.class;
+        } else if (id >= 6000 && id < 7000) {
+            return Request.class;
+        } else if (id >= 7000 && id < 8000) {
+            return Project.class;
+        } else if (id >= 8000 && id < 9000) {
+            return Report.class;
+        } else {
+            throw new IllegalArgumentException("Invalid ID range");
+        }
+    }
 
-    //     HashMap<Character, Class<?>> hashMap = new HashMap<>();
-    //     hashMap.put('1', Admin.class);
-    //     hashMap.put('4', Student.class);
+    private static Class<?> assessLecturerOrPM(int id) {
+        DataContext context = new DataContext();
+        List<Integer> lecturerIds = context.getLecturers().stream()
+                                            .map(l -> l.getId())
+                                            .collect(Collectors.toList());
+        List<Integer> projectManagerIds = context.getProjectManagers().stream()
+                                            .map(l -> l.getId())
+                                            .collect(Collectors.toList());
 
-    //     Class<?> result = hashMap.get(firstCharacter);
-    //     if (result == null) {
-    //         throw new IllegalArgumentException("No PM found (Helper)");
-    //     }
-    //     return result;        
-    // }
-    
+        if (lecturerIds.contains(id)) {
+            return Lecturer.class;
+        } else if (projectManagerIds.contains(id)) {
+            return ProjectManager.class;
+        } else {
+            throw new IllegalArgumentException("No PM found (Helper)");
+            // return null;
+        }
+    }
 
-    // private static Class<?> assessLecturerOrPM(int id) {
-    //     DataContext context = new DataContext();
-    //     List<Integer> lecturerIds = context.getLecturers().stream()
-    //                                         .map(l -> l.getId())
-    //                                         .collect(Collectors.toList());
-    //     List<Integer> projectManagerIds = context.getProjectManagers().stream()
-    //                                         .map(l -> l.getId())
-    //                                         .collect(Collectors.toList());
-
-    //     if (lecturerIds.contains(id)) {
-    //         return Lecturer.class;
-    //     } else if (projectManagerIds.contains(id)) {
-    //         return ProjectManager.class;
-    //     } else {
-    //         throw new IllegalArgumentException("No PM found (Helper)");
-    //         // return null;
-    //     }
-    // }
-
+    public static boolean isIdentifiableInstance(Class<?> clazz) {
+        return Identifiable.class.isAssignableFrom(clazz);
+    }
 }

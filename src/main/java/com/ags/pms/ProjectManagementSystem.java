@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
 import com.formdev.flatlaf.json.Json;
 
 import net.bytebuddy.build.HashCodeAndEqualsPlugin;
+import net.bytebuddy.implementation.bytecode.constant.ClassConstant;
 
 import com.ags.pms.data.DataContext;
 import com.ags.pms.data.SeedData;
@@ -50,15 +51,20 @@ public class ProjectManagementSystem {
         // testFileHandler();
         // testAES();
         // generateNewAESKey();
-        // smallTests();
-        dataContextTest();
+        smallTests();
+        // dataContextTest();
     }
 
 
     @SuppressWarnings("unused")
     private static void smallTests() throws Exception {
         DataContext context = new DataContext();
-        System.out.println(context.getById(2003).getClass().getSimpleName());
+        Student student = context.getById(4004);
+        context.removeById(4004);
+        System.out.println(student.getDob());
+        context.updateStudentById(4004, s -> s.setDob("11/11/2023"));
+        System.out.println(student.getDob());
+
     }
     
     @SuppressWarnings("unused")
