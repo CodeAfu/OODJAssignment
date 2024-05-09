@@ -69,13 +69,13 @@ public class ProjectManagementSystem {
     
     @SuppressWarnings("unused")
     private static void dataContextTest() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
-        // try {
-        //     SeedData.executeWithContext();
-        //     // SeedData.init();
-        // } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
-        //         | BadPaddingException | InvalidAlgorithmParameterException e) {
-        //     Helper.printErr(Helper.getStackTraceString(e));
-        // }
+        try {
+            // SeedData.executeWithContext();
+            SeedData.init();
+        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
+                | BadPaddingException | InvalidAlgorithmParameterException e) {
+            Helper.printErr(Helper.getStackTraceString(e));
+        }
 
         DataContext context = new DataContext();
         

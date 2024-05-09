@@ -4,16 +4,19 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.print.PrintServiceLookup;
 
 import com.ags.pms.io.JsonHandler;
 import com.ags.pms.models.Admin;
 import com.ags.pms.models.AssessmentType;
 import com.ags.pms.models.Lecturer;
+import com.ags.pms.models.Project;
 import com.ags.pms.models.Report;
 import com.ags.pms.models.ProjectManager;
 import com.ags.pms.models.Role;
@@ -36,7 +39,9 @@ public class SeedData {
         ArrayList<Lecturer> lecturers = new ArrayList<>();
         ArrayList<Admin> admins = new ArrayList<>();
         ArrayList<ProjectManager> projectManagers = new ArrayList<>();
-        
+        ArrayList<Project> projects = new ArrayList<>();
+        ArrayList<Report> reports = new ArrayList<>();
+
         Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Report>());
         Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Report>());
         Student student3 = new Student(4003, "Emma Smith", "05/08/2023", "emma@email.com", "emma_smith", "P@ssw0rd", new ArrayList<Report>());
@@ -52,6 +57,10 @@ public class SeedData {
         ProjectManager projectManager2 = new ProjectManager(2006, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com", Role.SECONDMARKER, "somelecturerPM", "123qweasdzxc");
         ProjectManager projectManager3 = new ProjectManager(2008, "Sophia Johnson", "25/06/1970", "sophia@email.com", Role.SUPERVISOR, "sophia_j", "ProjectMan321");
         ProjectManager projectManager4 = new ProjectManager(2007, "Michael Wilson", "17/04/1972", "michael@email.com", Role.SECONDMARKER, "michael_w", "Wilson123");
+        Project project1 = new Project(7000, "Computer Science", AssessmentType.CP1, "Do this project!!!!!!");
+        Project project2 = new Project(7001, "Cybersecurity", AssessmentType.CP2, "Do this project!!!!!!");
+        Report report1 = new Report(8000, project1, false, null, "https://sample.moodle.com/sample-link/1", -1, 100);
+        Report report2 = new Report(8001, project2, true, new Date(), "https://sample.moodle.com/sample-link/2", 30, 100);
         
         students.add(student1);
         students.add(student2);
@@ -71,6 +80,12 @@ public class SeedData {
         projectManagers.add(projectManager2);
         projectManagers.add(projectManager3);
         projectManagers.add(projectManager4);
+
+        projects.add(project1);
+        projects.add(project2);
+        
+        reports.add(report1);
+        reports.add(report2);
         
         handler.writeJson(admins);
 
@@ -78,7 +93,9 @@ public class SeedData {
             handler.writeJsonAsync(students),
             handler.writeJsonAsync(lecturers),
             handler.writeJsonAsync(admins),
-            handler.writeJsonAsync(projectManagers)
+            handler.writeJsonAsync(projectManagers),
+            handler.writeJsonAsync(projects),
+            handler.writeJsonAsync(reports)
         ).thenRun(() -> System.out.println("Json Written"));
         futures.join();
         
@@ -86,7 +103,7 @@ public class SeedData {
 
     public static void executeWithContext() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         DataContext context = new DataContext();
-        
+
         Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Report>());
         Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Report>());
         Student student3 = new Student(4003, "Emma Smith", "05/08/2023", "emma@email.com", "emma_smith", "P@ssw0rd", new ArrayList<Report>());
@@ -102,6 +119,10 @@ public class SeedData {
         ProjectManager projectManager2 = new ProjectManager(2006, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com", Role.SECONDMARKER, "somelecturerPM", "123qweasdzxc");
         ProjectManager projectManager3 = new ProjectManager(2008, "Sophia Johnson", "25/06/1970", "sophia@email.com", Role.SUPERVISOR, "sophia_j", "ProjectMan321");
         ProjectManager projectManager4 = new ProjectManager(2007, "Michael Wilson", "17/04/1972", "michael@email.com", Role.SECONDMARKER, "michael_w", "Wilson123");
+        Project project1 = new Project(7000, "Computer Science", AssessmentType.CP1, "Do this project!!!!!!");
+        Project project2 = new Project(7001, "Cybersecurity", AssessmentType.CP2, "Do this project!!!!!!");
+        Report report1 = new Report(8000, project1, false, null, "https://sample.moodle.com/sample-link/1", -1, 100);
+        Report report2 = new Report(8001, project2, true, new Date(), "https://sample.moodle.com/sample-link/2", 30, 100);
         
         context.addStudent(student1);
         context.addStudent(student2);
@@ -121,7 +142,13 @@ public class SeedData {
         context.addProjectManager(projectManager2);
         context.addProjectManager(projectManager3);
         context.addProjectManager(projectManager4);
+        
+        context.addProject(project1);
+        context.addProject(project2);
 
+        context.addReport(report1);
+        context.addReport(report2);
+        
         context.writeAllDataAsync();
     }
 }

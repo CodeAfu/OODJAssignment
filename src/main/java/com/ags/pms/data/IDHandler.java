@@ -34,7 +34,7 @@ public class IDHandler {
 
     public void initFromFile() {
         JsonHandler handler = new JsonHandler();
-        IDHandler idHandler = handler.getIds();
+        IDHandler idHandler = handler.getIdsFromJson();
 
         this.nextAdminId = idHandler.getNextAdminId();
         this.nextLecturerId = idHandler.getNextLecturerId();

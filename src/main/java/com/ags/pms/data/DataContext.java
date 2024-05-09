@@ -30,7 +30,7 @@ import com.ags.pms.models.User;
 
 public class DataContext {
 
-    private JsonHandler handler;
+    private JsonHandler jsonHandler;
 
     private Map<String, List<? extends Identifiable>> collections = new HashMap<>();
 
@@ -48,7 +48,7 @@ public class DataContext {
     private CompletableFuture<Void> allFutures;
 
     public DataContext() {
-        handler = new JsonHandler();
+        jsonHandler = new JsonHandler();
         populateAllDataAsync();
         populateCollection();
         initIds();
@@ -67,7 +67,7 @@ public class DataContext {
 
     // Only call on constructor
     private void initIds() {
-        IDHandler savedIdHandler = handler.getIds();
+        IDHandler savedIdHandler = jsonHandler.getIdsFromJson();
         idHandler = new IDHandler(this);
 
         idHandler.setNextAdminId(Math.max(savedIdHandler.getNextAdminId(), idHandler.getNextAdminId()));
@@ -454,13 +454,13 @@ public class DataContext {
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
         allFutures.join();
 
-        handler.updateIds(idHandler);
+        jsonHandler.updateIds(idHandler);
     }
 
     public CompletableFuture<Void> saveStudentsAsync() {
         return CompletableFuture.runAsync(() -> {
             sort(students);
-            handler.writeJson(students);
+            jsonHandler.writeJson(students);
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
@@ -468,7 +468,7 @@ public class DataContext {
     public CompletableFuture<Void> saveLecturersAsync() {
         return CompletableFuture.runAsync(() -> {
             sort(lecturers);
-            handler.writeJson(lecturers);
+            jsonHandler.writeJson(lecturers);
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
 
@@ -477,7 +477,7 @@ public class DataContext {
     public CompletableFuture<Void> saveProjectManagersAsync() {
         return CompletableFuture.runAsync(() -> {
             sort(projectManagers);
-            handler.writeJson(projectManagers);
+            jsonHandler.writeJson(projectManagers);
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
@@ -485,7 +485,7 @@ public class DataContext {
     public CompletableFuture<Void> saveAdminsAsync() {
         return CompletableFuture.runAsync(() -> {
             sort(admins);
-            handler.writeJson(admins);
+            jsonHandler.writeJson(admins);
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
@@ -493,7 +493,7 @@ public class DataContext {
     public CompletableFuture<Void> saveReportsAsync() {
         return CompletableFuture.runAsync(() -> {
             sort(reports);
-            handler.writeJson(reports);
+            jsonHandler.writeJson(reports);
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
@@ -501,7 +501,7 @@ public class DataContext {
     public CompletableFuture<Void> savePresentationSlotsAsync() {
         return CompletableFuture.runAsync(() -> {
             sort(presentationSlots);
-            handler.writeJson(presentationSlots);
+            jsonHandler.writeJson(presentationSlots);
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
@@ -509,7 +509,7 @@ public class DataContext {
     public CompletableFuture<Void> saveRequestsAsync() {
         return CompletableFuture.runAsync(() -> {
             sort(requests);
-            handler.writeJson(requests);
+            jsonHandler.writeJson(requests);
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
@@ -517,13 +517,13 @@ public class DataContext {
     public CompletableFuture<Void> saveProjectsAsync() {
         return CompletableFuture.runAsync(() -> {
             sort(projects);
-            handler.writeJson(projects);
+            jsonHandler.writeJson(projects);
         })
         .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
 
     public CompletableFuture<Void> populateProjectManagersAsync() {
-        return handler.readJsonAsync(FileName.PROJECTMANAGERS)
+        return jsonHandler.readJsonAsync(FileName.PROJECTMANAGERS)
             .thenAccept(projectManagerList -> {
                 projectManagers = new ArrayList<>();
                 projectManagerList.forEach(pm -> projectManagers.add((ProjectManager) pm));
@@ -535,7 +535,7 @@ public class DataContext {
     }
 
     public CompletableFuture<Void> populateStudentsAsync() {
-        return handler.readJsonAsync(FileName.STUDENTS)
+        return jsonHandler.readJsonAsync(FileName.STUDENTS)
             .thenAccept(studentList -> {
                 students = new ArrayList<>();
                 studentList.forEach(s -> students.add((Student) s));
@@ -547,7 +547,7 @@ public class DataContext {
     }
 
     public CompletableFuture<Void> populateLecturersAsync() {
-        return handler.readJsonAsync(FileName.LECTURERS)
+        return jsonHandler.readJsonAsync(FileName.LECTURERS)
             .thenAccept(lecturerList -> {
                 lecturers = new ArrayList<>();
                 lecturerList.forEach(l -> lecturers.add((Lecturer) l));
@@ -559,7 +559,7 @@ public class DataContext {
     }
 
     public CompletableFuture<Void> populateAdminsAsync() {
-        return handler.readJsonAsync(FileName.ADMINS)
+        return jsonHandler.readJsonAsync(FileName.ADMINS)
             .thenAccept(adminList -> {
                 admins = new ArrayList<>();
                 adminList.forEach(a -> admins.add((Admin) a));
@@ -571,7 +571,7 @@ public class DataContext {
     }
 
     public CompletableFuture<Void> populateReportsAsync() {
-        return handler.readJsonAsync(FileName.REPORTS)
+        return jsonHandler.readJsonAsync(FileName.REPORTS)
             .thenAccept(reportList -> {
                 reports = new ArrayList<>();
                 reportList.forEach(r -> reports.add((Report) r));
@@ -583,7 +583,7 @@ public class DataContext {
     }
 
     public CompletableFuture<Void> populatePresentationSlotsAsync() {
-        return handler.readJsonAsync(FileName.PRESENTATIONSLOTS)
+        return jsonHandler.readJsonAsync(FileName.PRESENTATIONSLOTS)
             .thenAccept(psList -> {
                 presentationSlots = new ArrayList<>();
                 psList.forEach(ps -> presentationSlots.add((PresentationSlot) ps));
@@ -594,7 +594,7 @@ public class DataContext {
             .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
     public CompletableFuture<Void> populateRequestsAsync() {
-        return handler.readJsonAsync(FileName.REQUESTS)
+        return jsonHandler.readJsonAsync(FileName.REQUESTS)
             .thenAccept(requestList -> {
                 requests = new ArrayList<>();
                 requestList.forEach(r -> requests.add((Request) r));
@@ -606,7 +606,7 @@ public class DataContext {
     }
     
     public CompletableFuture<Void> populateProjectsAsync() {
-        return handler.readJsonAsync(FileName.PROJECTS)
+        return jsonHandler.readJsonAsync(FileName.PROJECTS)
             .thenAccept(projectList -> {
                 projects = new ArrayList<>();
                 projectList.forEach(p -> projects.add((Project) p));

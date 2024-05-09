@@ -105,10 +105,10 @@ public class Student extends User {
         }
     }
 
-    private Report createReport(String module, AssessmentType assessmentType, String moodleLink, int totalMarks) {
+    private Report createReport(Project project, String moodleLink, int totalMarks) {
         DataContext context = new DataContext();
         int id = context.fetchNextReportId();
-        Report report = new Report(id, this, module, assessmentType, moodleLink, totalMarks);
+        Report report = new Report(id, project, moodleLink, totalMarks);
         return report;
     }
 

@@ -1,1 +1,1 @@
-[{"id":7000,"module":"Computer Science","details":"You must do this project!!!!!!!!!!!!!!!"},{"id":7001,"module":"Computer Science","details":"You must do this project!!!!!!!!!!!!!!!"},{"id":7002,"module":"Computer Science","details":"You must do this project!!!!!!!!!!!!!!!"},{"id":7003,"module":"Computer Science","details":"You must do this project!!!!!!!!!!!!!!!"}]
+[{"id":7000,"module":"Computer Science","assessmentType":"CP1","details":"Do this project!!!!!!"},{"id":7001,"module":"Cybersecurity","assessmentType":"CP2","details":"Do this project!!!!!!"}]

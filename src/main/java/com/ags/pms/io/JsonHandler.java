@@ -69,7 +69,7 @@ public class JsonHandler {
         }
     }
 
-    public IDHandler getIds() {
+    public IDHandler getIdsFromJson() {
         try {
             ObjectMapper mapper = new ObjectMapper();
             String json = readData(Helper.getFilenameByEnum(FileName.IDHANDLER));
