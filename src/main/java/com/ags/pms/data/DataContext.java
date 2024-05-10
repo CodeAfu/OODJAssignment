@@ -528,9 +528,6 @@ public class DataContext {
                 projectManagers = new ArrayList<>();
                 projectManagerList.forEach(pm -> projectManagers.add((ProjectManager) pm));
             })
-            .thenRun(() -> {
-                System.out.println("ProjectManagers populated");
-            })
             .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
 
@@ -539,9 +536,6 @@ public class DataContext {
             .thenAccept(studentList -> {
                 students = new ArrayList<>();
                 studentList.forEach(s -> students.add((Student) s));
-            })
-            .thenRun(() -> {
-                System.out.println("Students populated");
             })
             .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
@@ -552,9 +546,6 @@ public class DataContext {
                 lecturers = new ArrayList<>();
                 lecturerList.forEach(l -> lecturers.add((Lecturer) l));
             })
-            .thenRun(() -> {
-                System.out.println("Lecturers populated");
-            })
             .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
 
@@ -563,9 +554,6 @@ public class DataContext {
             .thenAccept(adminList -> {
                 admins = new ArrayList<>();
                 adminList.forEach(a -> admins.add((Admin) a));
-            })
-            .thenRun(() -> {
-                System.out.println("Admins populated");
             })
             .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
@@ -576,9 +564,6 @@ public class DataContext {
                 reports = new ArrayList<>();
                 reportList.forEach(r -> reports.add((Report) r));
             })
-            .thenRun(() -> {
-                System.out.println("Reports populated");
-            })
             .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
 
@@ -588,9 +573,6 @@ public class DataContext {
                 presentationSlots = new ArrayList<>();
                 psList.forEach(ps -> presentationSlots.add((PresentationSlot) ps));
             })
-            .thenRun(() -> {
-                System.out.println("PresentationSlots populated");
-            })
             .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
     public CompletableFuture<Void> populateRequestsAsync() {
@@ -598,9 +580,6 @@ public class DataContext {
             .thenAccept(requestList -> {
                 requests = new ArrayList<>();
                 requestList.forEach(r -> requests.add((Request) r));
-            })
-            .thenRun(() -> {
-                System.out.println("Requests populated");
             })
             .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
@@ -610,9 +589,6 @@ public class DataContext {
             .thenAccept(projectList -> {
                 projects = new ArrayList<>();
                 projectList.forEach(p -> projects.add((Project) p));
-            })
-            .thenRun(() -> {
-                System.out.println("Projects populated");
             })
             .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }

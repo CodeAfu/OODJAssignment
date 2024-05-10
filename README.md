@@ -23,7 +23,7 @@ class Sample {
         // Operations: Getters, Setters, Add, Remove, Update
         context.addStudent(newStudentObj);
         context.removeById(1004);
-        context.updateById(1004, a -> a.setName("TestName"));
+        context.updateAdminById(1002, a -> a.setName("TestName"));
 
         // To modify, you are free to change the following properties inside the 
         // DataContext class however you want:

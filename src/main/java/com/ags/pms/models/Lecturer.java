@@ -14,8 +14,6 @@ import java.util.HashMap;
 
 import com.ags.pms.Helper;
 import com.ags.pms.data.DataContext;
-import com.ags.pms.io.FileName;
-import com.ags.pms.io.JsonHandler;
 import com.fasterxml.jackson.databind.deser.std.CollectionDeserializer;
 
 public class Lecturer extends User {

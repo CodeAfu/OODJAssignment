@@ -58,13 +58,11 @@ public class ProjectManagementSystem {
 
     @SuppressWarnings("unused")
     private static void smallTests() throws Exception {
-        DataContext context = new DataContext();
-        Student student = context.getById(4004);
-        context.removeById(4004);
-        System.out.println(student.getDob());
-        context.updateStudentById(4004, s -> s.setDob("11/11/2023"));
-        System.out.println(student.getDob());
-
+        // DataContext context = new DataContext();
+        Admin admin1 = new Admin(1001, "Jay", "20/12/1999", "jay@admin.com", "admin", "VerySecureRight");
+        admin1.allotProjectManager(2001, RequestType.SUPERVISOR);
+        admin1.removeProjectManager(2001);
+        System.out.println("Test");
     }
     
     @SuppressWarnings("unused")
@@ -80,8 +78,8 @@ public class ProjectManagementSystem {
         DataContext context = new DataContext();
         
         Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Report>());
-        ProjectManager projectManager1 = new ProjectManager(context.fetchNextLecturerId(), "Michael Myers", "17/04/1972", "michael@email.com", Role.SECONDMARKER, "michael_myers", "asdfpass");
-        ProjectManager projectManager2 = new ProjectManager(context.fetchNextLecturerId(), "Hehe My Man", "17/04/1972", "michael@email.com", Role.SECONDMARKER, "michael_myers", "asdfpass");
+        ProjectManager projectManager1 = new ProjectManager(context.fetchNextLecturerId(), "Michael Myers", "17/04/1972", "michael@email.com", "michael_myers", "asdfpass", Role.SECONDMARKER, new ArrayList<Student>());
+        ProjectManager projectManager2 = new ProjectManager(context.fetchNextLecturerId(), "Hehe My Man", "17/04/1972", "michael@email.com", "michael_myers", "asdfpass", Role.SECONDMARKER, new ArrayList<Student>());
         PresentationSlot slot = new PresentationSlot(context.fetchNextPresentationSlotId());
         Request request = new Request(context.fetchNextRequestId(), student1, "Computer Science");
         Project project = new Project(context.fetchNextProjectId(), "Computer Science", AssessmentType.CP1, "You must do this project!!!!!!!!!!!!!!!");
@@ -211,8 +209,8 @@ public class ProjectManagementSystem {
         admins.add(admin1);
         admins.add(admin2);
         
-        ProjectManager projectManager1 = new ProjectManager(2001, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com", Role.SUPERVISOR, "josh_lecturerPM", "verySecurePasswordMate");
-        ProjectManager projectManager2 = new ProjectManager(2002, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com", Role.SECONDMARKER, "somelecturerPM", "123qweasdzxc");
+        ProjectManager projectManager1 = new ProjectManager(2001, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com", "josh_lecturerPM", "verySecurePasswordMate", Role.SUPERVISOR, new ArrayList<Student>());
+        ProjectManager projectManager2 = new ProjectManager(2002, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com", "somelecturerPM", "123qweasdzxc", Role.SECONDMARKER, new ArrayList<Student>());
         projectManagers.add(projectManager1);
         projectManagers.add(projectManager2);
 

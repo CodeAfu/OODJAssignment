@@ -21,6 +21,8 @@ import com.ags.pms.models.Project;
 import com.ags.pms.models.ProjectManager;
 import com.ags.pms.models.Report;
 import com.ags.pms.models.Request;
+import com.ags.pms.models.RequestType;
+import com.ags.pms.models.Role;
 import com.ags.pms.models.Student;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.formdev.flatlaf.json.ParseException;
@@ -153,5 +155,15 @@ public class Helper {
 
     public static boolean isIdentifiableInstance(Class<?> clazz) {
         return Identifiable.class.isAssignableFrom(clazz);
+    }
+
+    public static Role getRoleFromRequestType(RequestType requestType) {
+        switch (requestType){
+            case RequestType.SECONDMARKER:
+                return Role.SECONDMARKER;
+            case RequestType.SUPERVISOR:
+                return Role.SUPERVISOR;
+        }
+        return null;
     }
 }

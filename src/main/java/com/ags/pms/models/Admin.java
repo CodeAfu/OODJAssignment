@@ -10,8 +10,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import com.ags.pms.Helper;
 import com.ags.pms.data.DataContext;
-import com.fasterxml.jackson.databind.cfg.ConfigOverrides;
 
 public class Admin extends User {
 
@@ -114,6 +114,45 @@ public class Admin extends User {
         context.writeAllDataAsync();
     }
 
-    // Allot PM
-    // Remove PM
+    public void allotProjectManager(int id, RequestType requestType) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+        DataContext context = new DataContext();
+        Lecturer lecturer = context.getLecturerByID(id);
+
+        if (lecturer == null) {
+            Helper.printErr("Lecturer not found for ID: " + id);
+            return;
+        }
+        
+        lecturer.setProjectManager(true);
+        
+        ProjectManager projectManager = new ProjectManager(lecturer.getId(), 
+            lecturer.getName(), lecturer.getDob(), lecturer.getEmail(), lecturer.getUsername(), lecturer.getPassword(),
+            Helper.getRoleFromRequestType(requestType), new ArrayList<Student>());
+        
+        context.removeById(lecturer.getId());
+        context.addProjectManager(projectManager);
+        
+        context.writeAllDataAsync();
+    }   
+    
+    public void removeProjectManager(int id) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+        DataContext context = new DataContext();
+        ProjectManager projectManager = context.getProjectManagerByID(id);
+        
+        if (projectManager == null) {
+            Helper.printErr("ProjectManager not found for ID: " + id);
+            return;
+        }
+        
+        projectManager.setProjectManager(false);
+        
+        Lecturer lecturer = new Lecturer(projectManager.getId(),
+            projectManager.getName(), projectManager.getDob(), projectManager.getEmail(), 
+            projectManager.getUsername(), projectManager.getPassword());
+            
+        context.removeById(projectManager.getId());
+        context.addLecturer(lecturer);
+        
+        context.writeAllDataAsync();
+    }
 }

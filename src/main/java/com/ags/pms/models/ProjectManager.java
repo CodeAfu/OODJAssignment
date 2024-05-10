@@ -10,7 +10,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import com.ags.pms.data.DataContext;
-import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
 
 public class ProjectManager extends Lecturer {
 
@@ -23,16 +22,19 @@ public class ProjectManager extends Lecturer {
 
     public ProjectManager(int id, String name, String dob, String email, String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         super(id, name, dob, email, username, password);
+        this.isProjectManager = true;
     }
     
-    public ProjectManager(int id, String name, String dob, String email, Role role, String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+    public ProjectManager(int id, String name, String dob, String email, String username, String password, Role role, ArrayList<Student> supervisees) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         super(id, name, dob, email, username, password);
         this.isProjectManager = true;
         this.role = role;
+        this.supervisees = supervisees;
     }
 
     public ProjectManager(String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         super(username, password);
+        this.isProjectManager = true;
     }
 
     public Role getRole() {
@@ -80,6 +82,7 @@ public class ProjectManager extends Lecturer {
         ArrayList<Report> reports = context.getReports();
         return reports;
     }
+
 
     // Assign Supervisor and Marker
 }
