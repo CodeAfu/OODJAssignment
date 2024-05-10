@@ -78,6 +78,17 @@ public class Lecturer extends User {
     public Request viewSecondMarkerAcceptance() {
         DataContext context = new DataContext();
         Request request = context.getRequest(r -> r.getUser().getId() == this.id);
+
+        if (request == null) {
+            Helper.printErr("No Request found for User ID: " + this.id);
+            return null;
+        }
+    
+        if (request.getRequestType() != RequestType.SECONDMARKER) {
+            Helper.printErr("Invalid RequestType: " + request.getRequestType());
+            return null;
+        }
+
         return request;
     }
 
@@ -86,6 +97,7 @@ public class Lecturer extends User {
             return false;
         }
         student.addPresentationSlot(slot);
+        slot.setAvailable(false);
         return true;
     }
 

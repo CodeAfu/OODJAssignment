@@ -21,7 +21,6 @@ import net.bytebuddy.implementation.bytecode.constant.ClassConstant;
 import com.ags.pms.data.DataContext;
 import com.ags.pms.data.SeedData;
 import com.ags.pms.forms.Login;
-import com.ags.pms.forms.MainFormBody;
 import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
 
@@ -33,8 +32,8 @@ public class ProjectManagementSystem {
     private static ArrayList<ProjectManager> projectManagersFromJson;
 
     public static void main(String[] args) {
-        // app();
         try {
+            // app();
             consoleTests();
         } catch (Exception ex) {
             Helper.printErr(Helper.getStackTraceString(ex));

@@ -632,8 +632,5 @@ public class DataContext {
     public <T extends Identifiable> void sort(ArrayList<T> objTs) {
         Collections.sort(objTs, Comparator.comparingInt(T::getId));
     }
-
-    public void isValidUser(String username, String password) {
-        
-    }
+    
 }
