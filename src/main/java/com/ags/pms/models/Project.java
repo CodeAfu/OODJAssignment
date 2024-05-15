@@ -1,5 +1,7 @@
 package com.ags.pms.models;
 
+import com.ags.pms.data.DataContext;
+
 public class Project implements Identifiable {
 
     private int id;
@@ -8,6 +10,14 @@ public class Project implements Identifiable {
     private String details;
 
     public Project() {
+    }
+
+    public Project(String module, AssessmentType assessmentType, String details) {
+        DataContext context = new DataContext();
+        this.id = context.fetchNextProjectId();
+        this.module = module;
+        this.assessmentType = assessmentType;
+        this.details = details;
     }
 
     public Project(int id, String module, AssessmentType assessmentType, String details) {

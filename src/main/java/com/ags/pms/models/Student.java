@@ -23,6 +23,20 @@ public class Student extends User {
     private ProjectManager supervisor;
     private ProjectManager secondMarker;
 
+    public Student(int id, String name, String dob, String email, String username, String password,
+            ArrayList<Report> reports, ArrayList<PresentationSlot> presentationSlots, ArrayList<Project> projects,
+            ArrayList<String> modules, ProjectManager supervisor, ProjectManager secondMarker)
+            throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException,
+            BadPaddingException, InvalidAlgorithmParameterException {
+        super(id, name, dob, email, username, password);
+        this.reports = reports;
+        this.presentationSlots = presentationSlots;
+        this.projects = projects;
+        this.modules = modules;
+        this.supervisor = supervisor;
+        this.secondMarker = secondMarker;
+    }
+
     // Debug
     public Student() {
         super();
@@ -146,15 +160,12 @@ public class Student extends User {
     }
 
     public String retrieveReportDetails(Report report) {
-        if (reports.contains(report)) {
-
+        if (!reports.contains(report)) {
+            Helper.printErr("Report does not exist: " + report.getId());
+            return null;
         }
 
-        StringBuilder stringBuilder = new StringBuilder();
-        reports.forEach(r -> {
-            stringBuilder.append(r.retrieveReportDetails());
-        });
-        return stringBuilder.toString();
+        return report.toString();
     }
 
     public String retrievePresentationRequestDetails() {

@@ -377,31 +377,31 @@ public class DataContext {
     }
 
     public void addStudent(Student student) {
-        if (checkDuplicateId(students, student)) return;;
+        if (checkDuplicateId(students, student)) return;
         students.add(student);
         updateIds();
     }
 
     public void addAdmin(Admin admin) {
-        if (checkDuplicateId(admins, admin)) return;;
+        if (checkDuplicateId(admins, admin)) return;
         admins.add(admin);
         updateIds();
     }
 
     public void addLecturer(Lecturer lecturer) {
-        if (checkDuplicateId(lecturers, lecturer)) return;;
+        if (checkDuplicateId(lecturers, lecturer)) return;
         lecturers.add(lecturer);
         updateIds();
     }
 
     public void addProjectManager(ProjectManager projectManager) {
-        if (checkDuplicateId(projectManagers, projectManager)) return;;
+        if (checkDuplicateId(projectManagers, projectManager)) return;
         projectManagers.add(projectManager);
         updateIds();
     }
 
     public void addPresentationSlot(PresentationSlot presentationSlot) {
-        if (checkDuplicateId(presentationSlots, presentationSlot)) return;;
+        if (checkDuplicateId(presentationSlots, presentationSlot)) return;
         presentationSlots.add(presentationSlot);
         updateIds();
     }

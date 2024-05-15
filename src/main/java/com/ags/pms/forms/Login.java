@@ -12,6 +12,7 @@ import com.ags.pms.models.User;
  */
 public class Login extends javax.swing.JFrame {
 
+    private User user;
     /**
      * Creates new form Login
      */
@@ -190,6 +191,7 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JTextField userField;
     private javax.swing.JLabel userName;
     // End of variables declaration//GEN-END:variables
+    
     public User getUser() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getUser'");

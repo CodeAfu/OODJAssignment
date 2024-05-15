@@ -57,9 +57,8 @@ public class ProjectManager extends Lecturer {
         supervisees.add(student);
     }
     
-    public void createProject(String module, String details) {
+    public void createProject(Project project) {
         DataContext context = new DataContext();
-        Project project = new Project(context.fetchNextProjectId(), module, AssessmentType.CP1, details);
         context.addProject(project);
         context.writeAllDataAsync();
     }
@@ -83,6 +82,8 @@ public class ProjectManager extends Lecturer {
         return reports;
     }
 
+    
+    
 
     // Assign Supervisor and Marker
 }

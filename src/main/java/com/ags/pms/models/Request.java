@@ -3,6 +3,7 @@ package com.ags.pms.models;
 import com.fasterxml.jackson.databind.Module.SetupContext;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.ags.pms.data.DataContext;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 public class Request implements Identifiable {
@@ -12,10 +13,35 @@ public class Request implements Identifiable {
     private RequestType requestType;
     private String module;
     private boolean isApproved;
-
+    
     public Request() {
     }
+    
+    public Request(User user, RequestType requestType, String module, boolean isApproved) {
+        DataContext context = new DataContext();
+        this.id = context.fetchNextRequestId();
+        this.user = user;
+        this.requestType = requestType;
+        this.module = module;
+        this.isApproved = isApproved;
+    }
+    
 
+    public Request(int id, User user, RequestType requestType, String module, boolean isApproved) {
+        if (user instanceof Student) {
+            this.user = (Student) user;
+        } else if (user instanceof ProjectManager) {
+            this.user = (ProjectManager) user;
+        } else if (user instanceof Lecturer) {
+            this.user = (Lecturer) user;
+        }
+        this.id = id;
+        this.requestType = requestType;
+        this.module = module;
+        this.isApproved = isApproved;
+    }
+
+    // BAD CONSTRUCTOR
     public Request(int id, User user, String module) {
         if (user instanceof Student) {
             this.requestType = RequestType.PRESENTATION;
@@ -23,12 +49,10 @@ public class Request implements Identifiable {
         } else if (user instanceof ProjectManager) {
             this.requestType = RequestType.SECONDMARKER;
             this.user = (ProjectManager) user;
-            this.module = module;
         } else if (user instanceof Lecturer) {
             this.requestType = RequestType.SECONDMARKER;
             this.user = (Lecturer) user;
         }
-
         this.id = id;
         this.module = module;
     }   

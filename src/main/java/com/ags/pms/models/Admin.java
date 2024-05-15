@@ -114,12 +114,12 @@ public class Admin extends User {
         context.writeAllDataAsync();
     }
 
-    public void allotProjectManager(int id, RequestType requestType) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+    public void allotProjectManager(int lecturerId, RequestType requestType) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         DataContext context = new DataContext();
-        Lecturer lecturer = context.getLecturerByID(id);
+        Lecturer lecturer = context.getLecturerByID(lecturerId);
 
         if (lecturer == null) {
-            Helper.printErr("Lecturer not found for ID: " + id);
+            Helper.printErr("Lecturer not found for ID: " + lecturerId);
             return;
         }
         
@@ -135,12 +135,12 @@ public class Admin extends User {
         context.writeAllDataAsync();
     }   
     
-    public void removeProjectManager(int id) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+    public void removeProjectManager(int projectManagerId) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         DataContext context = new DataContext();
-        ProjectManager projectManager = context.getProjectManagerByID(id);
+        ProjectManager projectManager = context.getProjectManagerByID(projectManagerId);
         
         if (projectManager == null) {
-            Helper.printErr("ProjectManager not found for ID: " + id);
+            Helper.printErr("ProjectManager not found for ID: " + projectManagerId);
             return;
         }
         

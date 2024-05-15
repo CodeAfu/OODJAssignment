@@ -17,13 +17,24 @@ public class PresentationSlot implements Identifiable {
         this.isAvailable = true;
     }
 
+    public PresentationSlot(int id, Student student, String module, Date presentationDate, boolean isAvailable) {
+        this.id = id;
+        this.student = student;
+        this.module = module;
+        this.presentationDate = presentationDate;
+        this.isAvailable = isAvailable;
+    }
+
     public PresentationSlot(int id) {
         this.isAvailable = true;
         this.id = id;
     }
 
-    public PresentationSlot(Student student, Date presentationDate) {
+    public PresentationSlot(Student student, Date presentationDate, String module) {
+        DataContext context = new DataContext();
+        this.id = context.fetchNextPresentationSlotId();
         this.isAvailable = false;
+        this.module = module;
         this.student = student;
         this.presentationDate = presentationDate;
     }

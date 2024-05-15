@@ -90,11 +90,12 @@ public class JsonHandler {
             T firstObj = objTs.get(0); 
             String className = firstObj.getClass().getSimpleName();
             String jsonData;
-            objTs.forEach(obj -> {
-                if (obj instanceof User) {
+
+            if (firstObj instanceof User) {
+                objTs.forEach(obj -> {
                     ((User) obj).encryptPassword();
-                }
-            });
+                });
+            }
             
             switch (className) {
                 case "Student":
@@ -168,11 +169,11 @@ public class JsonHandler {
             Helper.printErr(Helper.getStackTraceString(ex));
         }
 
-        jsonableList.forEach(obj -> {
-            if (obj instanceof User) {
+        if (jsonableList.get(0) instanceof User) {
+            jsonableList.forEach(obj -> {
                 ((User) obj).decryptPassword();
-            }
-        });
+            });
+        }
 
         return jsonableList;
     }

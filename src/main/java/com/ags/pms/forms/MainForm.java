@@ -4,6 +4,8 @@
  */
 package com.ags.pms.forms;
 
+import com.ags.pms.models.User;
+
 /**
  *
  * @author Genzoku
@@ -14,6 +16,10 @@ public class MainForm extends javax.swing.JFrame {
      * Creates new form MainForm
      */
     public MainForm() {
+        initComponents();
+    }
+
+    public MainForm(User user) {
         initComponents();
     }
 

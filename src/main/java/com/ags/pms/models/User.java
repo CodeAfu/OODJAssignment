@@ -12,16 +12,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.ags.pms.Helper;
+import com.ags.pms.data.DataContext;
 import com.ags.pms.io.JsonHandler;
 import com.ags.pms.services.PasswordHandler;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-
 public class User implements Identifiable {
     
     protected int id;
@@ -30,12 +27,29 @@ public class User implements Identifiable {
     protected String email;
     protected String username;
     protected String password;
+
     
     private PasswordHandler pwHandler = new PasswordHandler("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
     
     public User() {
     }
 
+    public User(String name, String dob, String email, String username, String password) {
+        DataContext context = new DataContext();
+        if (this instanceof Student) {
+            this.id = context.fetchNextStudentId();
+        } else if (this instanceof Admin) {
+            this.id = context.fetchNextAdminId();
+        } else if (this instanceof Lecturer || this instanceof ProjectManager) {
+            this.id = context.fetchNextLecturerId();
+        }
+        this.name = name;
+        this.dob = dob;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+    }
+    
     public User(String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         this.username = username;
         this.password = password;
@@ -111,8 +125,8 @@ public class User implements Identifiable {
     public void encryptPassword() {
          try {
             this.password = pwHandler.encryptPassword(this.password);
-        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
-                | BadPaddingException | InvalidAlgorithmParameterException e) {
+        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException 
+                | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
             Helper.printErr(Helper.getStackTraceString(e));
         }
     }
@@ -120,8 +134,8 @@ public class User implements Identifiable {
     public void decryptPassword() {
         try {
             this.password = pwHandler.decryptPassword(this.password);
-        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
-                | BadPaddingException | InvalidAlgorithmParameterException e) {
+        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException 
+                | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
             Helper.printErr(Helper.getStackTraceString(e));                
         }
     }

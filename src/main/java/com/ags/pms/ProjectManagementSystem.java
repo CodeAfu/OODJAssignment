@@ -4,6 +4,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import javax.crypto.BadPaddingException;
@@ -21,6 +22,7 @@ import net.bytebuddy.implementation.bytecode.constant.ClassConstant;
 import com.ags.pms.data.DataContext;
 import com.ags.pms.data.SeedData;
 import com.ags.pms.forms.Login;
+import com.ags.pms.forms.MainForm;
 import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
 
@@ -38,10 +40,17 @@ public class ProjectManagementSystem {
         } catch (Exception ex) {
             Helper.printErr(Helper.getStackTraceString(ex));
         }
-}
+    }
     
     private static void app() {
-        new Login().setVisible(true);
+        Login login = new Login();
+        login.setVisible(true);
+
+        User user = login.getUser();
+        login.dispose();
+        
+        MainForm mainForm = new MainForm(user);
+        mainForm.setVisible(true);
     }
     
     private static void consoleTests() throws Exception {
@@ -50,25 +59,28 @@ public class ProjectManagementSystem {
         // testFileHandler();
         // testAES();
         // generateNewAESKey();
-        smallTests();
-        // dataContextTest();
+        // smallTests();
+        dataContextTest();
     }
 
 
     @SuppressWarnings("unused")
     private static void smallTests() throws Exception {
-        // DataContext context = new DataContext();
+        DataContext context = new DataContext();
+        ArrayList<Lecturer> lecturers = context.getLecturers();
+        ArrayList<ProjectManager> pms = context.getProjectManagers();
         Admin admin1 = new Admin(1001, "Jay", "20/12/1999", "jay@admin.com", "admin", "VerySecureRight");
         admin1.allotProjectManager(2001, RequestType.SUPERVISOR);
         admin1.removeProjectManager(2001);
-        System.out.println("Test");
+        System.out.println(lecturers.get(0).getClass().getDeclaredFields().length + 
+                lecturers.get(0).getClass().getSuperclass().getDeclaredFields().length);
     }
     
     @SuppressWarnings("unused")
     private static void dataContextTest() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         try {
-            // SeedData.executeWithContext();
-            SeedData.init();
+            SeedData.executeWithContext();
+            // SeedData.init();
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
                 | BadPaddingException | InvalidAlgorithmParameterException e) {
             Helper.printErr(Helper.getStackTraceString(e));
@@ -77,11 +89,7 @@ public class ProjectManagementSystem {
         DataContext context = new DataContext();
         
         Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Report>());
-        ProjectManager projectManager1 = new ProjectManager(context.fetchNextLecturerId(), "Michael Myers", "17/04/1972", "michael@email.com", "michael_myers", "asdfpass", Role.SECONDMARKER, new ArrayList<Student>());
-        ProjectManager projectManager2 = new ProjectManager(context.fetchNextLecturerId(), "Hehe My Man", "17/04/1972", "michael@email.com", "michael_myers", "asdfpass", Role.SECONDMARKER, new ArrayList<Student>());
-        PresentationSlot slot = new PresentationSlot(context.fetchNextPresentationSlotId());
-        Request request = new Request(context.fetchNextRequestId(), student1, "Computer Science");
-        Project project = new Project(context.fetchNextProjectId(), "Computer Science", AssessmentType.CP1, "You must do this project!!!!!!!!!!!!!!!");
+        
 
         // context.addPresentationSlot(slot);
         // context.addRequest(request);
