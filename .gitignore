@@ -251,4 +251,7 @@ dist/
 nbdist/
 .nb-gradle/
 
+### Secrets ###
+config.properties
+
 # End of https://www.toptal.com/developers/gitignore/api/netbeans

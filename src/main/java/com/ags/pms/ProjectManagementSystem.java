@@ -66,14 +66,9 @@ public class ProjectManagementSystem {
 
     @SuppressWarnings("unused")
     private static void smallTests() throws Exception {
-        DataContext context = new DataContext();
-        ArrayList<Lecturer> lecturers = context.getLecturers();
-        ArrayList<ProjectManager> pms = context.getProjectManagers();
-        Admin admin1 = new Admin(1001, "Jay", "20/12/1999", "jay@admin.com", "admin", "VerySecureRight");
-        admin1.allotProjectManager(2001, RequestType.SUPERVISOR);
-        admin1.removeProjectManager(2001);
-        System.out.println(lecturers.get(0).getClass().getDeclaredFields().length + 
-                lecturers.get(0).getClass().getSuperclass().getDeclaredFields().length);
+        ConfigLoader properties = new ConfigLoader();
+        System.out.println(properties.getSecretKey());
+        System.out.println(properties.getIV());
     }
     
     @SuppressWarnings("unused")
