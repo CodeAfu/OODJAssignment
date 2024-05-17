@@ -22,6 +22,7 @@ public class Student extends User {
     private ArrayList<Integer> presentationSlotIds;
     private ArrayList<Integer> projectIds;
     private ArrayList<String> modules;
+    private AssessmentType assessmentType;
     private int supervisorId;
     private int secondMarkerId;
 
@@ -99,6 +100,14 @@ public class Student extends User {
     
     public void setModules(ArrayList<String> modules) {
         this.modules = modules;
+    }
+    
+    public AssessmentType getAssessmentType() {
+        return assessmentType;
+    }
+
+    public void setAssessmentType(AssessmentType assessmentType) {
+        this.assessmentType = assessmentType;
     }
 
     public int getSupervisorId() {

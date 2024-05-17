@@ -72,6 +72,21 @@ public class Lecturer extends User {
         return presentationRequests;
     }
 
+    public void assignPresentationSlot(int requestId, int studentId, int presentationSlotId) {
+        DataContext context = new DataContext();
+        PresentationSlot slot = context.getById(presentationSlotId);
+
+        if (!slot.isAvailable()) {
+            throw new IllegalArgumentException("Presentation slot is not available: " + slot.getId());
+        }
+
+        context.updatePresentationSlotById(presentationSlotId, ps -> ps.setAvailable(false));
+        context.updateStudentById(studentId, s -> s.addPresentationSlotId(slot.getId()));
+        context.updateRequestById(requestId, r -> r.setApproved(true));
+        
+        context.writeAllDataAsync();
+    }
+
     public ArrayList<PresentationSlot> viewAvailableSlots() {
         DataContext context = new DataContext();
         ArrayList<PresentationSlot> availableSlots = context.getPresentationSlots().stream()
@@ -107,20 +122,7 @@ public class Lecturer extends User {
         return request;
     }
 
-    public void assignPresentationSlot(int requestId, int studentId, int presentationSlotId) {
-        DataContext context = new DataContext();
-        PresentationSlot slot = context.getById(presentationSlotId);
 
-        if (!slot.isAvailable()) {
-            throw new IllegalArgumentException("Presentation slot is not available: " + slot.getId());
-        }
-
-        context.updatePresentationSlotById(presentationSlotId, ps -> ps.setAvailable(false));
-        context.updateStudentById(studentId, s -> s.addPresentationSlotId(slot.getId()));
-        context.updateRequestById(requestId, r -> r.setApproved(true));
-        
-        context.writeAllDataAsync();
-    }
 
     public ArrayList<Report> viewReport(Student student) {
         ArrayList<Report> reports = new ArrayList<>();
