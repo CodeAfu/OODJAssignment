@@ -16,8 +16,11 @@ import com.ags.pms.io.JsonHandler;
 import com.ags.pms.models.Admin;
 import com.ags.pms.models.AssessmentType;
 import com.ags.pms.models.Lecturer;
+import com.ags.pms.models.PresentationSlot;
 import com.ags.pms.models.Project;
 import com.ags.pms.models.Report;
+import com.ags.pms.models.Request;
+import com.ags.pms.models.RequestType;
 import com.ags.pms.models.ProjectManager;
 import com.ags.pms.models.Role;
 import com.ags.pms.models.Student;
@@ -40,12 +43,18 @@ public class SeedData {
         ArrayList<Admin> admins = new ArrayList<>();
         ArrayList<ProjectManager> projectManagers = new ArrayList<>();
         ArrayList<Project> projects = new ArrayList<>();
+        ArrayList<PresentationSlot> presentationSlots = new ArrayList<>();
         ArrayList<Report> reports = new ArrayList<>();
+        ArrayList<Request> requests = new ArrayList<>();
 
-        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Report>());
-        Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Report>());
-        Student student3 = new Student(4003, "Emma Smith", "05/08/2023", "emma@email.com", "emma_smith", "P@ssw0rd", new ArrayList<Report>());
-        Student student4 = new Student(4004, "Michael Johnson", "12/11/2023", "michael@email.com", "michael_j", "secure123", new ArrayList<Report>());
+        Project project1 = new Project(7000, "Computer Science", AssessmentType.CP1, "Do this project!!!!!!");
+        Project project2 = new Project(7001, "Cybersecurity", AssessmentType.CP2, "Do this project!!!!!!");
+        Report report1 = new Report(8000, project1.getId(), false, null, "https://sample.moodle.com/sample-link/1", -1, 100);
+        Report report2 = new Report(8001, project2.getId(), true, new Date(), "https://sample.moodle.com/sample-link/2", 30, 100);
+        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Integer>());
+        Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Integer>());
+        Student student3 = new Student(4003, "Emma Smith", "05/08/2023", "emma@email.com", "emma_smith", "P@ssw0rd", new ArrayList<Integer>());
+        Student student4 = new Student(4004, "Michael Johnson", "12/11/2023", "michael@email.com", "michael_j", "secure123", new ArrayList<Integer>());
         Lecturer lecturer1 = new Lecturer(2001, "Joshua", "11/01/1980", "joshua@lecturer.com", "josh_lecturer", "verySecurePasswordMate", Role.NONE);
         Lecturer lecturer2 = new Lecturer(2002, "Amardeep", "11/01/1980", "amardeep@lecturer.com", "somelecturer", "123qweasdzxc", Role.NONE);
         Lecturer lecturer3 = new Lecturer(2003, "Sophie Williams", "03/07/1975", "sophie@email.com", "sophie_will", "Passw0rd", Role.NONE);
@@ -53,15 +62,18 @@ public class SeedData {
         Admin admin1 = new Admin(1001, "Jay", "20/12/1999", "jay@admin.com", "admin", "VerySecureRight");
         Admin admin2 = new Admin(1002, "JayZee", "20/10/1999", "jayzee@admin.com", "systemkek", "huuuhe123");
         Admin admin3 = new Admin(1003, "Emily Davis", "15/03/1990", "emily@email.com", "emily_d", "admin321");
-        ProjectManager projectManager1 = new ProjectManager(2005, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com", "josh_lecturerPM", "verySecurePasswordMate", Role.SUPERVISOR, new ArrayList<Student>());
-        ProjectManager projectManager2 = new ProjectManager(2006, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com", "somelecturerPM", "123qweasdzxc", Role.SECONDMARKER, new ArrayList<Student>());
-        ProjectManager projectManager3 = new ProjectManager(2008, "Sophia Johnson", "25/06/1970", "sophia@email.com", "sophia_j", "ProjectMan321", Role.SUPERVISOR, new ArrayList<Student>());
-        ProjectManager projectManager4 = new ProjectManager(2007, "Michael Wilson", "17/04/1972", "michael@email.com", "michael_w", "Wilson123", Role.SECONDMARKER, new ArrayList<Student>());
-        Project project1 = new Project(7000, "Computer Science", AssessmentType.CP1, "Do this project!!!!!!");
-        Project project2 = new Project(7001, "Cybersecurity", AssessmentType.CP2, "Do this project!!!!!!");
-        Report report1 = new Report(8000, project1, false, null, "https://sample.moodle.com/sample-link/1", -1, 100);
-        Report report2 = new Report(8001, project2, true, new Date(), "https://sample.moodle.com/sample-link/2", 30, 100);
-        
+        ProjectManager projectManager1 = new ProjectManager(2005, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com", "josh_lecturerPM", "verySecurePasswordMate", Role.SUPERVISOR, new ArrayList<Integer>());
+        ProjectManager projectManager2 = new ProjectManager(2006, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com", "somelecturerPM", "123qweasdzxc", Role.SECONDMARKER, new ArrayList<Integer>());
+        ProjectManager projectManager3 = new ProjectManager(2008, "Sophia Johnson", "25/06/1970", "sophia@email.com", "sophia_j", "ProjectMan321", Role.SUPERVISOR, new ArrayList<Integer>());
+        ProjectManager projectManager4 = new ProjectManager(2007, "Michael Wilson", "17/04/1972", "michael@email.com", "michael_w", "Wilson123", Role.SECONDMARKER, new ArrayList<Integer>());
+        Request request1 = new Request(6000, 4001, RequestType.PRESENTATION, "Computer Science", false);
+        Request request2 = new Request(6001, 4002, RequestType.PRESENTATION, "Computer Science", true);
+        Request request3 = new Request(6002, 2001, RequestType.SUPERVISOR, false);
+        Request request4 = new Request(6003, 2002, RequestType.SECONDMARKER, true);
+        PresentationSlot presentationSlot1 = new PresentationSlot(5000, 4001, new Date(), false);
+        PresentationSlot presentationSlot2 = new PresentationSlot(5001);
+        PresentationSlot presentationSlot3 = new PresentationSlot(5002);
+
         students.add(student1);
         students.add(student2);
         students.add(student3);
@@ -86,8 +98,16 @@ public class SeedData {
         
         reports.add(report1);
         reports.add(report2);
+
+        requests.add(request1);
+        requests.add(request2);
+        requests.add(request3);
+        requests.add(request4);
+
+        presentationSlots.add(presentationSlot1);
+        presentationSlots.add(presentationSlot2);
+        presentationSlots.add(presentationSlot3);
         
-        handler.writeJson(admins);
 
         futures = CompletableFuture.allOf(
             handler.writeJsonAsync(students),
@@ -95,7 +115,9 @@ public class SeedData {
             handler.writeJsonAsync(admins),
             handler.writeJsonAsync(projectManagers),
             handler.writeJsonAsync(projects),
-            handler.writeJsonAsync(reports)
+            handler.writeJsonAsync(reports),
+            handler.writeJsonAsync(requests),
+            handler.writeJsonAsync(presentationSlots)
         ).thenRun(() -> System.out.println("Json Written"));
         futures.join();
         
@@ -104,10 +126,14 @@ public class SeedData {
     public static void executeWithContext() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         DataContext context = new DataContext();
 
-        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Report>());
-        Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Report>());
-        Student student3 = new Student(4003, "Emma Smith", "05/08/2023", "emma@email.com", "emma_smith", "P@ssw0rd", new ArrayList<Report>());
-        Student student4 = new Student(4004, "Michael Johnson", "12/11/2023", "michael@email.com", "michael_j", "secure123", new ArrayList<Report>());
+        Project project1 = new Project(7000, "Computer Science", AssessmentType.CP1, "Do this project!!!!!!");
+        Project project2 = new Project(7001, "Cybersecurity", AssessmentType.CP2, "Do this project!!!!!!");
+        Report report1 = new Report(8000, project1.getId(), false, null, "https://sample.moodle.com/sample-link/1", -1, 100);
+        Report report2 = new Report(8001, project2.getId(), true, new Date(), "https://sample.moodle.com/sample-link/2", 30, 100);
+        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Integer>());
+        Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Integer>());
+        Student student3 = new Student(4003, "Emma Smith", "05/08/2023", "emma@email.com", "emma_smith", "P@ssw0rd", new ArrayList<Integer>());
+        Student student4 = new Student(4004, "Michael Johnson", "12/11/2023", "michael@email.com", "michael_j", "secure123", new ArrayList<Integer>());
         Lecturer lecturer1 = new Lecturer(2001, "Joshua", "11/01/1980", "joshua@lecturer.com", "josh_lecturer", "verySecurePasswordMate", Role.NONE);
         Lecturer lecturer2 = new Lecturer(2002, "Amardeep", "11/01/1980", "amardeep@lecturer.com", "somelecturer", "123qweasdzxc", Role.NONE);
         Lecturer lecturer3 = new Lecturer(2003, "Sophie Williams", "03/07/1975", "sophie@email.com", "sophie_will", "Passw0rd", Role.NONE);
@@ -115,15 +141,19 @@ public class SeedData {
         Admin admin1 = new Admin(1001, "Jay", "20/12/1999", "jay@admin.com", "admin", "VerySecureRight");
         Admin admin2 = new Admin(1002, "JayZee", "20/10/1999", "jayzee@admin.com", "systemkek", "huuuhe123");
         Admin admin3 = new Admin(1003, "Emily Davis", "15/03/1990", "emily@email.com", "emily_d", "admin321");
-        ProjectManager projectManager1 = new ProjectManager(2005, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com", "josh_lecturerPM", "verySecurePasswordMate", Role.SUPERVISOR, new ArrayList<Student>());
-        ProjectManager projectManager2 = new ProjectManager(2006, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com", "somelecturerPM", "123qweasdzxc", Role.SECONDMARKER, new ArrayList<Student>());
-        ProjectManager projectManager3 = new ProjectManager(2008, "Sophia Johnson", "25/06/1970", "sophia@email.com", "sophia_j", "ProjectMan321", Role.SUPERVISOR, new ArrayList<Student>());
-        ProjectManager projectManager4 = new ProjectManager(2007, "Michael Wilson", "17/04/1972", "michael@email.com", "michael_w", "Wilson123", Role.SECONDMARKER, new ArrayList<Student>());
-        Project project1 = new Project(7000, "Computer Science", AssessmentType.CP1, "Do this project!!!!!!");
-        Project project2 = new Project(7001, "Cybersecurity", AssessmentType.CP2, "Do this project!!!!!!");
-        Report report1 = new Report(8000, project1, false, null, "https://sample.moodle.com/sample-link/1", -1, 100);
-        Report report2 = new Report(8001, project2, true, new Date(), "https://sample.moodle.com/sample-link/2", 30, 100);
-        
+        ProjectManager projectManager1 = new ProjectManager(2005, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com", "josh_lecturerPM", "verySecurePasswordMate", Role.SUPERVISOR, new ArrayList<Integer>());
+        ProjectManager projectManager2 = new ProjectManager(2006, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com", "somelecturerPM", "123qweasdzxc", Role.SECONDMARKER, new ArrayList<Integer>());
+        ProjectManager projectManager3 = new ProjectManager(2008, "Sophia Johnson", "25/06/1970", "sophia@email.com", "sophia_j", "ProjectMan321", Role.SUPERVISOR, new ArrayList<Integer>());
+        ProjectManager projectManager4 = new ProjectManager(2007, "Michael Wilson", "17/04/1972", "michael@email.com", "michael_w", "Wilson123", Role.SECONDMARKER, new ArrayList<Integer>());
+        Request request1 = new Request(6000, 4001, RequestType.PRESENTATION, "Computer Science", false);
+        Request request2 = new Request(6001, 4002, RequestType.PRESENTATION, "Computer Science", true);
+        Request request3 = new Request(6002, 2001, RequestType.SUPERVISOR, false);
+        Request request4 = new Request(6003, 2002, RequestType.SECONDMARKER, true);
+        PresentationSlot presentationSlot1 = new PresentationSlot(5000, 4001, new Date(), false);
+        PresentationSlot presentationSlot2 = new PresentationSlot(5001);
+        PresentationSlot presentationSlot3 = new PresentationSlot(5002);
+
+
         context.addStudent(student1);
         context.addStudent(student2);
         context.addStudent(student3);
@@ -148,6 +178,15 @@ public class SeedData {
 
         context.addReport(report1);
         context.addReport(report2);
+
+        context.addRequest(request1);
+        context.addRequest(request2);
+        context.addRequest(request3);
+        context.addRequest(request4);
+
+        context.addPresentationSlot(presentationSlot1);
+        context.addPresentationSlot(presentationSlot2);
+        context.addPresentationSlot(presentationSlot3);
         
         context.writeAllDataAsync();
     }

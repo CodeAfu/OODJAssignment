@@ -124,6 +124,10 @@ public class DataContext {
         return admins.stream().filter(s -> s.getId() == id).findFirst().orElse(null);
     }
 
+    public Report getReportByID(int id) {
+        return reports.stream().filter(r -> r.getId() == id).findFirst().orElse(null);
+    }
+
     public ProjectManager getProjectManagerByID(int id) {
         return projectManagers.stream().filter(s -> s.getId() == id).findFirst().orElse(null);
     }

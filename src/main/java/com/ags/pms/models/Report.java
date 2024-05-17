@@ -9,22 +9,22 @@ import com.ags.pms.data.IDHandler;
 public class Report implements Identifiable {
 
     private int id;
-    private Project project;
+    private int projectId;
     private boolean submitted;
     private Date dateSubmitted;
     private String moodleLink;
     private int studentMark;
     private int totalMark;
-
+    private String feedback;
 
     public Report() {
     }
 
-    public Report(Project project, boolean submitted, Date dateSubmitted, String moodleLink,
+    public Report(int projectId, boolean submitted, Date dateSubmitted, String moodleLink,
             int studentMark, int totalMark) {
         DataContext context = new DataContext();
         this.id = context.fetchNextReportId();
-        this.project = project;
+        this.projectId = projectId;
         this.submitted = submitted;
         this.dateSubmitted = dateSubmitted;
         this.moodleLink = moodleLink;
@@ -32,10 +32,10 @@ public class Report implements Identifiable {
         this.totalMark = totalMark;
     }
 
-    public Report(int id, Project project, boolean submitted, Date dateSubmitted, String moodleLink,
+    public Report(int id, int projectId, boolean submitted, Date dateSubmitted, String moodleLink,
             int studentMark, int totalMark) {
         this.id = id;
-        this.project = project;
+        this.projectId = projectId;
         this.submitted = submitted;
         this.dateSubmitted = dateSubmitted;
         this.moodleLink = moodleLink;
@@ -44,27 +44,25 @@ public class Report implements Identifiable {
     }
 
 
-    public Report(int id, Project project, String moodleLink, int studentMark, int totalMark) {
+    public Report(int id, int projectId, String moodleLink, int studentMark, int totalMark) {
         this.id = id;
-        this.project = project;
+        this.projectId = projectId;
         this.moodleLink = moodleLink;
         this.studentMark = studentMark;
         this.totalMark = totalMark;
     }
 
-    public Report(int id, Project project,
-            int studentMark, int totalMark) {
+    public Report(int id, int projectId, int studentMark, int totalMark) {
         this.id = id;
-        this.project = project;
+        this.projectId = projectId;
         this.moodleLink = "https://sample.moodle.com/test-report";
         this.studentMark = studentMark;
         this.totalMark = totalMark;
     }
 
-    public Report(int id, Project project,
-            String moodleLink, int totalMark) {
+    public Report(int id, int projectId, String moodleLink, int totalMark) {
         this.id = id;
-        this.project = project;
+        this.projectId = projectId;
         this.moodleLink = moodleLink;
         this.totalMark = totalMark;
     }
@@ -75,11 +73,11 @@ public class Report implements Identifiable {
     public void setId(int id) {
         this.id = id;
     }
-    public Project getProject() {
-        return project;
+    public int getProjectId() {
+        return projectId;
     }
-    public void setProject(Project project) {
-        this.project = project;
+    public void setProjectId(int project) {
+        this.projectId = project;
     }
     public boolean isSubmitted() {
         return submitted;
@@ -111,6 +109,13 @@ public class Report implements Identifiable {
     }
     public void setTotalMark(int totalMark) {
         this.totalMark = totalMark;
+    }
+    public String getFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
     }
 
     public String retrieveReportDetails() {

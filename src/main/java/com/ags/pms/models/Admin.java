@@ -75,11 +75,11 @@ public class Admin extends User {
                 s.setEmail(edittedStudent.getDob());
                 s.setUsername(edittedStudent.getUsername());
                 s.setPassword(edittedStudent.getPassword());
-                s.setReports(edittedStudent.getReports());
-                s.setPresentationSlots(edittedStudent.getPresentationSlots());
+                s.setReportIds(edittedStudent.getReportIds());
+                s.setPresentationSlotIds(edittedStudent.getPresentationSlotIds());
                 s.setModules(edittedStudent.getModules());
-                s.setSupervisor(edittedStudent.getSupervisor());
-                s.setSecondMarker(edittedStudent.getSecondMarker());
+                s.setSupervisorId(edittedStudent.getSupervisorId());
+                s.setSecondMarkerId(edittedStudent.getSecondMarkerId());
                 break;
             }
         }
@@ -127,7 +127,7 @@ public class Admin extends User {
         
         ProjectManager projectManager = new ProjectManager(lecturer.getId(), 
             lecturer.getName(), lecturer.getDob(), lecturer.getEmail(), lecturer.getUsername(), lecturer.getPassword(),
-            Helper.getRoleFromRequestType(requestType), new ArrayList<Student>());
+            Helper.getRoleFromRequestType(requestType), new ArrayList<Integer>());
         
         context.removeById(lecturer.getId());
         context.addProjectManager(projectManager);

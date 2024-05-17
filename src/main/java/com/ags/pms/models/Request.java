@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Request implements Identifiable {
 
     private int id;
-    private User user;
+    private int userId;
     private RequestType requestType;
     private String module;
     private boolean isApproved;
@@ -17,46 +17,47 @@ public class Request implements Identifiable {
     public Request() {
     }
     
-    public Request(User user, RequestType requestType, String module, boolean isApproved) {
+    public Request(int userId, RequestType requestType, String module, boolean isApproved) {
         DataContext context = new DataContext();
         this.id = context.fetchNextRequestId();
-        this.user = user;
+        this.userId = userId;
         this.requestType = requestType;
         this.module = module;
         this.isApproved = isApproved;
     }
     
+    public Request(int userId, RequestType requestType, boolean isApproved) {
+        DataContext context = new DataContext();
+        this.id = context.fetchNextRequestId();
+        this.userId = userId;
+        this.requestType = requestType;
+        this.isApproved = isApproved;
+    }
+    
 
-    public Request(int id, User user, RequestType requestType, String module, boolean isApproved) {
-        if (user instanceof Student) {
-            this.user = (Student) user;
-        } else if (user instanceof ProjectManager) {
-            this.user = (ProjectManager) user;
-        } else if (user instanceof Lecturer) {
-            this.user = (Lecturer) user;
-        }
+    public Request(int id, int userId, RequestType requestType, String module, boolean isApproved) {
         this.id = id;
+        this.userId = userId;
         this.requestType = requestType;
         this.module = module;
+        this.isApproved = isApproved;
+    }
+
+    public Request(int id, int userId, RequestType requestType, boolean isApproved) {
+        this.id = id;
+        this.userId = userId;
+        this.requestType = requestType;
         this.isApproved = isApproved;
     }
 
     // BAD CONSTRUCTOR
-    public Request(int id, User user, String module) {
-        if (user instanceof Student) {
-            this.requestType = RequestType.PRESENTATION;
-            this.user = (Student) user;
-        } else if (user instanceof ProjectManager) {
-            this.requestType = RequestType.SECONDMARKER;
-            this.user = (ProjectManager) user;
-        } else if (user instanceof Lecturer) {
-            this.requestType = RequestType.SECONDMARKER;
-            this.user = (Lecturer) user;
-        }
+    public Request(int id, int userId, String module) {
         this.id = id;
+        this.userId = userId;
         this.module = module;
+        this.isApproved = false;
     }   
-    
+
     @Override
     public int getId() {
         return id;
@@ -64,14 +65,15 @@ public class Request implements Identifiable {
     public void setId(int id) {
         this.id = id;
     }
-    
-    public User getUser() {
-        return user;
+
+    public int getUserId() {
+        return userId;
     }
-    public void setUser(User user) {
-        this.user = user;
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
-    
+
     public RequestType getRequestType() {
         return requestType;
     }
@@ -94,6 +96,23 @@ public class Request implements Identifiable {
 
     public void setApproved(boolean isApproved) {
         this.isApproved = isApproved;
+    }
+
+    public User viewUser() {
+        DataContext context = new DataContext();
+        User user = context.getById(userId);
+
+        if (user instanceof Student) {
+            return (Student) user;
+        } else if (user instanceof Lecturer) {
+            return (Lecturer) user;
+        } else if (user instanceof ProjectManager) {
+            return (ProjectManager) user;
+        } else if (user instanceof Admin) {
+            return (Admin) user;
+        }
+
+        throw new IllegalArgumentException("User Type is not quite right." + user.getClass().getSimpleName());
     }
 
 }

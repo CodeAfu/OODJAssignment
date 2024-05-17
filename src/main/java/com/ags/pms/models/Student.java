@@ -18,63 +18,79 @@ import com.ags.pms.data.DataContext;
 
 public class Student extends User {
 
-    private ArrayList<Report> reports;
-    private ArrayList<PresentationSlot> presentationSlots;
-    private ArrayList<Project> projects;
+    private ArrayList<Integer> reportIds;
+    private ArrayList<Integer> presentationSlotIds;
+    private ArrayList<Integer> projectIds;
     private ArrayList<String> modules;
-    private ProjectManager supervisor;
-    private ProjectManager secondMarker;
+    private int supervisorId;
+    private int secondMarkerId;
 
     public Student(int id, String name, String dob, String email, String username, String password,
-            ArrayList<Report> reports, ArrayList<PresentationSlot> presentationSlots, ArrayList<Project> projects,
-            ArrayList<String> modules, ProjectManager supervisor, ProjectManager secondMarker)
+            ArrayList<Integer> reports, ArrayList<Integer> presentationSlots, ArrayList<Integer> projects,
+            ArrayList<String> modules, int supervisorId, int secondMarkerId)
             throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException,
             BadPaddingException, InvalidAlgorithmParameterException {
         super(id, name, dob, email, username, password);
-        this.reports = reports;
-        this.presentationSlots = presentationSlots;
-        this.projects = projects;
+        this.reportIds = reports;
+        this.presentationSlotIds = presentationSlots;
+        this.projectIds = projects;
         this.modules = modules;
-        this.supervisor = supervisor;
-        this.secondMarker = secondMarker;
+        this.supervisorId = supervisorId;
+        this.secondMarkerId = secondMarkerId;
     }
 
     // Debug
     public Student() {
         super();
-        reports = new ArrayList<Report>();
-        presentationSlots = new ArrayList<>();
+        reportIds = new ArrayList<Integer>();
+        presentationSlotIds = new ArrayList<>();
         modules = new ArrayList<>();
     }
     
     public Student(int id, String name, String dob, String email, String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         super(id, name, dob, email, username, password);
-        reports = new ArrayList<>();
-        presentationSlots = new ArrayList<>();
+        reportIds = new ArrayList<>();
+        presentationSlotIds = new ArrayList<>();
         modules = new ArrayList<>();
     }
     
-    public Student(int id, String name, String dob, String email, String username, String password, ArrayList<Report> reports) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+    public Student(int id, String name, String dob, String email, String username, String password, ArrayList<Integer> reports) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         super(id, name, dob, email, username, password);
-        this.reports = reports;
-        presentationSlots = new ArrayList<>();
+        this.reportIds = reports;
+        presentationSlotIds = new ArrayList<>();
         modules = new ArrayList<>();
     }
 
-    public ArrayList<Report> getReports() {
-        return reports;
+    public ArrayList<Integer> getReportIds() {
+        return reportIds;
     }
 
-    public void setReports(ArrayList<Report> reports) {
-        this.reports = reports;
+    public void setReportIds(ArrayList<Integer> reportIds) {
+        this.reportIds = reportIds;
     }
 
-    public ArrayList<Project> getProjects() {
-        return projects;
+    public ArrayList<Integer> getPresentationSlotIds() {
+        return presentationSlotIds;
     }
 
-    public void setProjects(ArrayList<Project> projects) {
-        this.projects = projects;
+    public void setPresentationSlotIds(ArrayList<Integer> presentationSlotIds) {
+        this.presentationSlotIds = presentationSlotIds;
+    }
+
+    public void addPresentationSlotId(int presentationId) {
+        presentationSlotIds.add(presentationId);
+    }
+
+    public ArrayList<Integer> getProjectIds() {
+        return projectIds;
+    }
+
+    public void setProjectIds(ArrayList<Integer> projectIds) {
+        this.projectIds = projectIds;
+    }
+
+    public void addProject(int projectId) {
+        this.projectIds.add(projectId);
     }
 
     public ArrayList<String> getModules() {
@@ -84,56 +100,48 @@ public class Student extends User {
     public void setModules(ArrayList<String> modules) {
         this.modules = modules;
     }
-    
-    public ArrayList<PresentationSlot> getPresentationSlots() {
-        return presentationSlots;
+
+    public int getSupervisorId() {
+        return supervisorId;
     }
 
-    public ProjectManager getSupervisor() {
-        return supervisor;
+    public void setSupervisorId(int supervisorId) {
+        this.supervisorId = supervisorId;
     }
 
-    public void setSupervisor(ProjectManager superviser) {
-        this.supervisor = superviser;
+    public int getSecondMarkerId() {
+        return secondMarkerId;
     }
 
-    public ProjectManager getSecondMarker() {
-        return secondMarker;
+    public void setSecondMarkerId(int secondMarkerId) {
+        this.secondMarkerId = secondMarkerId;
     }
 
-    public void setSecondMarker(ProjectManager secondMarker) {
-        this.secondMarker = secondMarker;
-    }
+    // private void fetchSupervisor() {
+    //     DataContext context = new DataContext();
 
-    private void fetchSupervisor() {
-        DataContext context = new DataContext();
+    //     Optional<ProjectManager> supervisor = context.getProjectManagers().stream()
+    //         .filter(pm -> pm.getRole() == Role.SUPERVISOR)
+    //         .filter(sp -> {
+    //             ArrayList<Student> supervisees = sp.getSupervisees();
+    //             return supervisees != null && supervisees.contains(this);
+    //         })
+    //         .findFirst();
 
-        Optional<ProjectManager> superviser = context.getProjectManagers().stream()
-            .filter(pm -> pm.getRole() == Role.SUPERVISOR)
-            .filter(sp -> {
-                ArrayList<Student> supervisees = sp.getSupervisees();
-                return supervisees != null && supervisees.contains(this);
-            })
-            .findFirst();
-
-        if (!superviser.isEmpty()) {
-            this.supervisor = superviser.get();
-        }
-    }
+    //     if (!supervisor.isEmpty()) {
+    //         this.supervisorId = supervisor.get();
+    //     }
+    // }
 
     private Report createReport(Project project, String moodleLink, int totalMarks) {
         DataContext context = new DataContext();
         int id = context.fetchNextReportId();
-        Report report = new Report(id, project, moodleLink, totalMarks);
+        Report report = new Report(id, project.getId(), moodleLink, totalMarks);
         return report;
     }
 
-    public void addReport(Report report) {
-        reports.add(report);
-    }
-
-    public void addProject(Project project) {
-        projects.add(project);
+    public void addReport(int reportId) {
+        reportIds.add(reportId);
     }
 
     public void submitReport(Report report) {
@@ -142,21 +150,14 @@ public class Student extends User {
         context.writeAllDataAsync();
     }
 
-    public void setPresentationSlots(ArrayList<PresentationSlot> presentationSlots) {
-        this.presentationSlots = presentationSlots;
-    }
-
-    public void addPresentationSlot(PresentationSlot slot) {
-        this.presentationSlots.add(slot);
-    }
-
     private void requestPresentation(String module) {
         if (!modules.contains(module)) {
-            Helper.printErr("Student is not enrolled in module: " + module);
-            return;
+            throw new IllegalArgumentException("Student is not enrolled in module: " + module);
+            // Helper.printErr("Student is not enrolled in module: " + module);
+            // return;
         }
         DataContext context = new DataContext();
-        Request request = new Request(context.fetchNextRequestId(), this, module);
+        Request request = new Request(context.fetchNextRequestId(), this.id, module);
         context.addRequest(request);
         context.writeAllDataAsync();
     }
@@ -164,7 +165,7 @@ public class Student extends User {
     public ArrayList<Request> viewPresentationRequests() {
         DataContext context = new DataContext();
         ArrayList<Request> myRequests = context.getRequests().stream()
-                                                .filter(r -> r.getUser().getId() == this.id && r.getRequestType() == RequestType.PRESENTATION)
+                                                .filter(r -> r.getUserId() == this.id && r.getRequestType() == RequestType.PRESENTATION)
                                                 .collect(Collectors.toCollection(ArrayList::new));                                              
         return myRequests;
     }
@@ -172,13 +173,13 @@ public class Student extends User {
     public ArrayList<Request> viewAllRequests() {
         DataContext context = new DataContext();
         ArrayList<Request> myRequests = context.getRequests().stream()
-                                                .filter(r -> r.getUser().getId() == this.id && r.getRequestType() == RequestType.PRESENTATION)
+                                                .filter(r -> r.getUserId() == this.id && r.getRequestType() == RequestType.PRESENTATION)
                                                 .collect(Collectors.toCollection(ArrayList::new));                                              
         return myRequests;
     }
 
     public String retrieveReportDetails(Report report) {
-        if (!reports.contains(report)) {
+        if (!reportIds.contains(report)) {
             Helper.printErr("Report does not exist: " + report.getId());
             return null;
         }
@@ -188,10 +189,13 @@ public class Student extends User {
 
     public String retrievePresentationRequestDetails() {
         StringBuilder details = new StringBuilder();
-        for (PresentationSlot slot : presentationSlots) {
+        DataContext context = new DataContext();
+        for (int slotId : presentationSlotIds) {
+            PresentationSlot slot = context.getById(slotId);
+            Student student = context.getById(slot.getStudentId());
             details.append(slot.getId())
                    .append(", ")
-                   .append(slot.getStudent().getName())
+                   .append(student.getName())
                    .append(", ")
                    .append(slot.getPresentationDate().toString())
                    .append("\n");

@@ -9,6 +9,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import java.util.stream.Collectors;
+import java.util.zip.DataFormatException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -63,10 +64,10 @@ public class Lecturer extends User {
         return students;
     }
 
-    public ArrayList<Request> viewPresentationRequests() {
+    public ArrayList<Request> viewPendingPresentationRequests() {
         DataContext context = new DataContext();
         ArrayList<Request> presentationRequests = (ArrayList<Request>) context.getRequests().stream()
-                                                            .filter(r -> r.getRequestType() == RequestType.PRESENTATION)
+                                                            .filter(r -> r.getRequestType() == RequestType.PRESENTATION && r.isApproved() == false)
                                                             .collect(Collectors.toList());
         return presentationRequests;
     }
@@ -82,42 +83,56 @@ public class Lecturer extends User {
     public ArrayList<Student> viewSecondMarkerSlots() {
         DataContext context = new DataContext();
         ArrayList<Student> availableStudents = context.getStudents().stream()
-                                                    .filter(s -> s.getSecondMarker() == null)
+                                                    .filter(s -> s.getSecondMarkerId() == 0)
                                                     .collect(Collectors.toCollection(ArrayList::new));
         return availableStudents;
     }
 
     public Request viewSecondMarkerAcceptance() {
         DataContext context = new DataContext();
-        Request request = context.getRequest(r -> r.getUser().getId() == this.id);
+        Request request = context.getRequest(r -> r.getUserId() == this.id);
 
         if (request == null) {
-            Helper.printErr("No Request found for User ID: " + this.id);
-            return null;
+            throw new NullPointerException("No Request found for User ID: " + this.id);
+            // Helper.printErr("No Request found for User ID: " + this.id);
+            // return null;
         }
     
         if (request.getRequestType() != RequestType.SECONDMARKER) {
-            Helper.printErr("Invalid RequestType: " + request.getRequestType());
-            return null;
+            throw new IllegalArgumentException("Invalid RequestType: " + request.getRequestType());
+            // Helper.printErr("Invalid RequestType: " + request.getRequestType());
+            // return null;
         }
 
         return request;
     }
 
-    public boolean assignPresentationSlot(Student student, PresentationSlot slot) {
+    public void assignPresentationSlot(int requestId, int studentId, int presentationSlotId) {
+        DataContext context = new DataContext();
+        PresentationSlot slot = context.getById(presentationSlotId);
+
         if (!slot.isAvailable()) {
-            return false;
+            throw new IllegalArgumentException("Presentation slot is not available: " + slot.getId());
         }
-        student.addPresentationSlot(slot);
-        slot.setAvailable(false);
-        return true;
+
+        context.updatePresentationSlotById(presentationSlotId, ps -> ps.setAvailable(false));
+        context.updateStudentById(studentId, s -> s.addPresentationSlotId(slot.getId()));
+        context.updateRequestById(requestId, r -> r.setApproved(true));
+        
+        context.writeAllDataAsync();
     }
 
     public ArrayList<Report> viewReport(Student student) {
         ArrayList<Report> reports = new ArrayList<>();
-        for (Report report : student.getReports()) {
-            reports.add(report);
+        DataContext context = new DataContext();
+
+        for (int reportId : student.getReportIds()) {
+            reports.add(context.getById(reportId));
         }
         return reports;
+    }
+
+    public void evaluateReport(int studentId) {
+        DataContext context = new DataContext();
     }
 }

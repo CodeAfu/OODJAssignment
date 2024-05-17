@@ -103,7 +103,8 @@ class Sample {
         - View this student's presentation requests [2 JTables]
             - 1 for seeing student requests { s.viewPresentationSlots() }
             - 1 for approved requests { s.getPresentationSlots() }
-        - Make new Presentation Request { s.requestPresentation() }
+        - Make new Presentation Request 
+            - Popup JFrame with Text fields for each parameter for method -> { s.requestPresentation() }
     - My Requests
         - Displays all pending requests AND completed requests (might deprecate tbh)
 - Lecturer:
@@ -112,16 +113,20 @@ class Sample {
         - Rest is upto ur creative freedom
     - View Supervisees
         - Get list of supervisees assigned to students 
-            - Make sure to include Student ID and Supervisor ID { l.viewSupervisees(), l.viewSupervisees().forEach(s -> s.getSupervisee()) } <-- Dont get confused, you will loop each item to get each student anyway
-    - View Presentation Requests
+            - Make sure to include Student ID and Supervisor ID { l.viewSupervisees(), l.viewSupervisees().forEach(s -> s.getSupervisee()) }
+                - Note: some students don't have a supervisor, expecting null error. Deal with it by indicating they dont have one (Add a string to JTable)
+    - Presentation Requests
+        - Get PENDING Student Presentation Requests (Table) { l.viewPendingPresentationRequests() }
+        - Confirm presentations (Button, functions based on Table row selected) { l.assignPresentationSlot() } <-- **Inform me if this method acts weird**
     - View Second Marker slots
-        - Get this lecturer's sec request { l.viewSecondMarkerAcceptance() }
-    - Confirm presentations
+        - Get this lecturer's Second Marker request { l.viewSecondMarkerAcceptance() }
     - Evaluate report with feedback
-    - Project Manager Menus:
-        - Assign AssessmentType to Student
-        - Assign Supervisor and SecondMarker to Lecturer
-        - View Report Status
+        - 
+- Project Manager Menus:
+    - ALL LECTURER METHODS
+    - Assign AssessmentType to Student
+    - Assign Supervisor and SecondMarker to Lecturer
+    - View Report Status
 - Admin:
     - Register Students/Lecturer
     - Update Menu (Register Student,  Assign Project Manager to Lecturer)

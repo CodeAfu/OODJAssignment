@@ -63,13 +63,13 @@ private void populatePresentationsRequest() {
     // Clear the table before populating it again to avoid duplicate entries
     model.setRowCount(0);
   
-    ArrayList<Request> presentations = lecturer.viewPresentationRequests();
+    ArrayList<Request> presentations = lecturer.viewPendingPresentationRequests();
   
     for (int i = 0; i < presentations.size(); i++) {
         Object rowData[] = new Object[4]; // Moved declaration inside the loop
   
         rowData[0] = presentations.get(i).getId();  
-        rowData[1] = presentations.get(i).getUser().getName();
+        rowData[1] = presentations.get(i).viewUser();
         rowData[2] = presentations.get(i).getModule();
         rowData[3] = presentations.get(i).isApproved();
         

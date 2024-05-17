@@ -8,7 +8,7 @@ import com.ags.pms.data.DataContext;
 public class PresentationSlot implements Identifiable {
 
     private int id;
-    private Student student;
+    private int studentId;
     private String module;
     private Date presentationDate;
     private boolean isAvailable;
@@ -17,10 +17,9 @@ public class PresentationSlot implements Identifiable {
         this.isAvailable = true;
     }
 
-    public PresentationSlot(int id, Student student, String module, Date presentationDate, boolean isAvailable) {
+    public PresentationSlot(int id, int studentId, Date presentationDate, boolean isAvailable) {
         this.id = id;
-        this.student = student;
-        this.module = module;
+        this.studentId = studentId;
         this.presentationDate = presentationDate;
         this.isAvailable = isAvailable;
     }
@@ -30,12 +29,12 @@ public class PresentationSlot implements Identifiable {
         this.id = id;
     }
 
-    public PresentationSlot(Student student, Date presentationDate, String module) {
+    public PresentationSlot(int studentId, Date presentationDate, String module) {
         DataContext context = new DataContext();
         this.id = context.fetchNextPresentationSlotId();
         this.isAvailable = false;
         this.module = module;
-        this.student = student;
+        this.studentId = studentId;
         this.presentationDate = presentationDate;
     }
 
@@ -47,12 +46,12 @@ public class PresentationSlot implements Identifiable {
         this.id = id;
     }
 
-    public Student getStudent() {
-        return student;
+    public int getStudentId() {
+        return studentId;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setStudentId(int studentId) {
+        this.studentId = studentId;
     }
 
     public String getModule() {
