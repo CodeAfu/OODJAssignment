@@ -4,6 +4,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 
@@ -52,7 +53,7 @@ public class SeedData {
         Report report1 = new Report(8000, project1.getId(), false, null, "https://sample.moodle.com/sample-link/1", -1, 100);
         Report report2 = new Report(8001, project2.getId(), true, new Date(), "https://sample.moodle.com/sample-link/2", 30, 100);
         Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Integer>());
-        Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Integer>());
+        Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Integer>(Arrays.asList(8000, 8001)));
         Student student3 = new Student(4003, "Emma Smith", "05/08/2023", "emma@email.com", "emma_smith", "P@ssw0rd", new ArrayList<Integer>());
         Student student4 = new Student(4004, "Michael Johnson", "12/11/2023", "michael@email.com", "michael_j", "secure123", new ArrayList<Integer>());
         Lecturer lecturer1 = new Lecturer(2001, "Joshua", "11/01/1980", "joshua@lecturer.com", "josh_lecturer", "verySecurePasswordMate", Role.NONE);
@@ -62,9 +63,9 @@ public class SeedData {
         Admin admin1 = new Admin(1001, "Jay", "20/12/1999", "jay@admin.com", "admin", "VerySecureRight");
         Admin admin2 = new Admin(1002, "JayZee", "20/10/1999", "jayzee@admin.com", "systemkek", "huuuhe123");
         Admin admin3 = new Admin(1003, "Emily Davis", "15/03/1990", "emily@email.com", "emily_d", "admin321");
-        ProjectManager projectManager1 = new ProjectManager(2005, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com", "josh_lecturerPM", "verySecurePasswordMate", Role.SUPERVISOR, new ArrayList<Integer>());
-        ProjectManager projectManager2 = new ProjectManager(2006, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com", "somelecturerPM", "123qweasdzxc", Role.SECONDMARKER, new ArrayList<Integer>());
-        ProjectManager projectManager3 = new ProjectManager(2008, "Sophia Johnson", "25/06/1970", "sophia@email.com", "sophia_j", "ProjectMan321", Role.SUPERVISOR, new ArrayList<Integer>());
+        ProjectManager projectManager1 = new ProjectManager(2005, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com", "josh_lecturerPM", "verySecurePasswordMate", Role.SUPERVISOR, new ArrayList<Integer>(Arrays.asList(4001, 4002)));
+        ProjectManager projectManager2 = new ProjectManager(2006, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com", "somelecturerPM", "123qweasdzxc", Role.SECONDMARKER, new ArrayList<Integer>(Arrays.asList(4003)));
+        ProjectManager projectManager3 = new ProjectManager(2008, "Sophia Johnson", "25/06/1970", "sophia@email.com", "sophia_j", "ProjectMan321", Role.SUPERVISOR, new ArrayList<Integer>(Arrays.asList(4004)));
         ProjectManager projectManager4 = new ProjectManager(2007, "Michael Wilson", "17/04/1972", "michael@email.com", "michael_w", "Wilson123", Role.SECONDMARKER, new ArrayList<Integer>());
         Request request1 = new Request(6000, 4001, RequestType.PRESENTATION, "Computer Science", false);
         Request request2 = new Request(6001, 4002, RequestType.PRESENTATION, "Computer Science", true);
@@ -131,7 +132,7 @@ public class SeedData {
         Report report1 = new Report(8000, project1.getId(), false, null, "https://sample.moodle.com/sample-link/1", -1, 100);
         Report report2 = new Report(8001, project2.getId(), true, new Date(), "https://sample.moodle.com/sample-link/2", 30, 100);
         Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Integer>());
-        Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Integer>());
+        Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Integer>(Arrays.asList(8000, 8001)));
         Student student3 = new Student(4003, "Emma Smith", "05/08/2023", "emma@email.com", "emma_smith", "P@ssw0rd", new ArrayList<Integer>());
         Student student4 = new Student(4004, "Michael Johnson", "12/11/2023", "michael@email.com", "michael_j", "secure123", new ArrayList<Integer>());
         Lecturer lecturer1 = new Lecturer(2001, "Joshua", "11/01/1980", "joshua@lecturer.com", "josh_lecturer", "verySecurePasswordMate", Role.NONE);
@@ -141,9 +142,9 @@ public class SeedData {
         Admin admin1 = new Admin(1001, "Jay", "20/12/1999", "jay@admin.com", "admin", "VerySecureRight");
         Admin admin2 = new Admin(1002, "JayZee", "20/10/1999", "jayzee@admin.com", "systemkek", "huuuhe123");
         Admin admin3 = new Admin(1003, "Emily Davis", "15/03/1990", "emily@email.com", "emily_d", "admin321");
-        ProjectManager projectManager1 = new ProjectManager(2005, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com", "josh_lecturerPM", "verySecurePasswordMate", Role.SUPERVISOR, new ArrayList<Integer>());
-        ProjectManager projectManager2 = new ProjectManager(2006, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com", "somelecturerPM", "123qweasdzxc", Role.SECONDMARKER, new ArrayList<Integer>());
-        ProjectManager projectManager3 = new ProjectManager(2008, "Sophia Johnson", "25/06/1970", "sophia@email.com", "sophia_j", "ProjectMan321", Role.SUPERVISOR, new ArrayList<Integer>());
+        ProjectManager projectManager1 = new ProjectManager(2005, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com", "josh_lecturerPM", "verySecurePasswordMate", Role.SUPERVISOR, new ArrayList<Integer>(Arrays.asList(4001, 4002)));
+        ProjectManager projectManager2 = new ProjectManager(2006, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com", "somelecturerPM", "123qweasdzxc", Role.SECONDMARKER, new ArrayList<Integer>(Arrays.asList(4003)));
+        ProjectManager projectManager3 = new ProjectManager(2008, "Sophia Johnson", "25/06/1970", "sophia@email.com", "sophia_j", "ProjectMan321", Role.SUPERVISOR, new ArrayList<Integer>(Arrays.asList(4004)));
         ProjectManager projectManager4 = new ProjectManager(2007, "Michael Wilson", "17/04/1972", "michael@email.com", "michael_w", "Wilson123", Role.SECONDMARKER, new ArrayList<Integer>());
         Request request1 = new Request(6000, 4001, RequestType.PRESENTATION, "Computer Science", false);
         Request request2 = new Request(6001, 4002, RequestType.PRESENTATION, "Computer Science", true);

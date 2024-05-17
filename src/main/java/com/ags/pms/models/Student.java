@@ -117,21 +117,21 @@ public class Student extends User {
         this.secondMarkerId = secondMarkerId;
     }
 
-    // private void fetchSupervisor() {
-    //     DataContext context = new DataContext();
+    private void fetchSupervisor() {
+        DataContext context = new DataContext();
 
-    //     Optional<ProjectManager> supervisor = context.getProjectManagers().stream()
-    //         .filter(pm -> pm.getRole() == Role.SUPERVISOR)
-    //         .filter(sp -> {
-    //             ArrayList<Student> supervisees = sp.getSupervisees();
-    //             return supervisees != null && supervisees.contains(this);
-    //         })
-    //         .findFirst();
+        Optional<ProjectManager> supervisor = context.getProjectManagers().stream()
+            .filter(pm -> pm.getRole() == Role.SUPERVISOR)
+            .filter(sp -> {
+                ArrayList<Integer> superviseeIds = sp.getSuperviseeIds();
+                return superviseeIds != null && superviseeIds.contains(this.getId());
+            })
+            .findFirst();
 
-    //     if (!supervisor.isEmpty()) {
-    //         this.supervisorId = supervisor.get();
-    //     }
-    // }
+        if (!supervisor.isEmpty()) {
+            this.supervisorId = supervisor.get().getId();
+        }
+    }
 
     private Report createReport(Project project, String moodleLink, int totalMarks) {
         DataContext context = new DataContext();
