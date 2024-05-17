@@ -10,6 +10,7 @@ public class Report implements Identifiable {
 
     private int id;
     private int projectId;
+    private int studentId;
     private boolean submitted;
     private Date dateSubmitted;
     private String moodleLink;
@@ -78,6 +79,12 @@ public class Report implements Identifiable {
     }
     public void setProjectId(int project) {
         this.projectId = project;
+    }
+    public int getStudentId() {
+        return studentId;
+    }
+    public void setStudentId(int studentId) {
+        this.studentId = studentId;
     }
     public boolean isSubmitted() {
         return submitted;

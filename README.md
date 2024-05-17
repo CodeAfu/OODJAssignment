@@ -86,9 +86,12 @@ class Sample {
     - Class Diagram -> Rion
 
 ### GUI
-#### Note: DO NOT ADD ID INPUT FIELDS FOR ANYTHING IN THE GUI (Create functions, eg: register user, create project, create student, etc), 
-#### BUT ALSO INCLUDE IDS FOR ALL COMPONENETS THAT DISPLAY DATA (View/Read Functions, eg: JTable listing reports, projects, even viewing single user data). 
-#### THE ID IS AUTO-GENERATED UPON CREATION (Use the constructor with no ID parameter)
+```
+Note: 
+- DO NOT ADD ID INPUT FIELDS FOR ANYTHING IN THE GUI (Create functions, eg: register user, create project, create student, etc),<br>
+- BUT ALSO INCLUDE IDS FOR ALL COMPONENETS THAT DISPLAY DATA (View/Read Functions, eg: JTable listing reports, projects, even viewing single user data).<br>
+- THE ID IS AUTO-GENERATED UPON CREATION (Use the constructor with no ID parameter if I missed a method and you want to contruct your own logic)
+```
 - Login
 - Register
 - Main Menus (Adaptive Menus based on user roles listed below)
@@ -114,19 +117,29 @@ class Sample {
     - View Supervisees
         - Get list of supervisees assigned to students 
             - Make sure to include Student ID and Supervisor ID { l.viewSupervisees(), l.viewSupervisees().forEach(s -> s.getSupervisee()) }
-                - Note: some students don't have a supervisor, expecting null error. Deal with it by indicating they dont have one (Add a string to JTable)
+                - Note: Some students don't have a supervisor, expecting null error. Deal with it by indicating they dont have one (Add a string to JTable)
     - Presentation Requests
         - Get PENDING Student Presentation Requests (Table) { l.viewPendingPresentationRequests() }
-        - Confirm presentations (Button, functions based on Table row selected) { l.assignPresentationSlot() } <-- **Inform me if this method acts weird**
+        - Confirm presentations (Button, functions based on Table row selected) { l.assignPresentationSlot() }
     - View Second Marker slots
-        - Get this lecturer's Second Marker request { l.viewSecondMarkerAcceptance() }
+        - Get list of Students with no second marker assigned (JTable) { l.viewSecondMarkerSlots() }
+        - Get this lecturer's Second Marker request (ONLY 1 REQUEST AT A TIME) (Some nice component idk) { l.viewSecondMarkerAcceptance() }
+        - Apply for Second Marker Request (Button) { l.applyForSecondMarker() }
     - Evaluate report with feedback
-        - 
+        - Get list of all reports (JTable) { l.viewStudentReports() }
+        - Give feedback to student Report (Button, JFrame with Report Details and editable feedback) { l.evaluateReport() }
 - Project Manager Menus:
-    - ALL LECTURER METHODS
+    - All Lecturer Methods
     - Assign AssessmentType to Student
+        - Load all Student Data (Table) { pm.viewStudents() }
+        - Set assesment type of Student (Radio button + button combination?) { pm.assignStudentAssessmentType() }
+            - Use the AssessmentType Enum
     - Assign Supervisor and SecondMarker to Lecturer
+        - Load all Lecturers (Table) { pm.viewLecturers() }
+        - Assign role to Lecturer (Radio button + button combination?) { pm.assignRoleToLecturer }
+            - Use the Role Enum
     - View Report Status
+        - List Reports (Table) { pm.viewReportStatus() } <- Not sure the significance of this menu
 - Admin:
     - Register Students/Lecturer
     - Update Menu (Register Student,  Assign Project Manager to Lecturer)

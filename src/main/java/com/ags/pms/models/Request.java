@@ -9,8 +9,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Request implements Identifiable {
 
     private int id;
-    private int userId;
+    private int requesterId;
     private RequestType requestType;
+    private int studentId; // For SECONDMARKER and SUPERVISOR
     private String module;
     private boolean isApproved;
     
@@ -20,16 +21,33 @@ public class Request implements Identifiable {
     public Request(int userId, RequestType requestType, String module, boolean isApproved) {
         DataContext context = new DataContext();
         this.id = context.fetchNextRequestId();
-        this.userId = userId;
+        this.requesterId = userId;
         this.requestType = requestType;
         this.module = module;
+        this.isApproved = isApproved;
+    }
+
+    public Request(int userId, RequestType requestType, int studentId, boolean isApproved) {
+        DataContext context = new DataContext();
+        this.id = context.fetchNextRequestId();
+        this.requesterId = userId;
+        this.requestType = requestType;
+        this.studentId = studentId;
+        this.isApproved = isApproved;
+    }
+
+    public Request(int id, int userId, RequestType requestType, int studentId, boolean isApproved) {
+        this.id = id;
+        this.requesterId = userId;
+        this.requestType = requestType;
+        this.studentId = studentId;
         this.isApproved = isApproved;
     }
     
     public Request(int userId, RequestType requestType, boolean isApproved) {
         DataContext context = new DataContext();
         this.id = context.fetchNextRequestId();
-        this.userId = userId;
+        this.requesterId = userId;
         this.requestType = requestType;
         this.isApproved = isApproved;
     }
@@ -37,7 +55,7 @@ public class Request implements Identifiable {
 
     public Request(int id, int userId, RequestType requestType, String module, boolean isApproved) {
         this.id = id;
-        this.userId = userId;
+        this.requesterId = userId;
         this.requestType = requestType;
         this.module = module;
         this.isApproved = isApproved;
@@ -45,7 +63,7 @@ public class Request implements Identifiable {
 
     public Request(int id, int userId, RequestType requestType, boolean isApproved) {
         this.id = id;
-        this.userId = userId;
+        this.requesterId = userId;
         this.requestType = requestType;
         this.isApproved = isApproved;
     }
@@ -53,7 +71,7 @@ public class Request implements Identifiable {
     // BAD CONSTRUCTOR
     public Request(int id, int userId, String module) {
         this.id = id;
-        this.userId = userId;
+        this.requesterId = userId;
         this.module = module;
         this.isApproved = false;
     }   
@@ -66,12 +84,23 @@ public class Request implements Identifiable {
         this.id = id;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getRequesterId() {
+        return requesterId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setRequesterId(int userId) {
+        this.requesterId = userId;
+    }
+
+    public int getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(int studentId) {
+        if ((this.requestType == RequestType.PRESENTATION || this.requestType == null) && studentId != 0) {
+            throw new IllegalArgumentException("Student can only be assigned for Supervisor or SecondMarker Requests.");
+        }
+        this.studentId = studentId;
     }
 
     public RequestType getRequestType() {
@@ -100,7 +129,7 @@ public class Request implements Identifiable {
 
     public User viewUser() {
         DataContext context = new DataContext();
-        User user = context.getById(userId);
+        User user = context.getById(requesterId);
 
         if (user instanceof Student) {
             return (Student) user;

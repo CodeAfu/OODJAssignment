@@ -174,7 +174,7 @@ public class Student extends User {
     public ArrayList<Request> viewPresentationRequests() {
         DataContext context = new DataContext();
         ArrayList<Request> myRequests = context.getRequests().stream()
-                                                .filter(r -> r.getUserId() == this.id && r.getRequestType() == RequestType.PRESENTATION)
+                                                .filter(r -> r.getRequesterId() == this.id && r.getRequestType() == RequestType.PRESENTATION)
                                                 .collect(Collectors.toCollection(ArrayList::new));                                              
         return myRequests;
     }
@@ -182,7 +182,7 @@ public class Student extends User {
     public ArrayList<Request> viewAllRequests() {
         DataContext context = new DataContext();
         ArrayList<Request> myRequests = context.getRequests().stream()
-                                                .filter(r -> r.getUserId() == this.id && r.getRequestType() == RequestType.PRESENTATION)
+                                                .filter(r -> r.getRequesterId() == this.id && r.getRequestType() == RequestType.PRESENTATION)
                                                 .collect(Collectors.toCollection(ArrayList::new));                                              
         return myRequests;
     }

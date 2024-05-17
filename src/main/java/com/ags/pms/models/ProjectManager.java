@@ -67,6 +67,32 @@ public class ProjectManager extends Lecturer {
         return reports;
     }
 
-    
-    // Assign Supervisor and Marker
+    public void assignStudentAssessmentType(int studentId, AssessmentType assessmentType) {
+        DataContext context = new DataContext();
+        context.updateStudentById(studentId, s -> s.setAssessmentType(assessmentType));
+        context.writeAllDataAsync();
+    }
+
+    public void assignRoleToLecturer(int id, Role role) {
+        DataContext context = new DataContext();
+        User user = context.getById(id);
+
+        if (user instanceof Lecturer) {
+            context.updateLecturerById(id, lec -> lec.setRole(role));
+        } else if (user instanceof ProjectManager) {
+            context.updateProjectManagerById(id, pm -> pm.setRole(role));
+        }
+
+        context.writeAllDataAsync();
+    }
+
+    public ArrayList<Lecturer> viewLecturers() {
+        DataContext context = new DataContext();
+        return context.getLecturers();
+    }
+
+    public ArrayList<Report> viewReportStatus() {
+        DataContext context = new DataContext();
+        return context.getReports();
+    }
 }

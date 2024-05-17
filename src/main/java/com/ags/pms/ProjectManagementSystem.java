@@ -59,14 +59,15 @@ public class ProjectManagementSystem {
         // testFileHandler();
         // testAES();
         // generateNewAESKey();
-        // smallTests();
-        dataContextTest();
+        smallTests();
+        // dataContextTest();
     }
 
 
     @SuppressWarnings("unused")
     private static void smallTests() throws Exception {
-        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Integer>());
+        Lecturer lecturer2 = new Lecturer(2002, "Amardeep", "11/01/1980", "amardeep@lecturer.com", "somelecturer", "123qweasdzxc", Role.NONE);
+        lecturer2.viewStudentReports(4002);
     }
     
     @SuppressWarnings("unused")

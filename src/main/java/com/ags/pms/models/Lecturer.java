@@ -1,5 +1,6 @@
 package com.ags.pms.models;
 
+import java.rmi.UnexpectedException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -60,6 +61,14 @@ public class Lecturer extends User {
 
     public ArrayList<Student> viewSupervisees() {
         DataContext context = new DataContext();
+        ArrayList<Student> supervisees = context.getStudents().stream()
+                                            .filter(s -> s.getSupervisorId() != 0)
+                                            .collect(Collectors.toCollection(ArrayList::new));
+        return supervisees;
+    }
+
+    public ArrayList<Student> viewStudents() {
+        DataContext context = new DataContext();
         ArrayList<Student> students = context.getStudents();
         return students;
     }
@@ -105,7 +114,7 @@ public class Lecturer extends User {
 
     public Request viewSecondMarkerAcceptance() {
         DataContext context = new DataContext();
-        Request request = context.getRequest(r -> r.getUserId() == this.id);
+        Request request = context.getRequest(r -> r.getRequesterId() == this.id);
 
         if (request == null) {
             throw new NullPointerException("No Request found for User ID: " + this.id);
@@ -122,7 +131,12 @@ public class Lecturer extends User {
         return request;
     }
 
-
+    public void applyForSecondMarker(int studentId) {
+        DataContext context = new DataContext();
+        Request request = new Request(context.fetchNextRequestId(), this.id, RequestType.SECONDMARKER, studentId, false);
+        context.addRequest(request);
+        context.writeAllDataAsync();
+    }
 
     public ArrayList<Report> viewReport(Student student) {
         ArrayList<Report> reports = new ArrayList<>();
@@ -134,7 +148,34 @@ public class Lecturer extends User {
         return reports;
     }
 
-    public void evaluateReport(int studentId) {
+    public ArrayList<Report> viewStudentReports(int studentId) {
         DataContext context = new DataContext();
+        Student student = context.getById(studentId);
+
+        if (!(student instanceof Student)) {
+            throw new IllegalArgumentException("Expected Student, but retreived: " + student.getClass().getSimpleName());
+        }
+        
+        ArrayList<Report> reports = new ArrayList<>();
+        
+        student.getReportIds().forEach(rId -> {
+            Report report = context.getById(rId);
+            reports.add(report);
+        });
+        
+        return reports;
+    }
+    
+    public void evaluateReport(int reportId, String feedback) {
+        DataContext context = new DataContext();
+        Report report = context.getById(reportId);
+        
+        if (!(report instanceof Report)) {
+            throw new IllegalArgumentException("Expected Report, but retreived: " + report.getClass().getSimpleName());
+        }
+
+        context.updateReportById(reportId, r -> r.setFeedback(feedback));
+
+        context.writeAllDataAsync();
     }
 }
