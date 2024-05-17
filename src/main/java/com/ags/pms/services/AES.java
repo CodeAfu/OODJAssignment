@@ -18,16 +18,18 @@ import java.util.Base64;
 public class AES {
 
     private SecretKey key;
+    
     private int keySize = 128;
     private int T_LEN = 128;
     private byte[] IV;
-
+    
+    
     public void init() throws NoSuchAlgorithmException {
         KeyGenerator generator = KeyGenerator.getInstance("AES");
         generator.init(keySize);
         key = generator.generateKey();
     }
-
+    
     public void initFromString(String secretKey, String IV) {
         key = new SecretKeySpec(decode(secretKey), "AES");
         this.IV = decode(IV);
@@ -41,11 +43,11 @@ public class AES {
     //     byte[] encryptedBytes = encryptionCipher.doFinal(messageInBytes);
     //     return encode(encryptedBytes);
     // }
-
+    
     public String encrypt(String message) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         byte[] messageInBytes = message.getBytes();
         Cipher encryptionCipher = Cipher.getInstance("AES/GCM/NoPadding");
-
+        
         if (this.IV == null) {
             encryptionCipher.init(Cipher.ENCRYPT_MODE, key);
             this.IV = encryptionCipher.getIV();
@@ -53,7 +55,7 @@ public class AES {
             GCMParameterSpec spec = new GCMParameterSpec(T_LEN, IV);
             encryptionCipher.init(Cipher.ENCRYPT_MODE, key, spec);
         }
-
+        
         byte[] encryptedBytes = encryptionCipher.doFinal(messageInBytes);
         return encode(encryptedBytes);
     }
@@ -66,7 +68,7 @@ public class AES {
         byte[] decryptedBytes = decryptionCipher.doFinal(messageInBytes);
         return new String(decryptedBytes);
     }
-
+    
     public String[] exportKeys() {
         String secretKey = encode(key .getEncoded());
         String IV = encode(this.IV);
@@ -75,11 +77,11 @@ public class AES {
             secretKey, IV
         };
     }
-
+    
     private String encode(byte[] data) {
         return Base64.getEncoder().encodeToString(data);
     }
-
+    
     private byte[] decode(String data) {
         return Base64.getDecoder().decode(data);
     }
@@ -87,8 +89,13 @@ public class AES {
     public void setKey(String secretKey) {
         this.key = new SecretKeySpec(decode(secretKey), "AES");
     }
-
+    
     public void setIV(String IV) {
         this.IV = decode(IV);
     }
+
+    public boolean isSetup() {
+        return key != null && IV != null;
+    }
+
 }

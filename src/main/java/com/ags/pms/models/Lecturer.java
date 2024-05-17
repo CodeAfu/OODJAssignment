@@ -18,14 +18,16 @@ import com.ags.pms.data.DataContext;
 public class Lecturer extends User {
     
     protected boolean isProjectManager;
+    protected Role role;
 
     public Lecturer() {
         super();
         isProjectManager = false;
     }
     
-    public Lecturer(int id, String name, String dob, String email, String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+    public Lecturer(int id, String name, String dob, String email, String username, String password, Role role) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         super(id, name, dob, email, username, password);
+        this.role = role;
         isProjectManager = false;
     }
 
@@ -42,20 +44,23 @@ public class Lecturer extends User {
         this.isProjectManager = isProjectManager;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     public void toggleProjectManager() {
         isProjectManager = !isProjectManager;
         System.out.println("Project Manager: " + isProjectManager);
     }
 
-    public HashMap<Integer, Integer> viewSupervisees() {
+    public ArrayList<Student> viewSupervisees() {
         DataContext context = new DataContext();
         ArrayList<Student> students = context.getStudents();
-        HashMap<Integer, Integer> supervisees = new HashMap<>();
-
-        for (Student s : students) {
-            supervisees.put(s.getId(), s.getSupervisor().getId());
-        }
-        return supervisees;
+        return students;
     }
 
     public ArrayList<Request> viewPresentationRequests() {
@@ -68,10 +73,18 @@ public class Lecturer extends User {
 
     public ArrayList<PresentationSlot> viewAvailableSlots() {
         DataContext context = new DataContext();
-        ArrayList<PresentationSlot> availableSlots = (ArrayList<PresentationSlot>) context.getPresentationSlots().stream()
-                                                                .filter(r -> r.isAvailable() == true)
-                                                                .collect(Collectors.toList());
+        ArrayList<PresentationSlot> availableSlots = context.getPresentationSlots().stream()
+                                                            .filter(r -> r.isAvailable() == true)
+                                                            .collect(Collectors.toCollection(ArrayList::new));
         return availableSlots;
+    }
+
+    public ArrayList<Student> viewSecondMarkerSlots() {
+        DataContext context = new DataContext();
+        ArrayList<Student> availableStudents = context.getStudents().stream()
+                                                    .filter(s -> s.getSecondMarker() == null)
+                                                    .collect(Collectors.toCollection(ArrayList::new));
+        return availableStudents;
     }
 
     public Request viewSecondMarkerAcceptance() {

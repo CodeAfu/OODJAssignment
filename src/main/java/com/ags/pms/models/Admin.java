@@ -148,7 +148,7 @@ public class Admin extends User {
         
         Lecturer lecturer = new Lecturer(projectManager.getId(),
             projectManager.getName(), projectManager.getDob(), projectManager.getEmail(), 
-            projectManager.getUsername(), projectManager.getPassword());
+            projectManager.getUsername(), projectManager.getPassword(), Role.NONE);
             
         context.removeById(projectManager.getId());
         context.addLecturer(lecturer);

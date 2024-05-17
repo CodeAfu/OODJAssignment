@@ -86,28 +86,45 @@ class Sample {
     - Class Diagram -> Rion
 
 ### GUI
+#### Note: DO NOT ADD ID INPUT FIELDS FOR ANYTHING IN THE GUI (Create functions, eg: register user, create project, create student, etc), 
+#### BUT ALSO INCLUDE IDS FOR ALL COMPONENETS THAT DISPLAY DATA (View/Read Functions, eg: JTable listing reports, projects, even viewing single user data). 
+#### THE ID IS AUTO-GENERATED UPON CREATION (Use the constructor with no ID parameter)
 - Login
 - Register
-- Main Menu (Adaptive Menus based on user role)
-    - Student:
-        - Dashboard
-        - View Report
-        - Request Presentation
-        - Results
-    - Lecturer:
-        - Dashboard
-        - View Supervisees
-        - View Presentation Requests
-        - View Second Marker slots
-        - Confirm presentations
-        - Evaluate report with feedback
-        - Project Manager Menus:
-            - Assign AssessmentType to Student
-            - Assign Supervisor and SecondMarker to Lecturer
-            - View Report Status
-    - Admin:
-        - Register Students/Lecturer
-        - Update Menu (Register Student,  Assign Project Manager to Lecturer)
+- Main Menus (Adaptive Menus based on user roles listed below)
+- Student:
+    - Dashboard
+        - Upto your creative freedom
+    - Reports
+        - Display Report on JTable { s.getReports() }
+        - Add Report - Opens Separate (very basic) JFrame to construct report, just add text fields for every field on Report model { ReportJFrame? }
+        - Add a "Remove" button for report
+    - Presentations
+        - View this student's presentation requests [2 JTables]
+            - 1 for seeing student requests { s.viewPresentationSlots() }
+            - 1 for approved requests { s.getPresentationSlots() }
+        - Make new Presentation Request { s.requestPresentation() }
+    - My Requests
+        - Displays all pending requests AND completed requests (might deprecate tbh)
+- Lecturer:
+    - Dashboard
+        - Include list of Students and assigned supervisees (same as View Supervisees lol)
+        - Rest is upto ur creative freedom
+    - View Supervisees
+        - Get list of supervisees assigned to students 
+            - Make sure to include Student ID and Supervisor ID { l.viewSupervisees(), l.viewSupervisees().forEach(s -> s.getSupervisee()) } <-- Dont get confused, you will loop each item to get each student anyway
+    - View Presentation Requests
+    - View Second Marker slots
+        - Get this lecturer's sec request { l.viewSecondMarkerAcceptance() }
+    - Confirm presentations
+    - Evaluate report with feedback
+    - Project Manager Menus:
+        - Assign AssessmentType to Student
+        - Assign Supervisor and SecondMarker to Lecturer
+        - View Report Status
+- Admin:
+    - Register Students/Lecturer
+    - Update Menu (Register Student,  Assign Project Manager to Lecturer)
 
 
 ### Models

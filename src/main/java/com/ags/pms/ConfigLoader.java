@@ -9,7 +9,10 @@ public class ConfigLoader {
     private String secretKey;
     private String IV;
 
-    public ConfigLoader() throws IOException {
+    public ConfigLoader() {
+    }
+    
+    public void init() throws IOException {
         Properties properties = new Properties();
         InputStream input = getClass().getClassLoader().getResourceAsStream("resources/config.properties");
         properties.load(input);    

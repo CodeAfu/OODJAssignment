@@ -11,6 +11,7 @@ C:\Classes\APU\Year 2\Semester1\Object Oriented Development With Java\Assignment
 C:\Classes\APU\Year 2\Semester1\Object Oriented Development With Java\Assignment\OODJAssignment\src\main\java\com\ags\pms\models\Lecturer.java
 C:\Classes\APU\Year 2\Semester1\Object Oriented Development With Java\Assignment\OODJAssignment\src\main\java\com\ags\pms\models\User.java
 C:\Classes\APU\Year 2\Semester1\Object Oriented Development With Java\Assignment\OODJAssignment\src\main\java\com\ags\pms\models\RequestType.java
+C:\Classes\APU\Year 2\Semester1\Object Oriented Development With Java\Assignment\OODJAssignment\src\main\java\com\ags\pms\forms\LecturerForm.java
 C:\Classes\APU\Year 2\Semester1\Object Oriented Development With Java\Assignment\OODJAssignment\src\main\java\com\ags\pms\models\Project.java
 C:\Classes\APU\Year 2\Semester1\Object Oriented Development With Java\Assignment\OODJAssignment\src\main\java\com\ags\pms\models\Role.java
 C:\Classes\APU\Year 2\Semester1\Object Oriented Development With Java\Assignment\OODJAssignment\src\main\java\com\ags\pms\models\PresentationSlot.java
@@ -27,3 +28,4 @@ C:\Classes\APU\Year 2\Semester1\Object Oriented Development With Java\Assignment
 C:\Classes\APU\Year 2\Semester1\Object Oriented Development With Java\Assignment\OODJAssignment\src\main\java\com\ags\pms\forms\MainForm.java
 C:\Classes\APU\Year 2\Semester1\Object Oriented Development With Java\Assignment\OODJAssignment\src\main\java\com\ags\pms\models\ProjectManager.java
 C:\Classes\APU\Year 2\Semester1\Object Oriented Development With Java\Assignment\OODJAssignment\src\main\java\com\ags\pms\models\Student.java
+C:\Classes\APU\Year 2\Semester1\Object Oriented Development With Java\Assignment\OODJAssignment\src\main\java\com\ags\pms\ConfigLoader.java

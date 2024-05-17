@@ -1,5 +1,6 @@
 package com.ags.pms.models;
 
+import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.ags.pms.ConfigLoader;
 import com.ags.pms.Helper;
 import com.ags.pms.data.DataContext;
 import com.ags.pms.io.JsonHandler;
@@ -29,8 +31,7 @@ public class User implements Identifiable {
     protected String username;
     protected String password;
 
-    
-    private PasswordHandler pwHandler = new PasswordHandler("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
+    private PasswordHandler pwHandler = new PasswordHandler();
     
     public User() {
     }
@@ -125,18 +126,24 @@ public class User implements Identifiable {
 
     public void encryptPassword() {
          try {
+            if (!pwHandler.isSetup()) {
+                pwHandler.initFromConfigLoader();                
+            }
             this.password = pwHandler.encryptPassword(this.password);
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException 
-                | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
-            Helper.printErr(Helper.getStackTraceString(e));
-        }
-    }
+                | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException | IOException e) {
+                    Helper.printErr(Helper.getStackTraceString(e));
+                }
+            }
     
     public void decryptPassword() {
         try {
+            if (!pwHandler.isSetup()) {
+                pwHandler.initFromConfigLoader();                
+            }
             this.password = pwHandler.decryptPassword(this.password);
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException 
-                | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
+                | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException | IOException e) {
             Helper.printErr(Helper.getStackTraceString(e));                
         }
     }

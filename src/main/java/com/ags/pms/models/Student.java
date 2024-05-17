@@ -1,10 +1,12 @@
 package com.ags.pms.models;
 
+import java.lang.reflect.Array;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -157,6 +159,22 @@ public class Student extends User {
         Request request = new Request(context.fetchNextRequestId(), this, module);
         context.addRequest(request);
         context.writeAllDataAsync();
+    }
+
+    public ArrayList<Request> viewPresentationRequests() {
+        DataContext context = new DataContext();
+        ArrayList<Request> myRequests = context.getRequests().stream()
+                                                .filter(r -> r.getUser().getId() == this.id && r.getRequestType() == RequestType.PRESENTATION)
+                                                .collect(Collectors.toCollection(ArrayList::new));                                              
+        return myRequests;
+    }
+
+    public ArrayList<Request> viewAllRequests() {
+        DataContext context = new DataContext();
+        ArrayList<Request> myRequests = context.getRequests().stream()
+                                                .filter(r -> r.getUser().getId() == this.id && r.getRequestType() == RequestType.PRESENTATION)
+                                                .collect(Collectors.toCollection(ArrayList::new));                                              
+        return myRequests;
     }
 
     public String retrieveReportDetails(Report report) {

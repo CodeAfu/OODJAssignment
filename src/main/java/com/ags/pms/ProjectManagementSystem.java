@@ -59,16 +59,14 @@ public class ProjectManagementSystem {
         // testFileHandler();
         // testAES();
         // generateNewAESKey();
-        // smallTests();
-        dataContextTest();
+        smallTests();
+        // dataContextTest();
     }
 
 
     @SuppressWarnings("unused")
     private static void smallTests() throws Exception {
-        ConfigLoader properties = new ConfigLoader();
-        System.out.println(properties.getSecretKey());
-        System.out.println(properties.getIV());
+        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Report>());
     }
     
     @SuppressWarnings("unused")
@@ -200,8 +198,8 @@ public class ProjectManagementSystem {
         students.add(student1);
         students.add(student2);
 
-        Lecturer lecturer1 = new Lecturer(2001, "Joshua", "11/01/1980", "joshua@lecturer.com", "josh_lecturer", "verySecurePasswordMate");
-        Lecturer lecturer2 = new Lecturer(2002, "Amardeep", "11/01/1980", "amardeep@lecturer.com", "somelecturer", "123qweasdzxc");
+        Lecturer lecturer1 = new Lecturer(2001, "Joshua", "11/01/1980", "joshua@lecturer.com", "josh_lecturer", "verySecurePasswordMate", Role.NONE);
+        Lecturer lecturer2 = new Lecturer(2002, "Amardeep", "11/01/1980", "amardeep@lecturer.com", "somelecturer", "123qweasdzxc", Role.NONE);
         lecturer1.setProjectManager(true);
         lecturers.add(lecturer1);
         lecturers.add(lecturer2);

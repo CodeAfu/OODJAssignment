@@ -13,36 +13,21 @@ import com.ags.pms.data.DataContext;
 
 public class ProjectManager extends Lecturer {
 
-    private Role role;
     private ArrayList<Student> supervisees = new ArrayList<>();
 
     public ProjectManager() {
         super();
     }
-
-    public ProjectManager(int id, String name, String dob, String email, String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
-        super(id, name, dob, email, username, password);
-        this.isProjectManager = true;
-    }
     
     public ProjectManager(int id, String name, String dob, String email, String username, String password, Role role, ArrayList<Student> supervisees) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
-        super(id, name, dob, email, username, password);
+        super(id, name, dob, email, username, password, role);
         this.isProjectManager = true;
-        this.role = role;
         this.supervisees = supervisees;
     }
 
     public ProjectManager(String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         super(username, password);
         this.isProjectManager = true;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 
     public ArrayList<Student> getSupervisees() {
@@ -83,7 +68,5 @@ public class ProjectManager extends Lecturer {
     }
 
     
-    
-
     // Assign Supervisor and Marker
 }
