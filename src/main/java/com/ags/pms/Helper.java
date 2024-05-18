@@ -24,6 +24,7 @@ import com.ags.pms.models.Request;
 import com.ags.pms.models.RequestType;
 import com.ags.pms.models.Role;
 import com.ags.pms.models.Student;
+import com.ags.pms.models.User;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.formdev.flatlaf.json.ParseException;
 
@@ -157,6 +158,10 @@ public class Helper {
         return Identifiable.class.isAssignableFrom(clazz);
     }
 
+    public static boolean isUserInstance(Class<?> clazz) {
+        return User.class.isAssignableFrom(clazz);
+    }
+
     public static Role getRoleFromRequestType(RequestType requestType) {
         switch (requestType){
             case RequestType.SECONDMARKER:
@@ -165,5 +170,19 @@ public class Helper {
                 return Role.SUPERVISOR;
         }
         return null;
+    }
+
+    public static User assertUserType(User user) {
+        if (user instanceof Lecturer) {
+            return (Lecturer) user;
+        } else if (user instanceof Student) {
+            return (Student) user;
+        } else if (user instanceof Admin) {
+            return (Admin) user;
+        } else if (user instanceof ProjectManager) {
+            return (ProjectManager) user;
+        }
+        Helper.printErr("Object was not properly casted to a specific user instance: " + user.getId());
+        return user;
     }
 }

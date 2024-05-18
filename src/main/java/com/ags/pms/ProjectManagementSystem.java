@@ -11,22 +11,26 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import com.ags.pms.models.*;
-import com.ags.pms.services.*;
 import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
 import com.formdev.flatlaf.json.Json;
 
 import net.bytebuddy.build.HashCodeAndEqualsPlugin;
 import net.bytebuddy.implementation.bytecode.constant.ClassConstant;
 
+import com.ags.pms.models.*;
+import com.ags.pms.services.*;
 import com.ags.pms.data.DataContext;
 import com.ags.pms.data.SeedData;
+import com.ags.pms.forms.LecturerForm;
 import com.ags.pms.forms.Login;
 import com.ags.pms.forms.MainForm;
 import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
 
 public class ProjectManagementSystem {
+
+    private Login loginForm;
+    private User user;
 
     private static ArrayList<Student> studentsFromJson;
     private static ArrayList<Lecturer> lecturersFromJson;
@@ -35,25 +39,44 @@ public class ProjectManagementSystem {
 
     public static void main(String[] args) {
         try {
-            // app();
-            consoleTests();
+            ProjectManagementSystem pms = new ProjectManagementSystem();
+            pms.app();
+            // pms.consoleTests();
         } catch (Exception ex) {
             Helper.printErr(Helper.getStackTraceString(ex));
         }
     }
     
-    private static void app() {
-        Login login = new Login();
-        login.setVisible(true);
+    private void app() {
+        boolean exitApp = false;
+        loginForm = new Login();
+        loginForm.setVisible(true);
 
-        User user = login.getUser();
-        login.dispose();
-        
-        MainForm mainForm = new MainForm(user);
-        mainForm.setVisible(true);
+        while (loginForm.getUser() == null) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) { }
+        }
+
+        user = loginForm.getUser();
+
+        if (user != null) {
+            System.out.println(user.getId());
+            if (user instanceof Lecturer) {
+                Lecturer lecturer = (Lecturer) user;
+                LecturerForm lecturerForm = new LecturerForm(user);
+                lecturerForm.setVisible(true);
+            } else if (user instanceof Admin) {
+                Admin admin = (Admin) user;
+            } else if (user instanceof Student) {
+                Student student = (Student) user;
+            } else if (user instanceof ProjectManager) {
+                ProjectManager projectManager = (ProjectManager) user;
+            }
+        }
     }
     
-    private static void consoleTests() throws Exception {
+    private void consoleTests() throws Exception {
         // testLogin();
         // testFileHandlerAsyncOperations();
         // testFileHandler();
@@ -125,7 +148,6 @@ public class ProjectManagementSystem {
     @SuppressWarnings("unused")
     private static void testLogin() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         ProjectManager manager = new ProjectManager("somelecturerPM", "123qweasdzxc");
-        System.out.println(manager.login());
     }
 
     @SuppressWarnings("unused")

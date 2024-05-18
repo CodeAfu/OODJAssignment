@@ -33,6 +33,7 @@ public class DataContext {
     private JsonHandler jsonHandler;
 
     private Map<String, List<? extends Identifiable>> collections = new HashMap<>();
+    private Map<String, List<? extends User>> userCollections = new HashMap<>();
 
     private ArrayList<Lecturer> lecturers = new ArrayList<>();
     private ArrayList<Student> students = new ArrayList<>();
@@ -63,6 +64,13 @@ public class DataContext {
         collections.put("presentationSlots", presentationSlots);
         collections.put("requests", requests);
         collections.put("projects", projects);
+    }
+    
+    public void populateUserCollection() {
+        userCollections.put("lecturers", lecturers);
+        userCollections.put("students", students);
+        userCollections.put("admins", admins);
+        userCollections.put("projectManagers", projectManagers);
     }
 
     // Only call on constructor
@@ -245,6 +253,21 @@ public class DataContext {
                 .orElseThrow(() -> new NoSuchElementException("Object not found"));
     }
 
+    public <T extends User> T getValidUser(String username, String password) {
+        return userCollections.values().stream()
+                .flatMap(Collection::stream)
+                .filter(o -> o.getUsername().equals(username) && o.getPassword().equals(password))
+                .map(obj -> {
+                    if (Helper.isUserInstance(obj.getClass())) {
+                        return (T) obj;
+                    } else {
+                        throw new IllegalArgumentException("Unsupported class type");
+                    }
+                })
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Object not found"));
+    }
+
     public <T extends Identifiable> CompletableFuture<T> getByIdAsync(int id) {
         return CompletableFuture.supplyAsync(() -> {
             T result = getById(id);
@@ -301,6 +324,10 @@ public class DataContext {
         }
         Helper.printErr("Null value not found. ID: " + id);
         return null;
+    }
+
+    public Map<String, List<? extends User>> getUserCollections() {
+        return userCollections;
     }
 
     public void setLecturers(ArrayList<Lecturer> lecturers) {

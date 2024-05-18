@@ -10,8 +10,10 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Collection;
 
 import com.ags.pms.ConfigLoader;
 import com.ags.pms.Helper;
@@ -149,24 +151,30 @@ public class User implements Identifiable {
         }
     }
 
-    public <T extends User> boolean login() {
-        JsonHandler handler = new JsonHandler();
+    // public <T extends User> boolean login(String username, String password) {
+        // DataContext context = new DataContext();
+        // context.populateUserCollection();
+        // context.getValidUser(username, password);
 
-        @SuppressWarnings("unchecked")
-        Class<T> userClass = (Class<T>)getClass();
-        String classSimpleName = userClass.getSimpleName();
-        ArrayList<T> dataArrayList = handler.readJson(classSimpleName);
 
-        HashMap<String, String> users = new HashMap<>();
+        // JsonHandler handler = new JsonHandler();
 
-        for (User obj : dataArrayList) {
-            try {
-                users.put(obj.getUsername(), pwHandler.decryptPassword(obj.getPassword()));
-            } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
-                    | BadPaddingException | InvalidAlgorithmParameterException ex) {
-                Helper.printErr(Helper.getStackTraceString(ex));
-            }
-        }
+        // @SuppressWarnings("unchecked")
+        // Class<T> userClass = (Class<T>)getClass();
+        // String classSimpleName = userClass.getSimpleName();
+        // ArrayList<T> dataArrayList = handler.readJson(classSimpleName);
+
+        // HashMap<String, String> users = new HashMap<>();
+
+
+        // for (User obj : dataArrayList) {
+        //     try {
+        //         users.put(obj.getUsername(), pwHandler.decryptPassword(obj.getPassword()));
+        //     } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
+        //             | BadPaddingException | InvalidAlgorithmParameterException ex) {
+        //         Helper.printErr(Helper.getStackTraceString(ex));
+        //     }
+        // }
 
         // PRINT ALL VALUES OF HASHSET
         // for (String name : users.keySet()) {
@@ -175,10 +183,10 @@ public class User implements Identifiable {
             // System.out.println(key + " " + value);
         // }
 
-        if (validateUser(users)) return true;
+        // if (validateUser(users)) return true;
 
-        return false;
-    }
+        // return false;
+    // }
 
     private boolean validateUser(HashMap<String, String> users) {
         if (users != null) {
@@ -190,5 +198,4 @@ public class User implements Identifiable {
         }
         return false;
     }
-
 }

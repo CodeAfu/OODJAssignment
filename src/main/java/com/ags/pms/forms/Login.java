@@ -3,8 +3,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.ags.pms.forms;
-import javax.swing.JOptionPane;
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.ExecutionException;
+import java.awt.EventQueue;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
+
+import com.ags.pms.data.DataContext;
 import com.ags.pms.models.User;
 /**
  *
@@ -18,6 +25,37 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() {
         initComponents();
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    private void validateUser() {
+        if (userField.getText().equals("")) {
+            JOptionPane.showMessageDialog(null,"Enter your username");
+            return;
+        } else if (passwordField.getPassword().length == 0) {
+            JOptionPane.showMessageDialog(null,"Please Enter Your password");
+            return;
+        }
+
+        DataContext context = new DataContext();
+        context.populateUserCollection();
+
+        String username = userField.getText();
+        char[] passwordArray = passwordField.getPassword();
+        String password = String.valueOf(passwordArray);
+
+        User user = context.getValidUser(username, password);  
+
+        if (user == null) {
+            JOptionPane.showMessageDialog(null,"No user was found");
+            return;
+        }
+
+        this.user = user;
+        this.dispose();
     }
 
     /**
@@ -65,7 +103,7 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setText("Don't have and account?");
+        jLabel2.setText("Don't have an account?");
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(51, 51, 255));
@@ -129,18 +167,7 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
-         // TODO add your handling code here:
-         if(userField.getText().equals(""))
-         {
-          JOptionPane.showMessageDialog(null,"Enter your username");
-         }
-         else if(passwordField.getText().equals(""))
-           {
-                 JOptionPane.showMessageDialog(null,"Please Enter Your password");
-            }
-         else{
-              JOptionPane.showMessageDialog(null,"Thank you for Logging in");
-         }
+        validateUser();
     }//GEN-LAST:event_loginBtnActionPerformed
 
     /**
@@ -192,8 +219,5 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel userName;
     // End of variables declaration//GEN-END:variables
     
-    public User getUser() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUser'");
-    }
+
 }
