@@ -14,6 +14,8 @@ import javax.swing.SwingWorker;
 
 import com.ags.pms.data.DataContext;
 import com.ags.pms.models.User;
+
+import net.bytebuddy.pool.TypePool.Resolution.NoSuchTypeException;
 /**
  *
  * @author Genzoku
@@ -56,6 +58,7 @@ public class Login extends javax.swing.JFrame {
         }
 
         this.user = user;
+        this.setVisible(false);
         this.dispose();
     }
 

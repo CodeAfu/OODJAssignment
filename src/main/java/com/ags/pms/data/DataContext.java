@@ -265,7 +265,7 @@ public class DataContext {
                     }
                 })
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Object not found"));
+                .orElse(null);
     }
 
     public <T extends Identifiable> CompletableFuture<T> getByIdAsync(int id) {

@@ -11,6 +11,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.swing.JFrame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
 import com.formdev.flatlaf.json.Json;
@@ -30,6 +32,8 @@ import com.ags.pms.io.JsonHandler;
 
 public class ProjectManagementSystem {
 
+    private static Object lock = new Object();
+    private static Login loginForm;
     private static User user;
 
     private static ArrayList<Student> studentsFromJson;
@@ -46,28 +50,29 @@ public class ProjectManagementSystem {
         }
     }
     
-    private static void app() {
+    private static void app() throws InterruptedException {
         boolean running = true;
 
         while (running) {
-            Login loginForm = new Login();
+            loginForm = new Login();
             loginForm.setVisible(true);
     
-            while (loginForm.getUser() == null) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) { }
-            }
-    
+            // while (loginForm.getUser() == null) {
+            //     try {
+            //         Thread.sleep(100);
+            //     } catch (InterruptedException e) { }
+            // }
+
+            joinForm(loginForm);
+            
             user = loginForm.getUser();
     
             if (user != null) {
-                System.out.println(user.getId());
                 if (user instanceof Lecturer) {
                     Lecturer lecturer = (Lecturer) user;
                     LecturerForm lecturerForm = new LecturerForm(user);
                     lecturerForm.setVisible(true);
-                    freezeThread(lecturerForm);
+                    joinForm(lecturerForm);
                 } else if (user instanceof Admin) {
                     Admin admin = (Admin) user;
                 } else if (user instanceof Student) {
@@ -80,11 +85,35 @@ public class ProjectManagementSystem {
         }
     }
 
-    private static void freezeThread(JFrame frame) {
-        while (frame.isDisplayable()) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) { }
+    private static void joinForm(JFrame form) throws InterruptedException {
+        // while (frame.isDisplayable()) {
+        //     try {
+        //         Thread.sleep(100);
+        //     } catch (InterruptedException e) { }
+        // }
+
+        final Object formLock = new Object();
+        
+        form.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                synchronized (formLock) {
+                    formLock.notifyAll();
+                }
+            }
+            
+            @Override
+            public void windowClosed(WindowEvent e) {
+                synchronized (formLock) {
+                    formLock.notifyAll();
+                }
+            }
+        });
+
+        synchronized (formLock) {
+            while (form.isVisible()) {
+                formLock.wait();
+            }
         }
     }
     
