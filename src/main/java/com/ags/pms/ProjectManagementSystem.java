@@ -10,6 +10,7 @@ import java.util.concurrent.CompletableFuture;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.swing.JFrame;
 
 import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
 import com.formdev.flatlaf.json.Json;
@@ -29,8 +30,7 @@ import com.ags.pms.io.JsonHandler;
 
 public class ProjectManagementSystem {
 
-    private Login loginForm;
-    private User user;
+    private static User user;
 
     private static ArrayList<Student> studentsFromJson;
     private static ArrayList<Lecturer> lecturersFromJson;
@@ -39,51 +39,63 @@ public class ProjectManagementSystem {
 
     public static void main(String[] args) {
         try {
-            ProjectManagementSystem pms = new ProjectManagementSystem();
-            pms.app();
-            // pms.consoleTests();
+            app();
+            consoleTests();
         } catch (Exception ex) {
             Helper.printErr(Helper.getStackTraceString(ex));
         }
     }
     
-    private void app() {
-        boolean exitApp = false;
-        loginForm = new Login();
-        loginForm.setVisible(true);
+    private static void app() {
+        boolean running = true;
 
-        while (loginForm.getUser() == null) {
+        while (running) {
+            Login loginForm = new Login();
+            loginForm.setVisible(true);
+    
+            while (loginForm.getUser() == null) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) { }
+            }
+    
+            user = loginForm.getUser();
+    
+            if (user != null) {
+                System.out.println(user.getId());
+                if (user instanceof Lecturer) {
+                    Lecturer lecturer = (Lecturer) user;
+                    LecturerForm lecturerForm = new LecturerForm(user);
+                    lecturerForm.setVisible(true);
+                    freezeThread(lecturerForm);
+                } else if (user instanceof Admin) {
+                    Admin admin = (Admin) user;
+                } else if (user instanceof Student) {
+                    Student student = (Student) user;
+                } else if (user instanceof ProjectManager) {
+                    ProjectManager projectManager = (ProjectManager) user;
+                }
+            }
+            user = null;
+        }
+    }
+
+    private static void freezeThread(JFrame frame) {
+        while (frame.isDisplayable()) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) { }
         }
-
-        user = loginForm.getUser();
-
-        if (user != null) {
-            System.out.println(user.getId());
-            if (user instanceof Lecturer) {
-                Lecturer lecturer = (Lecturer) user;
-                LecturerForm lecturerForm = new LecturerForm(user);
-                lecturerForm.setVisible(true);
-            } else if (user instanceof Admin) {
-                Admin admin = (Admin) user;
-            } else if (user instanceof Student) {
-                Student student = (Student) user;
-            } else if (user instanceof ProjectManager) {
-                ProjectManager projectManager = (ProjectManager) user;
-            }
-        }
     }
     
-    private void consoleTests() throws Exception {
+    private static void consoleTests() throws Exception {
         // testLogin();
         // testFileHandlerAsyncOperations();
         // testFileHandler();
         // testAES();
         // generateNewAESKey();
-        smallTests();
-        // dataContextTest();
+        // smallTests();
+        dataContextTest();
     }
 
 
@@ -106,7 +118,6 @@ public class ProjectManagementSystem {
         DataContext context = new DataContext();
         
         Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Integer>());
-        
 
         // context.addPresentationSlot(slot);
         // context.addRequest(request);

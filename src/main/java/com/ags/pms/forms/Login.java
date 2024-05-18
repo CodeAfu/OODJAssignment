@@ -5,6 +5,7 @@
 package com.ags.pms.forms;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ExecutionException;
+import java.util.NoSuchElementException;
 import java.awt.EventQueue;
 
 import javax.swing.JDialog;
@@ -39,14 +40,14 @@ public class Login extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null,"Please Enter Your password");
             return;
         }
-
+        
         DataContext context = new DataContext();
         context.populateUserCollection();
-
+        
         String username = userField.getText();
         char[] passwordArray = passwordField.getPassword();
         String password = String.valueOf(passwordArray);
-
+        
         User user = context.getValidUser(username, password);  
 
         if (user == null) {
