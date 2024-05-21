@@ -251,7 +251,7 @@ public class DataContext {
                     }
                 })
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Object not found"));
+                .orElseThrow(() -> new NoSuchElementException("Object not found: " + id));
     }
 
     @SuppressWarnings("unchecked")

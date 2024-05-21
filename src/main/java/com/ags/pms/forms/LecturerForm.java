@@ -49,7 +49,7 @@ public class LecturerForm extends javax.swing.JFrame {
         e.printStackTrace();
     }
 
-        loadDashboard();  
+        openDashboard();  
         populateData();
     }
 
@@ -57,7 +57,7 @@ public class LecturerForm extends javax.swing.JFrame {
         initComponents();
         this.lecturer = (Lecturer) user;
 
-        loadDashboard();
+        openDashboard();
         populateData();
     }
 
@@ -70,10 +70,18 @@ public class LecturerForm extends javax.swing.JFrame {
         populatePresentationRequestComboBox();
     }
 
-    private void loadDashboard() {
+    private void openDashboard() {
         jPanelDashboard.setVisible(true);
         jPanelViewPresentation.setVisible(false);
         jPanelAvailableSlots.setVisible(false);
+        jPanelViewSupervisee.setVisible(false);
+        jPanelReport.setVisible(false);
+    }
+
+    private void openAvailableSlots() {
+        jPanelDashboard.setVisible(false);
+        jPanelViewPresentation.setVisible(false);
+        jPanelAvailableSlots.setVisible(true);
         jPanelViewSupervisee.setVisible(false);
         jPanelReport.setVisible(false);
     }
@@ -114,15 +122,15 @@ public class LecturerForm extends javax.swing.JFrame {
     private void populateSupervisees() {
         DefaultTableModel model = (DefaultTableModel) jTableViewSupervisee.getModel();
         model.setRowCount(0);
-        ArrayList<Student> students = lecturer.viewSupervisees();
+        ArrayList<Map<String, Object>> students = lecturer.viewSupervisees();
 
         for (int i = 0; i < students.size(); i++) {
 
             Object rowData[] = new Object[4];
-            rowData[0] = students.get(i).getId();
-            rowData[1] = students.get(i).getName();
-            rowData[2] = students.get(i).getSupervisorId() != 0;
-            rowData[3] = students.get(i).getSecondMarkerId() != 0;
+            rowData[0] = students.get(i).get("id");
+            rowData[1] = students.get(i).get("name");
+            rowData[2] = students.get(i).get("supervisorName");
+            rowData[3] = students.get(i).get("secondMarkerName");
     
             model.addRow(rowData);
 
@@ -266,6 +274,7 @@ public class LecturerForm extends javax.swing.JFrame {
         jPanelViewSupervisee = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTableViewSupervisee = new javax.swing.JTable();
+        jButtonSwitchToSMApply = new javax.swing.JButton();
         jPanelReport = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTableReport = new javax.swing.JTable();
@@ -380,9 +389,9 @@ public class LecturerForm extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)))
                 .addComponent(dashboardBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(requestBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(12, 12, 12))
         );
 
         jPanelSide.add(jPanelDragLeft, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
@@ -616,11 +625,11 @@ public class LecturerForm extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Id", "name", "SuperVisor", "SeconfdMarker"
+                "ID", "Name", "Supervisor", "Second Marker"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Boolean.class, java.lang.Boolean.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false
@@ -635,22 +644,39 @@ public class LecturerForm extends javax.swing.JFrame {
             }
         });
         jScrollPane3.setViewportView(jTableViewSupervisee);
+        if (jTableViewSupervisee.getColumnModel().getColumnCount() > 0) {
+            jTableViewSupervisee.getColumnModel().getColumn(0).setMaxWidth(50);
+        }
+
+        jButtonSwitchToSMApply.setText("jButton1");
+        jButtonSwitchToSMApply.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSwitchToSMApplyActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanelViewSuperviseeLayout = new javax.swing.GroupLayout(jPanelViewSupervisee);
         jPanelViewSupervisee.setLayout(jPanelViewSuperviseeLayout);
         jPanelViewSuperviseeLayout.setHorizontalGroup(
             jPanelViewSuperviseeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelViewSuperviseeLayout.createSequentialGroup()
-                .addGap(145, 145, 145)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(203, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelViewSuperviseeLayout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addComponent(jButtonSwitchToSMApply, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 588, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(73, 73, 73))
         );
         jPanelViewSuperviseeLayout.setVerticalGroup(
             jPanelViewSuperviseeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelViewSuperviseeLayout.createSequentialGroup()
-                .addGap(71, 71, 71)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addGroup(jPanelViewSuperviseeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelViewSuperviseeLayout.createSequentialGroup()
+                        .addGap(59, 59, 59)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanelViewSuperviseeLayout.createSequentialGroup()
+                        .addGap(201, 201, 201)
+                        .addComponent(jButtonSwitchToSMApply, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(65, Short.MAX_VALUE))
         );
 
         jPanelContents.add(jPanelViewSupervisee, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
@@ -726,10 +752,30 @@ public class LecturerForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonApprovePresentationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonApprovePresentationActionPerformed
-        // String row = jTablePresentation.getSelectedRow();
+        if (jComboBoxPresentations.getSelectedIndex() == -1) {
+            JOptionPane.showMessageDialog(null, "Please select an entry.");
+            return;
+        }
+        Request request = (Request) jComboBoxPresentations.getSelectedItem();
+        lecturer.assignPresentationSlot(request.getId(), request.getStudentId(), request.getPresentationSlotId());
+        JOptionPane.showMessageDialog(null, "Presentation Request Approved!");
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+        }
+        populatePresentationsRequestTable();
+        populatePresentationRequestComboBox();
     }//GEN-LAST:event_jButtonApprovePresentationActionPerformed
 
+    private void jButtonSwitchToSMApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSwitchToSMApplyActionPerformed
+        openAvailableSlots();
+    }//GEN-LAST:event_jButtonSwitchToSMApplyActionPerformed
+
     private void jButtonApplySecondMarkerActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonApplySecondMarkerActionPerformed
+        if (jComboBoxStudentSecondMarker.getSelectedIndex() == -1) {
+            JOptionPane.showMessageDialog(null, "Please select an entry.");
+            return;
+        }
         Student student = (Student) jComboBoxStudentSecondMarker.getSelectedItem();
         if (lecturer.hasSecondMarkerRequest()) {
             String message = "You already have a pending request. Overwrite?";
@@ -751,10 +797,6 @@ public class LecturerForm extends javax.swing.JFrame {
         jPanelAvailableSlots.setVisible(false);
         jPanelViewSupervisee.setVisible(false);
         jPanelReport.setVisible(false);
-
-        if (jPanelViewPresentation.isVisible()) {
-                jTablePresentation.setEnabled(true);
-        }
         jTablePresentation.setEnabled(false);
     }// GEN-LAST:event_requestBtnActionPerformed
 
@@ -764,26 +806,18 @@ public class LecturerForm extends javax.swing.JFrame {
         jPanelAvailableSlots.setVisible(false);
         jPanelViewSupervisee.setVisible(true);
         jPanelReport.setVisible(false);
-
     }// GEN-LAST:event_viewSupviseeBtnActionPerformed
 
     private void availabelSlotsBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_availabelSlotsBtnActionPerformed
-        jPanelDashboard.setVisible(false);
-
-        jPanelViewPresentation.setVisible(false);
-        jPanelAvailableSlots.setVisible(true);
-        jPanelViewSupervisee.setVisible(false);
-        jPanelReport.setVisible(false);
-
+        openAvailableSlots();
     }// GEN-LAST:event_availabelSlotsBtnActionPerformed
 
     private void dashboardBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_dashboardBtnActionPerformed
-        loadDashboard();
+        openDashboard();
     }// GEN-LAST:event_dashboardBtnActionPerformed
 
     private void feedbackBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_feedbackBtnActionPerformed
         jPanelDashboard.setVisible(false);
-
         jPanelViewPresentation.setVisible(false);
         jPanelAvailableSlots.setVisible(false);
         jPanelViewSupervisee.setVisible(false);
@@ -859,6 +893,7 @@ public class LecturerForm extends javax.swing.JFrame {
     private javax.swing.JButton feedbackBtn;
     private javax.swing.JButton jButtonApplySecondMarker;
     private javax.swing.JButton jButtonApprovePresentation;
+    private javax.swing.JButton jButtonSwitchToSMApply;
     private javax.swing.JComboBox<Student> jComboBoxGetStudentReport;
     private javax.swing.JComboBox<Request> jComboBoxPresentations;
     private javax.swing.JComboBox<Student> jComboBoxStudentSecondMarker;

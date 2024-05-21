@@ -7,6 +7,7 @@ public class Request implements Identifiable {
     private int id;
     private int lecturerId;
     private int studentId; // For SECONDMARKER and SUPERVISOR
+    private int presentationSlotId;
     private RequestType requestType;
     private String module;
     private boolean isApproved;
@@ -28,10 +29,11 @@ public class Request implements Identifiable {
         this.module = module;
     }
 
-    public Request(int id, int lecturerId, int studentId, RequestType requestType, String module, boolean isApproved) {
+    public Request(int id, int lecturerId, int studentId, int presentationSlotId, RequestType requestType, String module, boolean isApproved) {
         this.id = id;
         this.lecturerId = lecturerId;
         this.studentId = studentId;
+        this.presentationSlotId = presentationSlotId;
         this.requestType = requestType;
         this.module = module;
         this.isApproved = isApproved;
@@ -71,6 +73,14 @@ public class Request implements Identifiable {
             // throw new IllegalArgumentException("Student can only be assigned for Supervisor or SecondMarker Requests.");
         // }
         this.studentId = studentId;
+    }
+
+    public int getPresentationSlotId() {
+        return presentationSlotId;
+    }
+
+    public void setPresentationSlotId(int presentationSlotId) {
+        this.presentationSlotId = presentationSlotId;
     }
 
     public RequestType getRequestType() {
@@ -114,4 +124,8 @@ public class Request implements Identifiable {
         throw new IllegalArgumentException("User Type is not quite right." + user.getClass().getSimpleName());
     }
 
+    @Override
+    public String toString() {
+        return "Request: " + id;
+    }
 }

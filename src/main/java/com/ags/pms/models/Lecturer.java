@@ -21,7 +21,6 @@ public class Lecturer extends User {
 
     protected boolean isProjectManager;
     protected Role role;
-    private int requestId;
 
     public Lecturer() {
         super();
@@ -63,12 +62,36 @@ public class Lecturer extends User {
         System.out.println("Project Manager: " + isProjectManager);
     }
 
-    public ArrayList<Student> viewSupervisees() {
+    public ArrayList<Map<String, Object>> viewSupervisees() {
         DataContext context = new DataContext();
+        ArrayList<Map<String, Object>> superviseeDetails = new ArrayList<>();
+
         ArrayList<Student> supervisees = context.getStudents().stream()
                 .filter(s -> s.getSupervisorId() != 0)
                 .collect(Collectors.toCollection(ArrayList::new));
-        return supervisees;
+
+        supervisees.forEach(s -> {
+            Map<String, Object> superviseeMap = new HashMap<>();
+            
+            superviseeMap.put("id", s.getId());
+            superviseeMap.put("name", s.getName());
+
+            if (s.getSecondMarkerId() != 0) {
+                User secondMarker = context.getById(s.getSecondMarkerId());
+                superviseeMap.put("secondMarkerName", secondMarker.getName());
+            } else {
+                superviseeMap.put("secondMarkerName", "null");
+            }
+            if (s.getSupervisorId() != 0) {
+                User supervisor = context.getById(s.getSupervisorId());
+                superviseeMap.put("supervisorName", supervisor.getName());
+            } else {
+                superviseeMap.put("supervisorName", "null");
+            }
+            superviseeDetails.add(superviseeMap);
+        });
+
+        return superviseeDetails;    
     }
 
     public ArrayList<Student> viewStudents() {
@@ -90,7 +113,7 @@ public class Lecturer extends User {
         PresentationSlot slot = context.getById(presentationSlotId);
 
         if (!slot.isAvailable()) {
-            throw new IllegalArgumentException("Presentation slot is not available: " + slot.getId());
+            throw new IllegalArgumentException("Presentation slot is not available. How did you even make this request?: " + slot.getId());
         }
 
         context.updatePresentationSlotById(presentationSlotId, ps -> ps.setAvailable(false));
@@ -159,7 +182,7 @@ public class Lecturer extends User {
                     .orElse(null);
 
             if (request == null) throw new NullPointerException("wtf just happened bro (applyForSecondMarker)");
-            
+
             context.removeById(request.getId());
         }
 
