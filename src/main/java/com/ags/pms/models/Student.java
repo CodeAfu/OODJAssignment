@@ -14,6 +14,8 @@ import javax.crypto.NoSuchPaddingException;
 import com.ags.pms.Helper;
 import com.ags.pms.data.DataContext;
 
+import net.bytebuddy.implementation.bind.annotation.Super;
+
 public class Student extends User {
 
     private ArrayList<Integer> reportIds;
@@ -128,20 +130,16 @@ public class Student extends User {
         this.secondMarkerId = secondMarkerId;
     }
 
-    private void fetchSupervisor() {
+    public User fetchSupervisor() {
         DataContext context = new DataContext();
+        User supervisor = context.getById(supervisorId);
+        return supervisor;
+    }
 
-        Optional<ProjectManager> supervisor = context.getProjectManagers().stream()
-                .filter(pm -> pm.getRole() == Role.SUPERVISOR)
-                .filter(sp -> {
-                    ArrayList<Integer> superviseeIds = sp.getSuperviseeIds();
-                    return superviseeIds != null && superviseeIds.contains(this.getId());
-                })
-                .findFirst();
-
-        if (!supervisor.isEmpty()) {
-            this.supervisorId = supervisor.get().getId();
-        }
+    public User fetchSecondMarker() {
+        DataContext context = new DataContext();
+        User secondMarker = context.getById(secondMarkerId);
+        return secondMarker;
     }
 
     private Report createReport(Project project, String moodleLink, int totalMarks) {

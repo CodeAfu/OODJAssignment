@@ -4,6 +4,7 @@
  */
 package com.ags.pms.forms;
 
+import com.ags.pms.data.DataContext;
 import com.ags.pms.models.Identifiable;
 import com.ags.pms.models.Lecturer;
 import com.ags.pms.models.Report;
@@ -328,6 +329,17 @@ public class LecturerForm extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         jTableReport = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabelTotalMarks = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabelContents = new javax.swing.JLabel();
+        jLabelMarks = new javax.swing.JLabel();
+        jLabelMoodle = new javax.swing.JLabel();
+        jLabelProjectAssessmentType = new javax.swing.JLabel();
+        jLabelSupervisor = new javax.swing.JLabel();
+        jLabelProjectModule = new javax.swing.JLabel();
+        jLabelStudentId = new javax.swing.JLabel();
+        jLabelStudentName = new javax.swing.JLabel();
         jComboBoxFilterStudent = new javax.swing.JComboBox<>();
         jScrollPane5 = new javax.swing.JScrollPane();
         jTextAreaFeedback = new javax.swing.JTextArea();
@@ -780,17 +792,51 @@ public class LecturerForm extends javax.swing.JFrame {
         jPanelReport.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 20, 570, 120));
 
         jPanel3.setBackground(new java.awt.Color(102, 51, 255));
+        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 370, Short.MAX_VALUE)
-        );
+        jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel13.setText("Marks:");
+        jPanel3.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 261, -1, -1));
+
+        jLabelTotalMarks.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabelTotalMarks.setText("jLabel7");
+        jPanel3.add(jLabelTotalMarks, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 290, -1, -1));
+
+        jLabel16.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel16.setText("Total:");
+        jPanel3.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 290, -1, -1));
+
+        jLabelContents.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabelContents.setText("jLabel7");
+        jPanel3.add(jLabelContents, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 110, 380, 150));
+
+        jLabelMarks.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabelMarks.setText("jLabel7");
+        jPanel3.add(jLabelMarks, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 260, -1, -1));
+
+        jLabelMoodle.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabelMoodle.setText("jLabel7");
+        jPanel3.add(jLabelMoodle, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 330, -1, -1));
+
+        jLabelProjectAssessmentType.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabelProjectAssessmentType.setText("jLabel7");
+        jPanel3.add(jLabelProjectAssessmentType, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 50, -1, -1));
+
+        jLabelSupervisor.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabelSupervisor.setText("jLabel7");
+        jPanel3.add(jLabelSupervisor, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 20, -1, -1));
+
+        jLabelProjectModule.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabelProjectModule.setText("jLabel7");
+        jPanel3.add(jLabelProjectModule, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 20, -1, -1));
+
+        jLabelStudentId.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabelStudentId.setText("jLabel7");
+        jPanel3.add(jLabelStudentId, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, -1, -1));
+
+        jLabelStudentName.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabelStudentName.setText("jLabel7");
+        jPanel3.add(jLabelStudentName, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
 
         jPanelReport.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 150, 570, 370));
 
@@ -906,7 +952,27 @@ public class LecturerForm extends javax.swing.JFrame {
         DefaultTableModel dtm = (DefaultTableModel) jTableReport.getModel();
         selectedReportId = (int) dtm.getValueAt(jTableReport.getSelectedRow(), 0);
         jLabelSelectedReport.setText(Integer.toString(selectedReportId));
+        loadReportFromSelectedItem(selectedReportId);
+
     }//GEN-LAST:event_jTableReportMouseClicked
+
+    private void loadReportFromSelectedItem(int reportId) {
+        DataContext context = new DataContext();
+        Report report = context.getById(reportId);
+
+        jLabelMoodle.setText(report.getMoodleLink());
+        jLabelMarks.setText(Integer.toString(report.getStudentMark()));
+        jLabelTotalMarks.setText(Integer.toString(report.getTotalMark()));
+        jLabelContents.setText(report.getContents());
+        jLabelProjectAssessmentType.setText(report.fetchProject().getAssessmentType().toString());
+        jLabelProjectModule.setText(report.fetchProject().getModule());
+
+        // These values not properly added into data
+        jLabelStudentName.setText(report.fetchStudent().getName());
+        jLabelStudentId.setText(Integer.toString(report.fetchStudent().getId()));
+        jLabelSupervisor.setText(report.fetchStudent().fetchSupervisor().getName());
+
+    }
 
     private void jButtonApplySecondMarkerActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonApplySecondMarkerActionPerformed
         if (jComboBoxStudentSecondMarker.getSelectedIndex() == -1) {
@@ -1037,11 +1103,18 @@ public class LecturerForm extends javax.swing.JFrame {
     private javax.swing.JComboBox<Request> jComboBoxPresentations;
     private javax.swing.JComboBox<Student> jComboBoxStudentSecondMarker;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabelContents;
+    private javax.swing.JLabel jLabelMarks;
+    private javax.swing.JLabel jLabelMoodle;
+    private javax.swing.JLabel jLabelProjectAssessmentType;
+    private javax.swing.JLabel jLabelProjectModule;
     private javax.swing.JLabel jLabelRequest;
     private javax.swing.JLabel jLabelRequest1;
     private javax.swing.JLabel jLabelRequest10;
@@ -1056,7 +1129,11 @@ public class LecturerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelRequestStudentId;
     private javax.swing.JLabel jLabelRequestStudentName;
     private javax.swing.JLabel jLabelSelectedReport;
+    private javax.swing.JLabel jLabelStudentId;
+    private javax.swing.JLabel jLabelStudentName;
+    private javax.swing.JLabel jLabelSupervisor;
     private javax.swing.JLabel jLabelTitle;
+    private javax.swing.JLabel jLabelTotalMarks;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

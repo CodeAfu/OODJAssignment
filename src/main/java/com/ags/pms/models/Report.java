@@ -80,6 +80,18 @@ public class Report implements Identifiable {
         this.totalMark = totalMark;
     }
 
+    public Student fetchStudent() {
+        DataContext context = new DataContext();
+        Student student = context.getById(studentId);
+        return student;
+    }
+
+    public Project fetchProject() {
+        DataContext context = new DataContext();
+        Project project = context.getById(projectId);
+        return project;
+    }
+
     public int getId() {
         return id;
     }
