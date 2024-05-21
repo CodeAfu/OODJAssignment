@@ -123,8 +123,8 @@ public class LecturerForm extends javax.swing.JFrame {
 
     private void populatePresentationRequestComboBox() {
         jComboBoxPresentations.removeAllItems();
-        ArrayList<Request> presentations = lecturer.viewPendingPresentationRequests();
-        presentations.forEach(p -> jComboBoxPresentations.addItem(p));
+        ArrayList<Request> presentationRequests = lecturer.viewPendingPresentationRequests();
+        presentationRequests.forEach(p -> jComboBoxPresentations.addItem(p));
     }
 
     private void populateSupervisees() {
@@ -247,14 +247,16 @@ public class LecturerForm extends javax.swing.JFrame {
         ArrayList<Request> presentations = lecturer.viewPendingPresentationRequests();
         
         for (int i = 0; i < presentations.size(); i++) {
-            Object rowData[] = new Object[5]; // Moved declaration inside the loop
+            Object rowData[] = new Object[7]; // Moved declaration inside the loop
             
-            rowData[0] = presentations.get(i).getStudentId();
-            rowData[1] = presentations.get(i).viewUser().getName();
-            rowData[2] = presentations.get(i).getModule();
-            rowData[3] = presentations.get(i).getId();
-            rowData[4] = presentations.get(i).isApproved();
-            
+            rowData[0] = presentations.get(i).getId();
+            rowData[1] = presentations.get(i).getStudentId();
+            rowData[2] = presentations.get(i).viewUser().getName();
+            rowData[3] = presentations.get(i).fetchPresentationSlot().getPresentationDate();
+            rowData[4] = presentations.get(i).fetchPresentationSlot().getModule();
+            rowData[5] = presentations.get(i).getModule();
+            rowData[6] = presentations.get(i).isApproved();
+
             model.addRow(rowData);
         }
         
@@ -527,14 +529,14 @@ public class LecturerForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Student", "Module", "Request ID", "Approved"
+                "ID", "Student ID", "Student Name", "Module", "Date", "Module", "Approved"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Boolean.class
+                java.lang.Object.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -547,12 +549,12 @@ public class LecturerForm extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTablePresentation);
         if (jTablePresentation.getColumnModel().getColumnCount() > 0) {
-            jTablePresentation.getColumnModel().getColumn(0).setMaxWidth(50);
-            jTablePresentation.getColumnModel().getColumn(3).setMaxWidth(80);
-            jTablePresentation.getColumnModel().getColumn(4).setMaxWidth(100);
+            jTablePresentation.getColumnModel().getColumn(0).setMaxWidth(80);
+            jTablePresentation.getColumnModel().getColumn(1).setMaxWidth(50);
+            jTablePresentation.getColumnModel().getColumn(6).setMaxWidth(100);
         }
 
-        jPanelViewPresentation.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 30, 480, 500));
+        jPanelViewPresentation.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 750, 180));
 
         jPanel2.setBackground(new java.awt.Color(153, 153, 255));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -563,11 +565,11 @@ public class LecturerForm extends javax.swing.JFrame {
                 jButtonApprovePresentationActionPerformed(evt);
             }
         });
-        jPanel2.add(jButtonApprovePresentation, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 120, -1, 33));
+        jPanel2.add(jButtonApprovePresentation, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 120, -1, 33));
 
-        jPanel2.add(jComboBoxPresentations, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 40, 170, 40));
+        jPanel2.add(jComboBoxPresentations, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 510, 40));
 
-        jPanelViewPresentation.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 60, 240, 410));
+        jPanelViewPresentation.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 230, 540, 290));
 
         jPanelContents.add(jPanelViewPresentation, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 

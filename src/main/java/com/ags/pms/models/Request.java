@@ -12,10 +12,15 @@ public class Request implements Identifiable {
     private String module;
     private boolean isApproved;
 
+    private Student student;
+    private Lecturer lecturer;
+    private PresentationSlot presentationSlot;
+
     public Request(int id, int studentId, String module) {
         this.id = id;
         this.studentId = studentId;
         this.module = module;
+        fetchForeignKeyVariables();
     }
 
     public Request() {
@@ -27,6 +32,7 @@ public class Request implements Identifiable {
         this.studentId = studentId;
         this.requestType = requestType;
         this.module = module;
+        fetchForeignKeyVariables();
     }
 
     public Request(int id, int lecturerId, int studentId, int presentationSlotId, RequestType requestType, String module, boolean isApproved) {
@@ -37,14 +43,46 @@ public class Request implements Identifiable {
         this.requestType = requestType;
         this.module = module;
         this.isApproved = isApproved;
+        fetchForeignKeyVariables();
     }
-
+    
     public Request(int id, int lecturerId, int studentId, RequestType requestType, boolean isApproved) {
         this.id = id;
         this.lecturerId = lecturerId;
         this.studentId = studentId;
         this.requestType = requestType;
         this.isApproved = isApproved;
+        fetchForeignKeyVariables();
+    }
+
+    public void fetchForeignKeyVariables() {
+        DataContext context = new DataContext();
+        if (lecturerId != 0) {
+            lecturer = context.getById(lecturerId);
+        }
+        if (studentId != 0) {
+            student = context.getById(studentId);
+        }
+        if (presentationSlotId != 0) {
+            presentationSlot = context.getById(presentationSlotId);
+        }
+    }
+
+    public Lecturer fetchLecturer() {
+        DataContext context = new DataContext();
+        Lecturer lecturer = context.getById(lecturerId);
+        return lecturer;
+    }
+
+    public Student fetchStudent() {
+        DataContext context = new DataContext();
+        Student student = context.getById(studentId);
+        return student;
+    }
+    public PresentationSlot fetchPresentationSlot() {
+        DataContext context = new DataContext();
+        PresentationSlot presentationSlot = context.getById(presentationSlotId);
+        return presentationSlot;
     }
 
     @Override
@@ -126,6 +164,31 @@ public class Request implements Identifiable {
 
     @Override
     public String toString() {
-        return "Request: " + id;
+        fetchForeignKeyVariables();
+        StringBuilder sb = new StringBuilder();
+        sb.append("ID: ").append(id);
+        
+        // Check if student is not null
+        if (student != null) {
+            sb.append(", Student: ").append(fetchStudent().getName());
+        } else {
+            sb.append(", Student: null");
+        }
+        
+        // Check if lecturer is not null
+        if (lecturer != null) {
+            sb.append(", Lecturer: ").append(fetchLecturer().getName());
+        } else {
+            sb.append(", Lecturer: null");
+        }
+    
+        // Check if presentationSlot is not null
+        if (presentationSlot != null) {
+            sb.append(", PSlot: ").append(fetchPresentationSlot().getPresentationDate());
+        } else {
+            sb.append(", PSlot: null");
+        }
+        
+        return sb.toString();
     }
 }

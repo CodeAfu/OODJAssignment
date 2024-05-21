@@ -38,6 +38,12 @@ public class PresentationSlot implements Identifiable {
         this.presentationDate = presentationDate;
     }
 
+    public Student fetchStudent() {
+        DataContext context = new DataContext();
+        Student student = context.getById(studentId);
+        return student;
+    }
+
     public int getId() {
         return id;
     }

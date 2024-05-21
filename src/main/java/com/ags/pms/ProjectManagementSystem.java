@@ -15,6 +15,7 @@ import com.ags.pms.data.DataContext;
 import com.ags.pms.data.SeedData;
 import com.ags.pms.forms.LecturerForm;
 import com.ags.pms.forms.Login;
+import com.ags.pms.forms.ProjectManagerForm;
 import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
 
@@ -80,10 +81,8 @@ public class ProjectManagementSystem {
 
                 } else if (user instanceof ProjectManager) {
                     ProjectManager projectManager = (ProjectManager) user;
-                    // ProjectManagerForm projectManagerForm = new
-                    // ProjectManagerForm(projectManager);
-                    // Helper.joinForm(projetManagerForm);
-                    running = false; // REMOVE THIS AFTER IMPLEMENTING FORM
+                    ProjectManagerForm projectManagerForm = new ProjectManagerForm(projectManager);
+                    Helper.joinForm(projectManagerForm);
                 }
             }
             user = null;
