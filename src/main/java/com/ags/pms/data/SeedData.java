@@ -11,7 +11,6 @@ import java.util.concurrent.CompletableFuture;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.print.PrintServiceLookup;
 
 import com.ags.pms.io.JsonHandler;
 import com.ags.pms.models.Admin;
@@ -28,11 +27,6 @@ import com.ags.pms.models.Student;
 
 // Seed all data here incase of complete data loss lol
 public class SeedData {
-
-    private ArrayList<Student> students;
-    private ArrayList<Lecturer> lecturers;
-    private ArrayList<Admin> admins;
-    private ArrayList<ProjectManager> projectManagers;
 
     private static CompletableFuture<Void> futures;
 
@@ -52,7 +46,7 @@ public class SeedData {
         Project project2 = new Project(7001, "Cybersecurity", AssessmentType.CP2, "Do this project!!!!!!");
         Report report1 = new Report(8000, project1.getId(), false, null, "https://sample.moodle.com/sample-link/1", -1, 100);
         Report report2 = new Report(8001, project2.getId(), true, new Date(), "https://sample.moodle.com/sample-link/2", 30, 100);
-        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Integer>());
+        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "   ", new ArrayList<Integer>());
         Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Integer>(Arrays.asList(8000, 8001)));
         Student student3 = new Student(4003, "Emma Smith", "05/08/2023", "emma@email.com", "emma_smith", "P@ssw0rd", new ArrayList<Integer>());
         Student student4 = new Student(4004, "Michael Johnson", "12/11/2023", "michael@email.com", "michael_j", "secure123", new ArrayList<Integer>());
@@ -67,10 +61,10 @@ public class SeedData {
         ProjectManager projectManager2 = new ProjectManager(2006, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com", "somelecturerPM", "123qweasdzxc", Role.SECONDMARKER, new ArrayList<Integer>(Arrays.asList(4003)));
         ProjectManager projectManager3 = new ProjectManager(2008, "Sophia Johnson", "25/06/1970", "sophia@email.com", "sophia_j", "ProjectMan321", Role.SUPERVISOR, new ArrayList<Integer>(Arrays.asList(4004)));
         ProjectManager projectManager4 = new ProjectManager(2007, "Michael Wilson", "17/04/1972", "michael@email.com", "michael_w", "Wilson123", Role.SECONDMARKER, new ArrayList<Integer>());
-        Request request1 = new Request(6000, 4001, RequestType.PRESENTATION, "Computer Science", false);
-        Request request2 = new Request(6001, 4002, RequestType.PRESENTATION, "Computer Science", true);
-        Request request3 = new Request(6002, 2001, RequestType.SUPERVISOR, false);
-        Request request4 = new Request(6003, 2002, RequestType.SECONDMARKER, true);
+        Request request1 = new Request(6000, 2003, 4001, RequestType.PRESENTATION, "Computer Science", false);
+        Request request2 = new Request(6001, 2004, 4002, RequestType.PRESENTATION, "Computer Science", true);
+        Request request3 = new Request(6002, 2001, 4003, RequestType.SUPERVISOR, false);
+        Request request4 = new Request(6003, 2002, 4004, RequestType.SECONDMARKER, true);
         PresentationSlot presentationSlot1 = new PresentationSlot(5000, 4001, new Date(), false);
         PresentationSlot presentationSlot2 = new PresentationSlot(5001);
         PresentationSlot presentationSlot3 = new PresentationSlot(5002);
@@ -131,7 +125,7 @@ public class SeedData {
         Project project2 = new Project(7001, "Cybersecurity", AssessmentType.CP2, "Do this project!!!!!!");
         Report report1 = new Report(8000, project1.getId(), false, null, "https://sample.moodle.com/sample-link/1", -1, 100);
         Report report2 = new Report(8001, project2.getId(), true, new Date(), "https://sample.moodle.com/sample-link/2", 30, 100);
-        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Integer>());
+        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "   ", new ArrayList<Integer>());
         Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Integer>(Arrays.asList(8000, 8001)));
         Student student3 = new Student(4003, "Emma Smith", "05/08/2023", "emma@email.com", "emma_smith", "P@ssw0rd", new ArrayList<Integer>());
         Student student4 = new Student(4004, "Michael Johnson", "12/11/2023", "michael@email.com", "michael_j", "secure123", new ArrayList<Integer>());
@@ -146,10 +140,10 @@ public class SeedData {
         ProjectManager projectManager2 = new ProjectManager(2006, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com", "somelecturerPM", "123qweasdzxc", Role.SECONDMARKER, new ArrayList<Integer>(Arrays.asList(4003)));
         ProjectManager projectManager3 = new ProjectManager(2008, "Sophia Johnson", "25/06/1970", "sophia@email.com", "sophia_j", "ProjectMan321", Role.SUPERVISOR, new ArrayList<Integer>(Arrays.asList(4004)));
         ProjectManager projectManager4 = new ProjectManager(2007, "Michael Wilson", "17/04/1972", "michael@email.com", "michael_w", "Wilson123", Role.SECONDMARKER, new ArrayList<Integer>());
-        Request request1 = new Request(6000, 4001, RequestType.PRESENTATION, "Computer Science", false);
-        Request request2 = new Request(6001, 4002, RequestType.PRESENTATION, "Computer Science", true);
-        Request request3 = new Request(6002, 2001, RequestType.SUPERVISOR, false);
-        Request request4 = new Request(6003, 2002, RequestType.SECONDMARKER, true);
+        Request request1 = new Request(6000, 2003, 4001, RequestType.PRESENTATION, "Computer Science", false);
+        Request request2 = new Request(6001, 2004, 4002, RequestType.PRESENTATION, "Computer Science", true);
+        Request request3 = new Request(6002, 2001, 4003, RequestType.SUPERVISOR, false);
+        Request request4 = new Request(6003, 2002, 4004, RequestType.SECONDMARKER, true);
         PresentationSlot presentationSlot1 = new PresentationSlot(5000, 4001, new Date(), false);
         PresentationSlot presentationSlot2 = new PresentationSlot(5001);
         PresentationSlot presentationSlot3 = new PresentationSlot(5002);

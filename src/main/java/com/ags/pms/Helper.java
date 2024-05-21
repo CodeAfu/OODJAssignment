@@ -7,12 +7,16 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.swing.JFrame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import java.util.Date;
 
 import com.ags.pms.data.DataContext;
 import com.ags.pms.data.IDHandler;
 import com.ags.pms.io.FileName;
-import com.ags.pms.io.JsonHandler;
 import com.ags.pms.models.Admin;
 import com.ags.pms.models.Identifiable;
 import com.ags.pms.models.Lecturer;
@@ -25,7 +29,6 @@ import com.ags.pms.models.RequestType;
 import com.ags.pms.models.Role;
 import com.ags.pms.models.Student;
 import com.ags.pms.models.User;
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.formdev.flatlaf.json.ParseException;
 
 public class Helper {
@@ -162,6 +165,7 @@ public class Helper {
         return User.class.isAssignableFrom(clazz);
     }
 
+    @SuppressWarnings("incomplete-switch")
     public static Role getRoleFromRequestType(RequestType requestType) {
         switch (requestType){
             case RequestType.SECONDMARKER:
@@ -184,5 +188,30 @@ public class Helper {
         }
         Helper.printErr("Object was not properly casted to a specific user instance: " + user.getId());
         return user;
+    }
+
+    public static void joinForm(JFrame form) throws InterruptedException {
+        final Object formLock = new Object();
+        form.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                synchronized (formLock) {
+                    formLock.notifyAll();
+                }
+            }
+            
+            @Override
+            public void windowClosed(WindowEvent e) {
+                synchronized (formLock) {
+                    formLock.notifyAll();
+                }
+            }
+        });
+
+        synchronized (formLock) {
+            while (form.isVisible()) {
+                formLock.wait();
+            }
+        }
     }
 }

@@ -2,9 +2,7 @@ package com.ags.pms.models;
 
 import java.util.Date;
 
-import com.ags.pms.Helper;
 import com.ags.pms.data.DataContext;
-import com.ags.pms.data.IDHandler;
 
 public class Report implements Identifiable {
 
@@ -18,7 +16,21 @@ public class Report implements Identifiable {
     private int totalMark;
     private String feedback;
 
+    
     public Report() {
+    }
+    
+    public Report(int id, int projectId, int studentId, boolean submitted, Date dateSubmitted, String moodleLink,
+            int studentMark, int totalMark, String feedback) {
+        this.id = id;
+        this.projectId = projectId;
+        this.studentId = studentId;
+        this.submitted = submitted;
+        this.dateSubmitted = dateSubmitted;
+        this.moodleLink = moodleLink;
+        this.studentMark = studentMark;
+        this.totalMark = totalMark;
+        this.feedback = feedback;
     }
 
     public Report(int projectId, boolean submitted, Date dateSubmitted, String moodleLink,
@@ -135,4 +147,5 @@ public class Report implements Identifiable {
         dateSubmitted = new Date();
         // System.out.println(this.getId() + " Report submitted: " + Helper.getDateFormat().format(dateSubmitted));
     }
+
 }

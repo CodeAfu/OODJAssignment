@@ -95,4 +95,9 @@ public class ProjectManager extends Lecturer {
         DataContext context = new DataContext();
         return context.getReports();
     }
+
+    @Override
+    public String toString() {
+        return this.getName();
+    }
 }

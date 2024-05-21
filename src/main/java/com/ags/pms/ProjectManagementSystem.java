@@ -4,21 +4,10 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.swing.JFrame;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
-import com.formdev.flatlaf.json.Json;
-
-import net.bytebuddy.build.HashCodeAndEqualsPlugin;
-import net.bytebuddy.implementation.bytecode.constant.ClassConstant;
 
 import com.ags.pms.models.*;
 import com.ags.pms.services.*;
@@ -26,13 +15,11 @@ import com.ags.pms.data.DataContext;
 import com.ags.pms.data.SeedData;
 import com.ags.pms.forms.LecturerForm;
 import com.ags.pms.forms.Login;
-import com.ags.pms.forms.MainForm;
 import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
 
 public class ProjectManagementSystem {
 
-    private static Object lock = new Object();
     private static Login loginForm;
     private static User user;
 
@@ -43,80 +30,69 @@ public class ProjectManagementSystem {
 
     public static void main(String[] args) {
         try {
-            app();
+            // testSingleForm();
+            // app();
             consoleTests();
         } catch (Exception ex) {
             Helper.printErr(Helper.getStackTraceString(ex));
         }
     }
-    
+
+    private static void testSingleForm() throws InterruptedException {
+
+    }
+
+    /**
+     * <p>
+     * Main entry point of the PMS
+     * </p>
+     * 
+     * @throws InterruptedException
+     */
     private static void app() throws InterruptedException {
         boolean running = true;
 
         while (running) {
             loginForm = new Login();
             loginForm.setVisible(true);
-    
-            // while (loginForm.getUser() == null) {
-            //     try {
-            //         Thread.sleep(100);
-            //     } catch (InterruptedException e) { }
-            // }
+            Helper.joinForm(loginForm);
 
-            joinForm(loginForm);
-            
             user = loginForm.getUser();
-    
+
             if (user != null) {
                 if (user instanceof Lecturer) {
                     Lecturer lecturer = (Lecturer) user;
                     LecturerForm lecturerForm = new LecturerForm(user);
                     lecturerForm.setVisible(true);
-                    joinForm(lecturerForm);
+                    Helper.joinForm(lecturerForm);
+
                 } else if (user instanceof Admin) {
                     Admin admin = (Admin) user;
+                    // AdminForm adminForm = new AdminForm(admin);
+                    // Helper.joinForm(adminForm);
+                    running = false; // REMOVE THIS AFTER IMPELMENTING FORM
+
                 } else if (user instanceof Student) {
                     Student student = (Student) user;
+                    // StudentForm studentForm = new StudentForm(student);
+                    // Helper.joinForm(studentForm);
+                    running = false; // REMOVE THIS AFTER IMPLEMENTING FORM
+
                 } else if (user instanceof ProjectManager) {
                     ProjectManager projectManager = (ProjectManager) user;
+                    // ProjectManagerForm projectManagerForm = new
+                    // ProjectManagerForm(projectManager);
+                    // Helper.joinForm(projetManagerForm);
+                    running = false; // REMOVE THIS AFTER IMPLEMENTING FORM
                 }
             }
             user = null;
         }
     }
 
-    private static void joinForm(JFrame form) throws InterruptedException {
-        // while (frame.isDisplayable()) {
-        //     try {
-        //         Thread.sleep(100);
-        //     } catch (InterruptedException e) { }
-        // }
-
-        final Object formLock = new Object();
-        
-        form.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                synchronized (formLock) {
-                    formLock.notifyAll();
-                }
-            }
-            
-            @Override
-            public void windowClosed(WindowEvent e) {
-                synchronized (formLock) {
-                    formLock.notifyAll();
-                }
-            }
-        });
-
-        synchronized (formLock) {
-            while (form.isVisible()) {
-                formLock.wait();
-            }
-        }
-    }
-    
+    /**
+     * @throws Exception
+     */
     private static void consoleTests() throws Exception {
         // testLogin();
         // testFileHandlerAsyncOperations();
@@ -127,36 +103,40 @@ public class ProjectManagementSystem {
         dataContextTest();
     }
 
-
+    /**
+     * @throws Exception
+     */
     @SuppressWarnings("unused")
     private static void smallTests() throws Exception {
-        Lecturer lecturer2 = new Lecturer(2002, "Amardeep", "11/01/1980", "amardeep@lecturer.com", "somelecturer", "123qweasdzxc", Role.NONE);
-        lecturer2.viewStudentReports(4002);
+        DataContext context = new DataContext();
     }
-    
+
+
     @SuppressWarnings("unused")
-    private static void dataContextTest() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+    private static void dataContextTest() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
+            IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         try {
-            SeedData.executeWithContext();
-            // SeedData.init();
+            // SeedData.executeWithContext();
+            SeedData.init();
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
                 | BadPaddingException | InvalidAlgorithmParameterException e) {
             Helper.printErr(Helper.getStackTraceString(e));
         }
 
         DataContext context = new DataContext();
-        
-        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Integer>());
+
+        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass",
+                new ArrayList<Integer>());
 
         // context.addPresentationSlot(slot);
         // context.addRequest(request);
         // context.addProject(project);
 
         // context.writeAllDataAsync();
-        
+
         // context.addProjectManager(projectManager1);
         // context.addProjectManager(projectManager2);
-        
+
         // context.writeAllDataAsync();
         // context.print();
         System.out.println("--------------------------");
@@ -169,73 +149,61 @@ public class ProjectManagementSystem {
         Lecturer lecturer = context.getLecturer(l -> l.getId() == 2001);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
     @SuppressWarnings("unused")
-    private static void testLogin() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+    private static void testLogin() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
+            IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         ProjectManager manager = new ProjectManager("somelecturerPM", "123qweasdzxc");
     }
 
     @SuppressWarnings("unused")
-    private static void testFileHandlerAsyncOperations() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+    private static void testFileHandlerAsyncOperations() throws InvalidKeyException, NoSuchAlgorithmException,
+            NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         JsonHandler handler = new JsonHandler();
         PasswordHandler pwHandler = new PasswordHandler("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
 
         SeedData.init();
-        
+
         handler.readJsonAsync(FileName.STUDENTS)
-            .thenAccept(studentsFromJsonList -> {
-                studentsFromJson = new ArrayList<>();
-                for (Object user : studentsFromJsonList) {
-                    if (user instanceof Student) {
-                        studentsFromJson.add((Student)user);
-                    } else {
-                        System.out.println(user + " was not added (JsonRead)");
+                .thenAccept(studentsFromJsonList -> {
+                    studentsFromJson = new ArrayList<>();
+                    for (Object user : studentsFromJsonList) {
+                        if (user instanceof Student) {
+                            studentsFromJson.add((Student) user);
+                        } else {
+                            System.out.println(user + " was not added (JsonRead)");
+                        }
                     }
-                }
-            })
-            .thenRun(() -> {
-                System.out.println("Json Read");
-                studentsFromJson.forEach(u -> System.out.println(u.getUsername() + ": " + u.getPassword() + " | " + u.getClass().getSimpleName()));
-            })
-            .exceptionally(ex -> {
-                ex.printStackTrace();
-                return null;
-            });
+                })
+                .thenRun(() -> {
+                    System.out.println("Json Read");
+                    studentsFromJson.forEach(u -> System.out
+                            .println(u.getUsername() + ": " + u.getPassword() + " | " + u.getClass().getSimpleName()));
+                })
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    return null;
+                });
 
         handler.readJsonAsync("Admin")
-            .thenAccept(adminsFromJsonList -> {
-                adminsFromJson = new ArrayList<>();
-                for (Object user : adminsFromJsonList) {
-                    if (user instanceof Admin) {
-                        adminsFromJson.add((Admin)user);
-                    } else {
-                        System.out.println(user + " was not added (JsonRead)");
+                .thenAccept(adminsFromJsonList -> {
+                    adminsFromJson = new ArrayList<>();
+                    for (Object user : adminsFromJsonList) {
+                        if (user instanceof Admin) {
+                            adminsFromJson.add((Admin) user);
+                        } else {
+                            System.out.println(user + " was not added (JsonRead)");
+                        }
                     }
-                }
-            })
-            .thenRun(() -> {
-                System.out.println("Json Read");
-                adminsFromJson.forEach(u -> System.out.println(u.getUsername() + ": " + u.getPassword() + " | " + u.getClass().getSimpleName()));
-            })
-            .exceptionally(ex -> {
-                ex.printStackTrace();
-                return null;
-            });
+                })
+                .thenRun(() -> {
+                    System.out.println("Json Read");
+                    adminsFromJson.forEach(u -> System.out
+                            .println(u.getUsername() + ": " + u.getPassword() + " | " + u.getClass().getSimpleName()));
+                })
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    return null;
+                });
 
         // Thread sleep required to run the async method I guess
         // since the main thread dies before the async threads execute?
@@ -247,7 +215,8 @@ public class ProjectManagementSystem {
     }
 
     @SuppressWarnings("unused")
-    private static void testFileHandler() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+    private static void testFileHandler() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
+            IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         JsonHandler handler = new JsonHandler();
         PasswordHandler pwHandler = new PasswordHandler("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
 
@@ -256,24 +225,30 @@ public class ProjectManagementSystem {
         ArrayList<Admin> admins = new ArrayList<>();
         ArrayList<ProjectManager> projectManagers = new ArrayList<>();
 
-        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass", new ArrayList<Integer>());
-        Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Integer>());
+        Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass",
+                new ArrayList<Integer>());
+        Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar",
+                "GoodStuff", new ArrayList<Integer>());
         students.add(student1);
         students.add(student2);
 
-        Lecturer lecturer1 = new Lecturer(2001, "Joshua", "11/01/1980", "joshua@lecturer.com", "josh_lecturer", "verySecurePasswordMate", Role.NONE);
-        Lecturer lecturer2 = new Lecturer(2002, "Amardeep", "11/01/1980", "amardeep@lecturer.com", "somelecturer", "123qweasdzxc", Role.NONE);
+        Lecturer lecturer1 = new Lecturer(2001, "Joshua", "11/01/1980", "joshua@lecturer.com", "josh_lecturer",
+                "verySecurePasswordMate", Role.NONE);
+        Lecturer lecturer2 = new Lecturer(2002, "Amardeep", "11/01/1980", "amardeep@lecturer.com", "somelecturer",
+                "123qweasdzxc", Role.NONE);
         lecturer1.setProjectManager(true);
         lecturers.add(lecturer1);
         lecturers.add(lecturer2);
-        
+
         Admin admin1 = new Admin("admin", "OkayDude");
         Admin admin2 = new Admin("heh_this_user_has_changed", "test2");
         admins.add(admin1);
         admins.add(admin2);
-        
-        ProjectManager projectManager1 = new ProjectManager(2001, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com", "josh_lecturerPM", "verySecurePasswordMate", Role.SUPERVISOR, new ArrayList<Integer>());
-        ProjectManager projectManager2 = new ProjectManager(2002, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com", "somelecturerPM", "123qweasdzxc", Role.SECONDMARKER, new ArrayList<Integer>());
+
+        ProjectManager projectManager1 = new ProjectManager(2001, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com",
+                "josh_lecturerPM", "verySecurePasswordMate", Role.SUPERVISOR, new ArrayList<Integer>());
+        ProjectManager projectManager2 = new ProjectManager(2002, "AmardeepPM", "11/01/1980", "amardeepPM@lecturer.com",
+                "somelecturerPM", "123qweasdzxc", Role.SECONDMARKER, new ArrayList<Integer>());
         projectManagers.add(projectManager1);
         projectManagers.add(projectManager2);
 
@@ -287,7 +262,7 @@ public class ProjectManagementSystem {
         ArrayList<Admin> adminsFromJson = handler.readJson(FileName.ADMINS);
         ArrayList<Lecturer> lecturersFromJson = handler.readJson(FileName.LECTURERS);
         ArrayList<ProjectManager> projectManagersFromJson = handler.readJson(FileName.PROJECTMANAGERS);
-        
+
         studentsFromJson.forEach(obj -> System.out.println(obj.getUsername() + ": " + obj.getPassword()));
         adminsFromJson.forEach(obj -> System.out.println(obj.getUsername() + ": " + obj.getPassword()));
         lecturersFromJson.forEach(obj -> System.out.println(obj.getUsername() + ": " + obj.getPassword()));
@@ -311,7 +286,8 @@ public class ProjectManagementSystem {
     }
 
     @SuppressWarnings("unused")
-    private static void generateNewAESKey() throws NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+    private static void generateNewAESKey() throws NoSuchAlgorithmException, InvalidKeyException,
+            NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         PasswordHandler handler = new PasswordHandler();
         handler.init();
         handler.encryptPassword(".");

@@ -4,14 +4,11 @@
  */
 package com.ags.pms.forms;
 
-import com.ags.pms.forms.panels.JPanelTest;
 import com.ags.pms.models.User;
 import com.formdev.flatlaf.FlatLightLaf;
-import java.awt.Dimension;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;

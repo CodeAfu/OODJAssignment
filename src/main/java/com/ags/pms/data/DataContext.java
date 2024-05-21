@@ -238,6 +238,7 @@ public class DataContext {
     //                 .orElseThrow(() -> new NoSuchElementException("Object not found"));
     // }
 
+    @SuppressWarnings("unchecked")
     public <T extends Identifiable> T getById(int id) {
         return collections.values().stream()
                 .flatMap(Collection::stream)
@@ -253,6 +254,7 @@ public class DataContext {
                 .orElseThrow(() -> new NoSuchElementException("Object not found"));
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends User> T getValidUser(String username, String password) {
         return userCollections.values().stream()
                 .flatMap(Collection::stream)

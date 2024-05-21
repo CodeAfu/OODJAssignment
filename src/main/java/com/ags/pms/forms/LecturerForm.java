@@ -5,15 +5,19 @@
 package com.ags.pms.forms;
 
 import com.ags.pms.models.Lecturer;
+import com.ags.pms.models.Report;
 import com.ags.pms.models.Request;
 import com.ags.pms.models.Role;
+import com.ags.pms.models.Student;
 import com.ags.pms.models.User;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Dimension;
+import java.awt.Window;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
@@ -24,62 +28,182 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author Genzoku
  */
 public class LecturerForm extends javax.swing.JFrame {
-    
+
     private Lecturer lecturer;
-    
+
     public LecturerForm() {
+    initComponents();
+
+    try {
+        this.lecturer = new Lecturer(2001, "Joshua", "11/01/1980", "joshua@lecturer.com",
+                        "josh_lecturer","verySecurePasswordMate", Role.NONE);
+    } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
+            | BadPaddingException | InvalidAlgorithmParameterException e) {
+        e.printStackTrace();
+    }
+
+        loadDashboard();  
+        populateData();
+    }
+
+    public LecturerForm(User user) {
         initComponents();
+        this.lecturer = (Lecturer) user;
+
+        loadDashboard();
+        populateData();
+    }
+
+    private void populateData() {
+        populatePresentationsRequestTable();
+        populateSecondMarkerTable();
+        populateSecondMarkerAcceptence();
+        populateSecondMarkerComboBox();
+        populateSupervisees();
+        populatePresentationRequestComboBox();
+    }
+
+    private void loadDashboard() {
+        jPanelDashboard.setVisible(true);
+        jPanelViewPresentation.setVisible(false);
+        jPanelAvailableSlots.setVisible(false);
+        jPanelViewSupervisee.setVisible(false);
+        jPanelReport.setVisible(false);
+    }
+
+    private void populateSecondMarkerTable() {
+        DefaultTableModel model = (DefaultTableModel) jTableSecondMarkerSlots.getModel();
+        model.setRowCount(0);
+        ArrayList<Student> students = lecturer.viewSecondMarkerSlots();
+
+        for (int i = 0; i < students.size(); i++) {
+
+             Object rowData[] = new Object[3];
+             rowData[0] = students.get(i).getId();
+             rowData[1] = students.get(i).getName();
+             rowData[2] = students.get(i).getSecondMarkerId() != 0;
+     
+             model.addRow(rowData);
+        }
+
+        jTableSecondMarkerSlots.setFocusable(false);
+        jTableSecondMarkerSlots.setRowSelectionAllowed(false);
+        jTableSecondMarkerSlots.setCellSelectionEnabled(false);
+
+    }
+    
+    private void populateSecondMarkerComboBox() {
+        jComboBoxStudentSecondMarker.removeAllItems();
+        ArrayList<Student> studentSecondMarkerList = lecturer.viewSecondMarkerSlots();
+        studentSecondMarkerList.forEach(s -> jComboBoxStudentSecondMarker.addItem(s));
+    }
+
+    private void populatePresentationRequestComboBox() {
+        jComboBoxPresentations.removeAllItems();
+        ArrayList<Request> presentations = lecturer.viewPendingPresentationRequests();
+        presentations.forEach(p -> jComboBoxPresentations.addItem(p));
+    }
+
+    private void populateSupervisees() {
+        DefaultTableModel model = (DefaultTableModel) jTableViewSupervisee.getModel();
+        model.setRowCount(0);
+        ArrayList<Student> students = lecturer.viewSupervisees();
+
+        for (int i = 0; i < students.size(); i++) {
+
+            Object rowData[] = new Object[4];
+            rowData[0] = students.get(i).getId();
+            rowData[1] = students.get(i).getName();
+            rowData[2] = students.get(i).getSupervisorId() != 0;
+            rowData[3] = students.get(i).getSecondMarkerId() != 0;
+    
+            model.addRow(rowData);
+
+        }
+        jTableViewSupervisee.setFocusable(false);
+        jTableViewSupervisee.setRowSelectionAllowed(false);
+        jTableViewSupervisee.setCellSelectionEnabled(false);
+
+    }
+
+    private void populateReports() {
+        // DefaultTableModel model = (DefaultTableModel) jTableReport.getModel();
+        // model.setRowCount(0);
+        // jComboBoxGetStudentReport
+        // ArrayList<Report> Reports = lecturer.viewStudentReports();
+        //
+        //
+        // for (int i = 0; i < students.size(); i++) {
+        // Object rowData[] = new Object[4];
+        // rowData[0] = students.get(i).getId();
+        // rowData[1] = students.get(i).getName();
+        // rowData[2] = students.get(i).getSupervisorId() != 0;
+        // rowData[3] = students.get(i).getSecondMarkerId() != 0;
+        //
+        // model.addRow(rowData);
+        // }
+        //
+        // jTableViewSupervisee.setFocusable(false);
+        // jTableViewSupervisee.setRowSelectionAllowed(false);
+        // jTableViewSupervisee.setCellSelectionEnabled(false);
+        // // String[] StudentArray = students.toArray(new String[students.size()]);
+        // // comboBoxStudent.setModel();
+
+    }
+
+    private void populateSecondMarkerAcceptence() {
+        Map<String, Object> result = lecturer.viewSecondMarkerAcceptance();
+
+        Student student = (Student) result.get("student");
+        Lecturer myLecturer = (Lecturer) result.get("lecturer");
+        boolean isApproved = (boolean) result.get("approved");
+
+        jLabelRequestLecturerId.setText(Integer.toString(myLecturer.getId()));
+        jLabelRequestLecturerName.setText(myLecturer.getName());
+        jLabelRequestStudentId.setText(Integer.toString(student.getId()));
+        jLabelRequestStudentName.setText(student.getName());
+        jLabelRequestIsApproved.setText(isApproved ? "Approved" : "Pending");
+
+        DefaultTableModel model = (DefaultTableModel) jTablePresentation.getModel();
+
         try {
-            this.lecturer = new Lecturer(2001, "Joshua", "11/01/1980", "joshua@lecturer.com", "josh_lecturer", "verySecurePasswordMate", Role.NONE);
-        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
-        | BadPaddingException | InvalidAlgorithmParameterException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+        }
+
+    }
+
+    private void populatePresentationsRequestTable() {
+        DefaultTableModel model = (DefaultTableModel) jTablePresentation.getModel();
+
+        // Clear the table before populating it again to avoid duplicate entries
+        model.setRowCount(0);
+
+        ArrayList<Request> presentations = lecturer.viewPendingPresentationRequests();
+        
+        for (int i = 0; i < presentations.size(); i++) {
+            Object rowData[] = new Object[5]; // Moved declaration inside the loop
+            
+            rowData[0] = presentations.get(i).getStudentId();
+            rowData[1] = presentations.get(i).viewUser().getName();
+            rowData[2] = presentations.get(i).getModule();
+            rowData[3] = presentations.get(i).getId();
+            rowData[4] = presentations.get(i).isApproved();
+            
+            model.addRow(rowData);
         }
         
-        populatePresentationsRequest(); // Call the method to populate presentations
+        jTablePresentation.setFocusable(false);
+        jTablePresentation.setRowSelectionAllowed(false);
+        jTablePresentation.setCellSelectionEnabled(false);
     }
-    /**
-     * Creates new form MainFormBody
-     */
-    public LecturerForm(User user) {
-        initComponents();   
-        this.lecturer = (Lecturer) user; // Fixing the assignment of lecturer
-        // You're getting the email, but not doing anything with it.
-        // If you need it, consider storing it or using it elsewhere.
-        // user.getEmail(); 
-        populatePresentationsRequest(); // Call the method to populate presentations
-    }
-
-private void populatePresentationsRequest() {
-    DefaultTableModel model = (DefaultTableModel) jTablePresentation.getModel();
-  
-    // Clear the table before populating it again to avoid duplicate entries
-    model.setRowCount(0);
-  
-    ArrayList<Request> presentations = lecturer.viewPendingPresentationRequests();
-  
-    for (int i = 0; i < presentations.size(); i++) {
-        Object rowData[] = new Object[4]; // Moved declaration inside the loop
-  
-        rowData[0] = presentations.get(i).getId();  
-        rowData[1] = presentations.get(i).viewUser();
-        rowData[2] = presentations.get(i).getModule();
-        rowData[3] = presentations.get(i).isApproved();
-        
-        model.addRow(rowData);
-    }
-
-    jTablePresentation.setFocusable(false);
-    jTablePresentation.setRowSelectionAllowed(false);
-    jTablePresentation.setCellSelectionEnabled(false);
-}
 
 
     /**
@@ -88,6 +212,13 @@ private void populatePresentationsRequest() {
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -104,19 +235,41 @@ private void populatePresentationsRequest() {
         jLabel1 = new javax.swing.JLabel();
         viewSupviseeBtn = new javax.swing.JButton();
         availabelSlotsBtn = new javax.swing.JButton();
-        confirmDataBtn = new javax.swing.JButton();
         feedbackBtn = new javax.swing.JButton();
-        assignSuperviseeBtn = new javax.swing.JButton();
         jPanelContents = new javax.swing.JPanel();
-        jpanelDashboard = new javax.swing.JPanel();
+        jPanelDashboard = new javax.swing.JPanel();
         jPanelViewPresentation = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTablePresentation = new javax.swing.JTable();
+        jPanel2 = new javax.swing.JPanel();
+        jButtonApprovePresentation = new javax.swing.JButton();
+        jComboBoxPresentations = new javax.swing.JComboBox<>();
         jPanelAvailableSlots = new javax.swing.JPanel();
-        jPanelConfirmDate = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTableSecondMarkerSlots = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        jComboBoxStudentSecondMarker = new javax.swing.JComboBox<>();
+        jLabelRequest = new javax.swing.JLabel();
+        jLabelRequest1 = new javax.swing.JLabel();
+        jButtonApplySecondMarker = new javax.swing.JButton();
+        jLabelRequest3 = new javax.swing.JLabel();
+        jLabelRequestIsApproved = new javax.swing.JLabel();
+        jLabelRequest6 = new javax.swing.JLabel();
+        jLabelRequest7 = new javax.swing.JLabel();
+        jLabelRequest8 = new javax.swing.JLabel();
+        jLabelRequest9 = new javax.swing.JLabel();
+        jLabelRequestLecturerName = new javax.swing.JLabel();
+        jLabelRequestStudentId = new javax.swing.JLabel();
+        jLabelRequestStudentName = new javax.swing.JLabel();
+        jLabelRequest10 = new javax.swing.JLabel();
+        jLabelRequestLecturerId = new javax.swing.JLabel();
         jPanelViewSupervisee = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTableViewSupervisee = new javax.swing.JTable();
         jPanelReport = new javax.swing.JPanel();
-        jPanelViewAssignSupervisee = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTableReport = new javax.swing.JTable();
+        jComboBoxGetStudentReport = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1000, 700));
@@ -135,7 +288,7 @@ private void populatePresentationsRequest() {
             .addGroup(jPanelTitleLayout.createSequentialGroup()
                 .addGap(110, 110, 110)
                 .addComponent(jLabelTitle)
-                .addContainerGap(247, Short.MAX_VALUE))
+                .addContainerGap(253, Short.MAX_VALUE))
         );
         jPanelTitleLayout.setVerticalGroup(
             jPanelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -244,7 +397,7 @@ private void populatePresentationsRequest() {
                 viewSupviseeBtnActionPerformed(evt);
             }
         });
-        jPanelSide.add(viewSupviseeBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 333, 237, 37));
+        jPanelSide.add(viewSupviseeBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 280, 237, 37));
 
         availabelSlotsBtn.setBackground(new java.awt.Color(110, 139, 251));
         availabelSlotsBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -256,19 +409,7 @@ private void populatePresentationsRequest() {
                 availabelSlotsBtnActionPerformed(evt);
             }
         });
-        jPanelSide.add(availabelSlotsBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 223, 237, 37));
-
-        confirmDataBtn.setBackground(new java.awt.Color(110, 139, 251));
-        confirmDataBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        confirmDataBtn.setForeground(new java.awt.Color(0, 0, 0));
-        confirmDataBtn.setText("Confirm Date and Slots");
-        confirmDataBtn.setBorderPainted(false);
-        confirmDataBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                confirmDataBtnActionPerformed(evt);
-            }
-        });
-        jPanelSide.add(confirmDataBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 278, 240, 37));
+        jPanelSide.add(availabelSlotsBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 223, 240, 37));
 
         feedbackBtn.setBackground(new java.awt.Color(110, 139, 251));
         feedbackBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -280,51 +421,206 @@ private void populatePresentationsRequest() {
                 feedbackBtnActionPerformed(evt);
             }
         });
-        jPanelSide.add(feedbackBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 388, 237, 37));
-
-        assignSuperviseeBtn.setBackground(new java.awt.Color(110, 139, 251));
-        assignSuperviseeBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        assignSuperviseeBtn.setForeground(new java.awt.Color(0, 0, 0));
-        assignSuperviseeBtn.setText("View Assign Supervisee");
-        assignSuperviseeBtn.setBorderPainted(false);
-        assignSuperviseeBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                assignSuperviseeBtnActionPerformed(evt);
-            }
-        });
-        jPanelSide.add(assignSuperviseeBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 447, 231, 37));
+        jPanelSide.add(feedbackBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 340, 237, 37));
 
         jPanelContents.setBackground(new java.awt.Color(153, 153, 255));
         jPanelContents.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jpanelDashboard.setBackground(new java.awt.Color(204, 204, 255));
+        jPanelDashboard.setBackground(new java.awt.Color(204, 204, 255));
 
-        javax.swing.GroupLayout jpanelDashboardLayout = new javax.swing.GroupLayout(jpanelDashboard);
-        jpanelDashboard.setLayout(jpanelDashboardLayout);
-        jpanelDashboardLayout.setHorizontalGroup(
-            jpanelDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout jPanelDashboardLayout = new javax.swing.GroupLayout(jPanelDashboard);
+        jPanelDashboard.setLayout(jPanelDashboardLayout);
+        jPanelDashboardLayout.setHorizontalGroup(
+            jPanelDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 800, Short.MAX_VALUE)
         );
-        jpanelDashboardLayout.setVerticalGroup(
-            jpanelDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        jPanelDashboardLayout.setVerticalGroup(
+            jPanelDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 560, Short.MAX_VALUE)
         );
 
-        jPanelContents.add(jpanelDashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 560));
+        jPanelContents.add(jPanelDashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 560));
 
         jPanelViewPresentation.setBackground(new java.awt.Color(204, 204, 255));
         jPanelViewPresentation.setPreferredSize(new java.awt.Dimension(800, 560));
+        jPanelViewPresentation.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jTablePresentation.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "id", "User", "Module", "Approved"
+                "ID", "Student", "Module", "Request ID", "Approved"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Boolean.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(jTablePresentation);
+        if (jTablePresentation.getColumnModel().getColumnCount() > 0) {
+            jTablePresentation.getColumnModel().getColumn(0).setMaxWidth(50);
+            jTablePresentation.getColumnModel().getColumn(3).setMaxWidth(80);
+            jTablePresentation.getColumnModel().getColumn(4).setMaxWidth(100);
+        }
+
+        jPanelViewPresentation.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 30, 480, 500));
+
+        jPanel2.setBackground(new java.awt.Color(153, 153, 255));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jButtonApprovePresentation.setText("Approve");
+        jButtonApprovePresentation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonApprovePresentationActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButtonApprovePresentation, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 120, -1, 33));
+
+        jPanel2.add(jComboBoxPresentations, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 40, 170, 40));
+
+        jPanelViewPresentation.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 60, 240, 410));
+
+        jPanelContents.add(jPanelViewPresentation, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+
+        jPanelAvailableSlots.setBackground(new java.awt.Color(204, 204, 255));
+        jPanelAvailableSlots.setPreferredSize(new java.awt.Dimension(800, 560));
+        jPanelAvailableSlots.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jTableSecondMarkerSlots.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Id", "Name", "Available Slots"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.Boolean.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(jTableSecondMarkerSlots);
+        if (jTableSecondMarkerSlots.getColumnModel().getColumnCount() > 0) {
+            jTableSecondMarkerSlots.getColumnModel().getColumn(0).setMaxWidth(80);
+            jTableSecondMarkerSlots.getColumnModel().getColumn(2).setPreferredWidth(20);
+        }
+
+        jPanelAvailableSlots.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 30, -1, 480));
+
+        jPanel1.setBackground(new java.awt.Color(153, 153, 255));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel1.add(jComboBoxStudentSecondMarker, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 270, 100, -1));
+
+        jLabelRequest.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabelRequest.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequest.setText("My Request:");
+        jPanel1.add(jLabelRequest, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 90, 20));
+
+        jLabelRequest1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabelRequest1.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequest1.setText("Apply for Second Marker");
+        jPanel1.add(jLabelRequest1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 200, 220, 40));
+
+        jButtonApplySecondMarker.setText("Apply");
+        jButtonApplySecondMarker.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonApplySecondMarkerActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButtonApplySecondMarker, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 320, 80, 30));
+
+        jLabelRequest3.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequest3.setText("Student");
+        jPanel1.add(jLabelRequest3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 270, 60, 20));
+
+        jLabelRequestIsApproved.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequestIsApproved.setText("null");
+        jPanel1.add(jLabelRequestIsApproved, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 130, 100, 20));
+
+        jLabelRequest6.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabelRequest6.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequest6.setText("Approved:");
+        jPanel1.add(jLabelRequest6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 60, 20));
+
+        jLabelRequest7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabelRequest7.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequest7.setText("Lecturer Name:");
+        jPanel1.add(jLabelRequest7, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 90, 20));
+
+        jLabelRequest8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabelRequest8.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequest8.setText("Student Name:");
+        jPanel1.add(jLabelRequest8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, 90, 20));
+
+        jLabelRequest9.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabelRequest9.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequest9.setText("Student ID:");
+        jPanel1.add(jLabelRequest9, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, 70, 20));
+
+        jLabelRequestLecturerName.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequestLecturerName.setText("null");
+        jPanel1.add(jLabelRequestLecturerName, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 70, 100, 20));
+
+        jLabelRequestStudentId.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequestStudentId.setText("null");
+        jPanel1.add(jLabelRequestStudentId, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 90, 100, 20));
+
+        jLabelRequestStudentName.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequestStudentName.setText("null");
+        jPanel1.add(jLabelRequestStudentName, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 110, 100, 20));
+
+        jLabelRequest10.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabelRequest10.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequest10.setText("Lecturer ID:");
+        jPanel1.add(jLabelRequest10, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 70, 20));
+
+        jLabelRequestLecturerId.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequestLecturerId.setText("null");
+        jPanel1.add(jLabelRequestLecturerId, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 50, 100, 20));
+
+        jPanelAvailableSlots.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 60, 240, 410));
+
+        jPanelContents.add(jPanelAvailableSlots, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+
+        jPanelViewSupervisee.setBackground(new java.awt.Color(204, 204, 255));
+        jPanelViewSupervisee.setPreferredSize(new java.awt.Dimension(800, 560));
+
+        jTableViewSupervisee.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Id", "name", "SuperVisor", "SeconfdMarker"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.Boolean.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false
@@ -338,77 +634,23 @@ private void populatePresentationsRequest() {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTablePresentation);
-        if (jTablePresentation.getColumnModel().getColumnCount() > 0) {
-            jTablePresentation.getColumnModel().getColumn(0).setResizable(false);
-            jTablePresentation.getColumnModel().getColumn(1).setResizable(false);
-            jTablePresentation.getColumnModel().getColumn(2).setResizable(false);
-            jTablePresentation.getColumnModel().getColumn(3).setResizable(false);
-        }
-
-        javax.swing.GroupLayout jPanelViewPresentationLayout = new javax.swing.GroupLayout(jPanelViewPresentation);
-        jPanelViewPresentation.setLayout(jPanelViewPresentationLayout);
-        jPanelViewPresentationLayout.setHorizontalGroup(
-            jPanelViewPresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelViewPresentationLayout.createSequentialGroup()
-                .addGap(82, 82, 82)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(209, Short.MAX_VALUE))
-        );
-        jPanelViewPresentationLayout.setVerticalGroup(
-            jPanelViewPresentationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelViewPresentationLayout.createSequentialGroup()
-                .addGap(46, 46, 46)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(143, Short.MAX_VALUE))
-        );
-
-        jPanelContents.add(jPanelViewPresentation, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-
-        jPanelAvailableSlots.setBackground(new java.awt.Color(204, 204, 255));
-        jPanelAvailableSlots.setPreferredSize(new java.awt.Dimension(800, 560));
-
-        javax.swing.GroupLayout jPanelAvailableSlotsLayout = new javax.swing.GroupLayout(jPanelAvailableSlots);
-        jPanelAvailableSlots.setLayout(jPanelAvailableSlotsLayout);
-        jPanelAvailableSlotsLayout.setHorizontalGroup(
-            jPanelAvailableSlotsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
-        );
-        jPanelAvailableSlotsLayout.setVerticalGroup(
-            jPanelAvailableSlotsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 560, Short.MAX_VALUE)
-        );
-
-        jPanelContents.add(jPanelAvailableSlots, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-
-        jPanelConfirmDate.setBackground(new java.awt.Color(204, 204, 255));
-        jPanelConfirmDate.setPreferredSize(new java.awt.Dimension(800, 560));
-
-        javax.swing.GroupLayout jPanelConfirmDateLayout = new javax.swing.GroupLayout(jPanelConfirmDate);
-        jPanelConfirmDate.setLayout(jPanelConfirmDateLayout);
-        jPanelConfirmDateLayout.setHorizontalGroup(
-            jPanelConfirmDateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
-        );
-        jPanelConfirmDateLayout.setVerticalGroup(
-            jPanelConfirmDateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 560, Short.MAX_VALUE)
-        );
-
-        jPanelContents.add(jPanelConfirmDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-
-        jPanelViewSupervisee.setBackground(new java.awt.Color(204, 204, 255));
-        jPanelViewSupervisee.setPreferredSize(new java.awt.Dimension(800, 560));
+        jScrollPane3.setViewportView(jTableViewSupervisee);
 
         javax.swing.GroupLayout jPanelViewSuperviseeLayout = new javax.swing.GroupLayout(jPanelViewSupervisee);
         jPanelViewSupervisee.setLayout(jPanelViewSuperviseeLayout);
         jPanelViewSuperviseeLayout.setHorizontalGroup(
             jPanelViewSuperviseeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addGroup(jPanelViewSuperviseeLayout.createSequentialGroup()
+                .addGap(145, 145, 145)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(203, Short.MAX_VALUE))
         );
         jPanelViewSuperviseeLayout.setVerticalGroup(
             jPanelViewSuperviseeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 560, Short.MAX_VALUE)
+            .addGroup(jPanelViewSuperviseeLayout.createSequentialGroup()
+                .addGap(71, 71, 71)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(62, Short.MAX_VALUE))
         );
 
         jPanelContents.add(jPanelViewSupervisee, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
@@ -416,34 +658,46 @@ private void populatePresentationsRequest() {
         jPanelReport.setBackground(new java.awt.Color(204, 204, 255));
         jPanelReport.setPreferredSize(new java.awt.Dimension(800, 560));
 
+        jTableReport.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane4.setViewportView(jTableReport);
+
+        jComboBoxGetStudentReport.setSelectedItem(null);
+
         javax.swing.GroupLayout jPanelReportLayout = new javax.swing.GroupLayout(jPanelReport);
         jPanelReport.setLayout(jPanelReportLayout);
         jPanelReportLayout.setHorizontalGroup(
             jPanelReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelReportLayout.createSequentialGroup()
+                .addGap(63, 63, 63)
+                .addComponent(jComboBoxGetStudentReport, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 146, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(67, 67, 67))
         );
         jPanelReportLayout.setVerticalGroup(
             jPanelReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 560, Short.MAX_VALUE)
+            .addGroup(jPanelReportLayout.createSequentialGroup()
+                .addGroup(jPanelReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelReportLayout.createSequentialGroup()
+                        .addGap(67, 67, 67)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanelReportLayout.createSequentialGroup()
+                        .addGap(86, 86, 86)
+                        .addComponent(jComboBoxGetStudentReport, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(270, Short.MAX_VALUE))
         );
 
         jPanelContents.add(jPanelReport, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-
-        jPanelViewAssignSupervisee.setBackground(new java.awt.Color(204, 204, 255));
-        jPanelViewAssignSupervisee.setPreferredSize(new java.awt.Dimension(800, 560));
-
-        javax.swing.GroupLayout jPanelViewAssignSuperviseeLayout = new javax.swing.GroupLayout(jPanelViewAssignSupervisee);
-        jPanelViewAssignSupervisee.setLayout(jPanelViewAssignSuperviseeLayout);
-        jPanelViewAssignSuperviseeLayout.setHorizontalGroup(
-            jPanelViewAssignSuperviseeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
-        );
-        jPanelViewAssignSuperviseeLayout.setVerticalGroup(
-            jPanelViewAssignSuperviseeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 560, Short.MAX_VALUE)
-        );
-
-        jPanelContents.add(jPanelViewAssignSupervisee, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -471,108 +725,92 @@ private void populatePresentationsRequest() {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void requestBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_requestBtnActionPerformed
-        jpanelDashboard.setVisible(false);
+    private void jButtonApprovePresentationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonApprovePresentationActionPerformed
+        // String row = jTablePresentation.getSelectedRow();
+    }//GEN-LAST:event_jButtonApprovePresentationActionPerformed
+
+    private void jButtonApplySecondMarkerActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonApplySecondMarkerActionPerformed
+        Student student = (Student) jComboBoxStudentSecondMarker.getSelectedItem();
+        if (lecturer.hasSecondMarkerRequest()) {
+            String message = "You already have a pending request. Overwrite?";
+            int reply = JOptionPane.showConfirmDialog(null, message, "", JOptionPane.YES_NO_OPTION);
+            if (reply == JOptionPane.NO_OPTION) {
+                return;
+            }
+        }
+        lecturer.applyForSecondMarker(student.getId());
+        JOptionPane.showMessageDialog(null, 
+            "Second Marker Request has been submitted. Please wait for review from Project Manager");
+        populateSecondMarkerComboBox();
+        populateSecondMarkerAcceptence();
+    }// GEN-LAST:event_jButtonApplySecondMarkerActionPerformed
+
+    private void requestBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_requestBtnActionPerformed
+        jPanelDashboard.setVisible(false);
         jPanelViewPresentation.setVisible(true);
         jPanelAvailableSlots.setVisible(false);
-        jPanelConfirmDate.setVisible(false);
         jPanelViewSupervisee.setVisible(false);
         jPanelReport.setVisible(false);
-        jPanelViewAssignSupervisee.setVisible(false);
 
         if (jPanelViewPresentation.isVisible()) {
-            jTablePresentation.setEnabled(true);
+                jTablePresentation.setEnabled(true);
         }
         jTablePresentation.setEnabled(false);
-    }//GEN-LAST:event_requestBtnActionPerformed
+    }// GEN-LAST:event_requestBtnActionPerformed
 
-    private void viewSupviseeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewSupviseeBtnActionPerformed
-         jpanelDashboard.setVisible(false);
+    private void viewSupviseeBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_viewSupviseeBtnActionPerformed
+        jPanelDashboard.setVisible(false);
         jPanelViewPresentation.setVisible(false);
         jPanelAvailableSlots.setVisible(false);
-        jPanelConfirmDate.setVisible(false);
         jPanelViewSupervisee.setVisible(true);
         jPanelReport.setVisible(false);
-        jPanelViewAssignSupervisee.setVisible(false);
 
-    }//GEN-LAST:event_viewSupviseeBtnActionPerformed
+    }// GEN-LAST:event_viewSupviseeBtnActionPerformed
 
-    private void availabelSlotsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_availabelSlotsBtnActionPerformed
-         jpanelDashboard.setVisible(false);
-        
+    private void availabelSlotsBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_availabelSlotsBtnActionPerformed
+        jPanelDashboard.setVisible(false);
+
         jPanelViewPresentation.setVisible(false);
         jPanelAvailableSlots.setVisible(true);
-        jPanelConfirmDate.setVisible(false);
         jPanelViewSupervisee.setVisible(false);
         jPanelReport.setVisible(false);
-        jPanelViewAssignSupervisee.setVisible(false);
 
-    }//GEN-LAST:event_availabelSlotsBtnActionPerformed
+    }// GEN-LAST:event_availabelSlotsBtnActionPerformed
 
-    private void dashboardBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardBtnActionPerformed
-        
-        jpanelDashboard.setVisible(true);
-        
+    private void dashboardBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_dashboardBtnActionPerformed
+        loadDashboard();
+    }// GEN-LAST:event_dashboardBtnActionPerformed
+
+    private void feedbackBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_feedbackBtnActionPerformed
+        jPanelDashboard.setVisible(false);
+
         jPanelViewPresentation.setVisible(false);
         jPanelAvailableSlots.setVisible(false);
-        jPanelConfirmDate.setVisible(false);
-        jPanelViewSupervisee.setVisible(false);
-        jPanelReport.setVisible(false);
-        jPanelViewAssignSupervisee.setVisible(false);
-
-        
-    }//GEN-LAST:event_dashboardBtnActionPerformed
-
-    private void confirmDataBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmDataBtnActionPerformed
-         jpanelDashboard.setVisible(false);
-        
-        jPanelViewPresentation.setVisible(false);
-        jPanelAvailableSlots.setVisible(false);
-        jPanelConfirmDate.setVisible(true);
-        jPanelViewSupervisee.setVisible(false);
-        jPanelReport.setVisible(false);
-        jPanelViewAssignSupervisee.setVisible(false);
-
-    }//GEN-LAST:event_confirmDataBtnActionPerformed
-
-    private void feedbackBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_feedbackBtnActionPerformed
-         jpanelDashboard.setVisible(false);
-        
-        jPanelViewPresentation.setVisible(false);
-        jPanelAvailableSlots.setVisible(false);
-        jPanelConfirmDate.setVisible(false);
         jPanelViewSupervisee.setVisible(false);
         jPanelReport.setVisible(true);
-        jPanelViewAssignSupervisee.setVisible(false);
 
-    }//GEN-LAST:event_feedbackBtnActionPerformed
+    }// GEN-LAST:event_feedbackBtnActionPerformed
 
-    private void assignSuperviseeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_assignSuperviseeBtnActionPerformed
-        jpanelDashboard.setVisible(false);
-        
-        jPanelViewPresentation.setVisible(false);
-        jPanelAvailableSlots.setVisible(false);
-        jPanelConfirmDate.setVisible(false);
-        jPanelViewSupervisee.setVisible(false);
-        jPanelReport.setVisible(false);
-        jPanelViewAssignSupervisee.setVisible(true);
-    }//GEN-LAST:event_assignSuperviseeBtnActionPerformed
-
-    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
+    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_jLabel1MouseClicked
         dispose();
-    }//GEN-LAST:event_jLabel1MouseClicked
+    }// GEN-LAST:event_jLabel1MouseClicked
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
+        // (optional) ">
+        /*
+                * If Nimbus (introduced in Java SE 6) is not available, stay with the default
+                * look and feel.
+                * For details see
+                * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+                */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager
+                    .getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
@@ -583,68 +821,85 @@ private void populatePresentationsRequest() {
         } catch (InstantiationException ex) {
             java.util.logging.Logger.getLogger(LecturerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(LecturerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(LecturerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(LecturerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                java.util.logging.Logger.getLogger(LecturerForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
+        // </editor-fold>
+        // </editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 LecturerForm mainFormBody = new LecturerForm();
 
-                // setTheme(mainFormBody);
-                
-                mainFormBody.setVisible(true);    
-            }
-            
-            
+                    // setTheme(mainFormBody);
+                    mainFormBody.setVisible(true);
+                }
 
-            // private void setTheme(JFrame frame) {
-            //     SwingUtilities.invokeLater(new Runnable() {
-            //         @Override
-            //         public void run() {
-            //             try {
-            //                 UIManager.setLookAndFeel(new FlatLightLaf());
-            //                 SwingUtilities.updateComponentTreeUI(frame);
-            //             } catch (UnsupportedLookAndFeelException ex) {
-            //                 Logger.getLogger(LecturerForm.class.getName()).log(Level.SEVERE, null, ex);
-            //             }
-            //         }
-            //     });
-            // }
+                // private void setTheme(JFrame frame) {
+                // SwingUtilities.invokeLater(new Runnable() {
+                // @Override
+                // public void run() {
+                // try {
+                // UIManager.setLookAndFeel(new FlatLightLaf());
+                // SwingUtilities.updateComponentTreeUI(frame);
+                // } catch (UnsupportedLookAndFeelException ex) {
+                // Logger.getLogger(LecturerForm.class.getName()).log(Level.SEVERE, null, ex);
+                // }
+                // }
+                // });
+                // }
         });
     }
 
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton assignSuperviseeBtn;
     private javax.swing.JButton availabelSlotsBtn;
-    private javax.swing.JButton confirmDataBtn;
     private javax.swing.JButton dashboardBtn;
     private javax.swing.JButton feedbackBtn;
+    private javax.swing.JButton jButtonApplySecondMarker;
+    private javax.swing.JButton jButtonApprovePresentation;
+    private javax.swing.JComboBox<Student> jComboBoxGetStudentReport;
+    private javax.swing.JComboBox<Request> jComboBoxPresentations;
+    private javax.swing.JComboBox<Student> jComboBoxStudentSecondMarker;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabelRequest;
+    private javax.swing.JLabel jLabelRequest1;
+    private javax.swing.JLabel jLabelRequest10;
+    private javax.swing.JLabel jLabelRequest3;
+    private javax.swing.JLabel jLabelRequest6;
+    private javax.swing.JLabel jLabelRequest7;
+    private javax.swing.JLabel jLabelRequest8;
+    private javax.swing.JLabel jLabelRequest9;
+    private javax.swing.JLabel jLabelRequestIsApproved;
+    private javax.swing.JLabel jLabelRequestLecturerId;
+    private javax.swing.JLabel jLabelRequestLecturerName;
+    private javax.swing.JLabel jLabelRequestStudentId;
+    private javax.swing.JLabel jLabelRequestStudentName;
     private javax.swing.JLabel jLabelTitle;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanelAvailableSlots;
-    private javax.swing.JPanel jPanelConfirmDate;
     private javax.swing.JPanel jPanelContents;
+    private javax.swing.JPanel jPanelDashboard;
     private javax.swing.JPanel jPanelDragLeft;
     private javax.swing.JPanel jPanelReport;
     private javax.swing.JPanel jPanelSide;
     private javax.swing.JPanel jPanelTitle;
-    private javax.swing.JPanel jPanelViewAssignSupervisee;
     private javax.swing.JPanel jPanelViewPresentation;
     private javax.swing.JPanel jPanelViewSupervisee;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable jTablePresentation;
-    private javax.swing.JPanel jpanelDashboard;
+    private javax.swing.JTable jTableReport;
+    private javax.swing.JTable jTableSecondMarkerSlots;
+    private javax.swing.JTable jTableViewSupervisee;
     private javax.swing.JButton requestBtn;
     private javax.swing.JButton viewSupviseeBtn;
     // End of variables declaration//GEN-END:variables

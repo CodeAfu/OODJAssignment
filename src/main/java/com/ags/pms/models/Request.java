@@ -1,95 +1,65 @@
 package com.ags.pms.models;
 
-import com.fasterxml.jackson.databind.Module.SetupContext;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.ags.pms.data.DataContext;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 public class Request implements Identifiable {
 
     private int id;
-    private int requesterId;
-    private RequestType requestType;
+    private int lecturerId;
     private int studentId; // For SECONDMARKER and SUPERVISOR
+    private RequestType requestType;
     private String module;
     private boolean isApproved;
-    
+
+    public Request(int id, int studentId, String module) {
+        this.id = id;
+        this.studentId = studentId;
+        this.module = module;
+    }
+
     public Request() {
     }
-    
-    public Request(int userId, RequestType requestType, String module, boolean isApproved) {
-        DataContext context = new DataContext();
-        this.id = context.fetchNextRequestId();
-        this.requesterId = userId;
-        this.requestType = requestType;
-        this.module = module;
-        this.isApproved = isApproved;
-    }
 
-    public Request(int userId, RequestType requestType, int studentId, boolean isApproved) {
-        DataContext context = new DataContext();
-        this.id = context.fetchNextRequestId();
-        this.requesterId = userId;
-        this.requestType = requestType;
+    public Request(int id, int lecturerId, int studentId, RequestType requestType, String module) {
+        this.id = id;
+        this.lecturerId = lecturerId;
         this.studentId = studentId;
-        this.isApproved = isApproved;
+        this.requestType = requestType;
+        this.module = module;
     }
 
-    public Request(int id, int userId, RequestType requestType, int studentId, boolean isApproved) {
+    public Request(int id, int lecturerId, int studentId, RequestType requestType, String module, boolean isApproved) {
         this.id = id;
-        this.requesterId = userId;
-        this.requestType = requestType;
+        this.lecturerId = lecturerId;
         this.studentId = studentId;
-        this.isApproved = isApproved;
-    }
-    
-    public Request(int userId, RequestType requestType, boolean isApproved) {
-        DataContext context = new DataContext();
-        this.id = context.fetchNextRequestId();
-        this.requesterId = userId;
-        this.requestType = requestType;
-        this.isApproved = isApproved;
-    }
-    
-
-    public Request(int id, int userId, RequestType requestType, String module, boolean isApproved) {
-        this.id = id;
-        this.requesterId = userId;
         this.requestType = requestType;
         this.module = module;
         this.isApproved = isApproved;
     }
 
-    public Request(int id, int userId, RequestType requestType, boolean isApproved) {
+    public Request(int id, int lecturerId, int studentId, RequestType requestType, boolean isApproved) {
         this.id = id;
-        this.requesterId = userId;
+        this.lecturerId = lecturerId;
+        this.studentId = studentId;
         this.requestType = requestType;
         this.isApproved = isApproved;
     }
-
-    // BAD CONSTRUCTOR
-    public Request(int id, int userId, String module) {
-        this.id = id;
-        this.requesterId = userId;
-        this.module = module;
-        this.isApproved = false;
-    }   
 
     @Override
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
 
-    public int getRequesterId() {
-        return requesterId;
+    public int getLecturerId() {
+        return lecturerId;
     }
 
-    public void setRequesterId(int userId) {
-        this.requesterId = userId;
+    public void setLecturerId(int userId) {
+        this.lecturerId = userId;
     }
 
     public int getStudentId() {
@@ -97,9 +67,9 @@ public class Request implements Identifiable {
     }
 
     public void setStudentId(int studentId) {
-        if ((this.requestType == RequestType.PRESENTATION || this.requestType == null) && studentId != 0) {
-            throw new IllegalArgumentException("Student can only be assigned for Supervisor or SecondMarker Requests.");
-        }
+        // if ((this.requestType == RequestType.PRESENTATION || this.requestType == null) && studentId != 0) {
+            // throw new IllegalArgumentException("Student can only be assigned for Supervisor or SecondMarker Requests.");
+        // }
         this.studentId = studentId;
     }
 
@@ -129,7 +99,7 @@ public class Request implements Identifiable {
 
     public User viewUser() {
         DataContext context = new DataContext();
-        User user = context.getById(requesterId);
+        User user = context.getById(lecturerId);
 
         if (user instanceof Student) {
             return (Student) user;

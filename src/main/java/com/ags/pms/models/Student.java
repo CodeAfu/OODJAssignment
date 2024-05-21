@@ -1,6 +1,5 @@
 package com.ags.pms.models;
 
-import java.lang.reflect.Array;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -11,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.swing.text.html.Option;
 
 import com.ags.pms.Helper;
 import com.ags.pms.data.DataContext;
@@ -47,15 +45,19 @@ public class Student extends User {
         presentationSlotIds = new ArrayList<>();
         modules = new ArrayList<>();
     }
-    
-    public Student(int id, String name, String dob, String email, String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+
+    public Student(int id, String name, String dob, String email, String username, String password)
+            throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException,
+            BadPaddingException, InvalidAlgorithmParameterException {
         super(id, name, dob, email, username, password);
         reportIds = new ArrayList<>();
         presentationSlotIds = new ArrayList<>();
         modules = new ArrayList<>();
     }
-    
-    public Student(int id, String name, String dob, String email, String username, String password, ArrayList<Integer> reports) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+
+    public Student(int id, String name, String dob, String email, String username, String password,
+            ArrayList<Integer> reports) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
+            IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         super(id, name, dob, email, username, password);
         this.reportIds = reports;
         presentationSlotIds = new ArrayList<>();
@@ -97,11 +99,11 @@ public class Student extends User {
     public ArrayList<String> getModules() {
         return modules;
     }
-    
+
     public void setModules(ArrayList<String> modules) {
         this.modules = modules;
     }
-    
+
     public AssessmentType getAssessmentType() {
         return assessmentType;
     }
@@ -130,12 +132,12 @@ public class Student extends User {
         DataContext context = new DataContext();
 
         Optional<ProjectManager> supervisor = context.getProjectManagers().stream()
-            .filter(pm -> pm.getRole() == Role.SUPERVISOR)
-            .filter(sp -> {
-                ArrayList<Integer> superviseeIds = sp.getSuperviseeIds();
-                return superviseeIds != null && superviseeIds.contains(this.getId());
-            })
-            .findFirst();
+                .filter(pm -> pm.getRole() == Role.SUPERVISOR)
+                .filter(sp -> {
+                    ArrayList<Integer> superviseeIds = sp.getSuperviseeIds();
+                    return superviseeIds != null && superviseeIds.contains(this.getId());
+                })
+                .findFirst();
 
         if (!supervisor.isEmpty()) {
             this.supervisorId = supervisor.get().getId();
@@ -161,10 +163,12 @@ public class Student extends User {
 
     private void requestPresentation(String module) {
         if (!modules.contains(module)) {
-            throw new IllegalArgumentException("Student is not enrolled in module: " + module);
-            // Helper.printErr("Student is not enrolled in module: " + module);
-            // return;
+            // throw new IllegalArgumentException("Student is not enrolled in module: " +
+            // module);
+            Helper.printErr("Student is not enrolled in module: " + module);
+            return;
         }
+
         DataContext context = new DataContext();
         Request request = new Request(context.fetchNextRequestId(), this.id, module);
         context.addRequest(request);
@@ -174,26 +178,28 @@ public class Student extends User {
     public ArrayList<Request> viewPresentationRequests() {
         DataContext context = new DataContext();
         ArrayList<Request> myRequests = context.getRequests().stream()
-                                                .filter(r -> r.getRequesterId() == this.id && r.getRequestType() == RequestType.PRESENTATION)
-                                                .collect(Collectors.toCollection(ArrayList::new));                                              
+                .filter(r -> r.getLecturerId() == this.id && r.getRequestType() == RequestType.PRESENTATION)
+                .collect(Collectors.toCollection(ArrayList::new));
         return myRequests;
     }
 
     public ArrayList<Request> viewAllRequests() {
         DataContext context = new DataContext();
         ArrayList<Request> myRequests = context.getRequests().stream()
-                                                .filter(r -> r.getRequesterId() == this.id && r.getRequestType() == RequestType.PRESENTATION)
-                                                .collect(Collectors.toCollection(ArrayList::new));                                              
+                .filter(r -> r.getLecturerId() == this.id && r.getRequestType() == RequestType.PRESENTATION)
+                .collect(Collectors.toCollection(ArrayList::new));
         return myRequests;
     }
 
-    public String retrieveReportDetails(Report report) {
-        if (!reportIds.contains(report)) {
-            Helper.printErr("Report does not exist: " + report.getId());
+    public Report retrieveReportDetails(int reportId) {
+        if (!reportIds.contains(reportId)) {
+            Helper.printErr("Report does not exist: " + reportId);
             return null;
         }
+        DataContext context = new DataContext();
+        Report report = context.getById(reportId);
 
-        return report.toString();
+        return report;
     }
 
     public String retrievePresentationRequestDetails() {
@@ -203,12 +209,17 @@ public class Student extends User {
             PresentationSlot slot = context.getById(slotId);
             Student student = context.getById(slot.getStudentId());
             details.append(slot.getId())
-                   .append(", ")
-                   .append(student.getName())
-                   .append(", ")
-                   .append(slot.getPresentationDate().toString())
-                   .append("\n");
+                    .append(", ")
+                    .append(student.getName())
+                    .append(", ")
+                    .append(slot.getPresentationDate().toString())
+                    .append("\n");
         }
         return details.toString();
+    }
+
+    @Override
+    public String toString() {
+        return this.getName();
     }
 }
