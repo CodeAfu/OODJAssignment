@@ -9,13 +9,13 @@ public class Report implements Identifiable {
     private int id;
     private int projectId;
     private int studentId;
+    private String contents;
     private boolean submitted;
     private Date dateSubmitted;
     private String moodleLink;
     private int studentMark;
     private int totalMark;
     private String feedback;
-
     
     public Report() {
     }
@@ -97,6 +97,12 @@ public class Report implements Identifiable {
     }
     public void setStudentId(int studentId) {
         this.studentId = studentId;
+    }
+    public String getContents() {
+        return contents;
+    }
+    public void setContents(String contents) {
+        this.contents = contents;
     }
     public boolean isSubmitted() {
         return submitted;

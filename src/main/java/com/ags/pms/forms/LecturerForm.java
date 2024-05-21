@@ -4,6 +4,7 @@
  */
 package com.ags.pms.forms;
 
+import com.ags.pms.models.Identifiable;
 import com.ags.pms.models.Lecturer;
 import com.ags.pms.models.Report;
 import com.ags.pms.models.Request;
@@ -29,6 +30,9 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JOptionPane;
+import java.util.stream.Collectors;
+import javax.swing.ListSelectionModel;
+
 
 /**
  *
@@ -37,6 +41,7 @@ import javax.swing.JOptionPane;
 public class LecturerForm extends javax.swing.JFrame {
 
     private Lecturer lecturer;
+    private int selectedReportId;
 
     public LecturerForm() {
     initComponents();
@@ -68,6 +73,8 @@ public class LecturerForm extends javax.swing.JFrame {
         populateSecondMarkerComboBox();
         populateSupervisees();
         populatePresentationRequestComboBox();
+        populateReportsTable();
+        populateFilterStudentComboBox();
     }
 
     private void openDashboard() {
@@ -141,29 +148,71 @@ public class LecturerForm extends javax.swing.JFrame {
 
     }
 
-    private void populateReports() {
-        // DefaultTableModel model = (DefaultTableModel) jTableReport.getModel();
-        // model.setRowCount(0);
-        // jComboBoxGetStudentReport
-        // ArrayList<Report> Reports = lecturer.viewStudentReports();
-        //
-        //
-        // for (int i = 0; i < students.size(); i++) {
-        // Object rowData[] = new Object[4];
-        // rowData[0] = students.get(i).getId();
-        // rowData[1] = students.get(i).getName();
-        // rowData[2] = students.get(i).getSupervisorId() != 0;
-        // rowData[3] = students.get(i).getSecondMarkerId() != 0;
-        //
-        // model.addRow(rowData);
-        // }
-        //
-        // jTableViewSupervisee.setFocusable(false);
-        // jTableViewSupervisee.setRowSelectionAllowed(false);
-        // jTableViewSupervisee.setCellSelectionEnabled(false);
-        // // String[] StudentArray = students.toArray(new String[students.size()]);
-        // // comboBoxStudent.setModel();
+    private void populateReportsTable() {
+        DefaultTableModel model = (DefaultTableModel) jTableReport.getModel();
+        model.setRowCount(0);
+        ArrayList<Map<String, Object>> studentsWithReports = lecturer.viewAllStudentsWithReports();
 
+        ArrayList<Report> reports = new ArrayList<>();
+
+        studentsWithReports.forEach(s -> {
+            if (!((ArrayList<Report>) s.get("reports")).isEmpty()) {
+                ((ArrayList<Report>) s.get("reports")).forEach(r -> {
+                    reports.add(r);
+                });
+            }
+        });
+        
+        for (int i = 0; i < reports.size(); i++) {
+            Object rowData[] = new Object[5];
+            
+            rowData[0] = reports.get(i).getId();
+            rowData[1] = reports.get(i).getStudentId();
+            rowData[2] = reports.get(i).getDateSubmitted();
+            rowData[3] = reports.get(i).getTotalMark();
+            rowData[4] = reports.get(i).getFeedback();
+            
+            model.addRow(rowData);
+        }
+        
+    }
+    
+    private void populateReportsTable(int id) {
+        DefaultTableModel model = (DefaultTableModel) jTableReport.getModel();
+        model.setRowCount(0);
+        ArrayList<Map<String, Object>> studentsWithReports = lecturer.viewAllStudentsWithReports();
+
+        ArrayList<Report> reports = new ArrayList<>();
+
+        studentsWithReports.forEach(s -> {
+            if (!((ArrayList<Report>) s.get("reports")).isEmpty()) {
+                ((ArrayList<Report>) s.get("reports")).forEach(r -> {
+                    reports.add(r);
+                });
+            }
+        });
+        for (int i = 0; i < reports.size(); i++) {
+            Object rowData[] = new Object[5];
+            
+            rowData[0] = reports.get(i).getId();
+            rowData[1] = reports.get(i).getStudentId();
+            rowData[2] = reports.get(i).getDateSubmitted();
+            rowData[3] = reports.get(i).getTotalMark();
+            rowData[4] = reports.get(i).getFeedback();
+
+            model.addRow(rowData);
+        }
+    }
+
+
+    private void populateFilterStudentComboBox() {
+        jComboBoxFilterStudent.removeAllItems();
+        ArrayList<Student> students = new ArrayList<>();
+        lecturer.viewAllStudentsWithReports().forEach(s -> {
+            students.add((Student) s.get("student"));
+        }); 
+
+        students.forEach(s -> jComboBoxFilterStudent.addItem(s));
     }
 
     private void populateSecondMarkerAcceptence() {
@@ -278,7 +327,14 @@ public class LecturerForm extends javax.swing.JFrame {
         jPanelReport = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTableReport = new javax.swing.JTable();
-        jComboBoxGetStudentReport = new javax.swing.JComboBox<>();
+        jPanel3 = new javax.swing.JPanel();
+        jComboBoxFilterStudent = new javax.swing.JComboBox<>();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTextAreaFeedback = new javax.swing.JTextArea();
+        jButtonResetFilters = new javax.swing.JButton();
+        jButtonFeedback = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        jLabelSelectedReport = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1000, 700));
@@ -683,45 +739,96 @@ public class LecturerForm extends javax.swing.JFrame {
 
         jPanelReport.setBackground(new java.awt.Color(204, 204, 255));
         jPanelReport.setPreferredSize(new java.awt.Dimension(800, 560));
+        jPanelReport.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jTableReport.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Name", "Date Submitted", "Total Marks", "Feedback"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTableReport.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableReportMouseClicked(evt);
+            }
+        });
         jScrollPane4.setViewportView(jTableReport);
+        if (jTableReport.getColumnModel().getColumnCount() > 0) {
+            jTableReport.getColumnModel().getColumn(0).setMaxWidth(50);
+        }
 
-        jComboBoxGetStudentReport.setSelectedItem(null);
+        jPanelReport.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 20, 570, 120));
 
-        javax.swing.GroupLayout jPanelReportLayout = new javax.swing.GroupLayout(jPanelReport);
-        jPanelReport.setLayout(jPanelReportLayout);
-        jPanelReportLayout.setHorizontalGroup(
-            jPanelReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelReportLayout.createSequentialGroup()
-                .addGap(63, 63, 63)
-                .addComponent(jComboBoxGetStudentReport, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 146, Short.MAX_VALUE)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(67, 67, 67))
+        jPanel3.setBackground(new java.awt.Color(102, 51, 255));
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
-        jPanelReportLayout.setVerticalGroup(
-            jPanelReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelReportLayout.createSequentialGroup()
-                .addGroup(jPanelReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelReportLayout.createSequentialGroup()
-                        .addGap(67, 67, 67)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanelReportLayout.createSequentialGroup()
-                        .addGap(86, 86, 86)
-                        .addComponent(jComboBoxGetStudentReport, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(270, Short.MAX_VALUE))
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 370, Short.MAX_VALUE)
         );
+
+        jPanelReport.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 150, 570, 370));
+
+        jComboBoxFilterStudent.setSelectedItem(null);
+        jComboBoxFilterStudent.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxFilterStudentActionPerformed(evt);
+            }
+        });
+        jPanelReport.add(jComboBoxFilterStudent, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 42, 150, 30));
+
+        jTextAreaFeedback.setColumns(20);
+        jTextAreaFeedback.setRows(5);
+        jScrollPane5.setViewportView(jTextAreaFeedback);
+
+        jPanelReport.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 200, 340));
+
+        jButtonResetFilters.setText("Reset");
+        jButtonResetFilters.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonResetFiltersActionPerformed(evt);
+            }
+        });
+        jPanelReport.add(jButtonResetFilters, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 80, -1, -1));
+
+        jButtonFeedback.setText("Evaluate Report");
+        jButtonFeedback.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonFeedbackActionPerformed(evt);
+            }
+        });
+        jPanelReport.add(jButtonFeedback, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 500, 200, -1));
+
+        jLabel6.setText("Selected Report:");
+        jPanelReport.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, -1, -1));
+
+        jLabelSelectedReport.setText("-1");
+        jPanelReport.add(jLabelSelectedReport, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 130, -1, 20));
 
         jPanelContents.add(jPanelReport, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
@@ -770,6 +877,36 @@ public class LecturerForm extends javax.swing.JFrame {
     private void jButtonSwitchToSMApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSwitchToSMApplyActionPerformed
         openAvailableSlots();
     }//GEN-LAST:event_jButtonSwitchToSMApplyActionPerformed
+
+    private void jButtonResetFiltersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonResetFiltersActionPerformed
+        jComboBoxFilterStudent.setSelectedIndex(-1);
+        populateReportsTable();
+    }//GEN-LAST:event_jButtonResetFiltersActionPerformed
+
+    private void jComboBoxFilterStudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxFilterStudentActionPerformed
+        if (jComboBoxFilterStudent.getSelectedIndex() != -1) {
+            int id = ((Identifiable) jComboBoxFilterStudent.getSelectedItem()).getId();
+            populateReportsTable(id);
+        }
+    }//GEN-LAST:event_jComboBoxFilterStudentActionPerformed
+
+    private void jButtonFeedbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFeedbackActionPerformed
+        String feedback = jTextAreaFeedback.getText();
+        lecturer.evaluateReport(selectedReportId, feedback);
+        
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {}
+
+        populateReportsTable();
+        populateFilterStudentComboBox();
+    }//GEN-LAST:event_jButtonFeedbackActionPerformed
+
+    private void jTableReportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableReportMouseClicked
+        DefaultTableModel dtm = (DefaultTableModel) jTableReport.getModel();
+        selectedReportId = (int) dtm.getValueAt(jTableReport.getSelectedRow(), 0);
+        jLabelSelectedReport.setText(Integer.toString(selectedReportId));
+    }//GEN-LAST:event_jTableReportMouseClicked
 
     private void jButtonApplySecondMarkerActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonApplySecondMarkerActionPerformed
         if (jComboBoxStudentSecondMarker.getSelectedIndex() == -1) {
@@ -893,8 +1030,10 @@ public class LecturerForm extends javax.swing.JFrame {
     private javax.swing.JButton feedbackBtn;
     private javax.swing.JButton jButtonApplySecondMarker;
     private javax.swing.JButton jButtonApprovePresentation;
+    private javax.swing.JButton jButtonFeedback;
+    private javax.swing.JButton jButtonResetFilters;
     private javax.swing.JButton jButtonSwitchToSMApply;
-    private javax.swing.JComboBox<Student> jComboBoxGetStudentReport;
+    private javax.swing.JComboBox<Student> jComboBoxFilterStudent;
     private javax.swing.JComboBox<Request> jComboBoxPresentations;
     private javax.swing.JComboBox<Student> jComboBoxStudentSecondMarker;
     private javax.swing.JLabel jLabel1;
@@ -902,6 +1041,7 @@ public class LecturerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabelRequest;
     private javax.swing.JLabel jLabelRequest1;
     private javax.swing.JLabel jLabelRequest10;
@@ -915,9 +1055,11 @@ public class LecturerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelRequestLecturerName;
     private javax.swing.JLabel jLabelRequestStudentId;
     private javax.swing.JLabel jLabelRequestStudentName;
+    private javax.swing.JLabel jLabelSelectedReport;
     private javax.swing.JLabel jLabelTitle;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanelAvailableSlots;
     private javax.swing.JPanel jPanelContents;
     private javax.swing.JPanel jPanelDashboard;
@@ -931,10 +1073,12 @@ public class LecturerForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTable jTablePresentation;
     private javax.swing.JTable jTableReport;
     private javax.swing.JTable jTableSecondMarkerSlots;
     private javax.swing.JTable jTableViewSupervisee;
+    private javax.swing.JTextArea jTextAreaFeedback;
     private javax.swing.JButton requestBtn;
     private javax.swing.JButton viewSupviseeBtn;
     // End of variables declaration//GEN-END:variables

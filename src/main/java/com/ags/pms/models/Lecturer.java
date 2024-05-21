@@ -16,6 +16,9 @@ import java.util.Map;
 
 import com.ags.pms.Helper;
 import com.ags.pms.data.DataContext;
+import com.fasterxml.jackson.databind.deser.std.CollectionDeserializer;
+
+import net.bytebuddy.implementation.bytecode.collection.ArrayAccess;
 
 public class Lecturer extends User {
 
@@ -192,16 +195,68 @@ public class Lecturer extends User {
         context.writeAllDataAsync();
     }
 
-    public ArrayList<Report> viewReport(Student student) {
-        ArrayList<Report> reports = new ArrayList<>();
-        DataContext context = new DataContext();
+    // public ArrayList<Map<String, Object>> viewReportsWithoutFeedback() {
+    //     DataContext context = new DataContext();
+    //     ArrayList<Map<String, Object>> output = new ArrayList<>();
 
-        for (int reportId : student.getReportIds()) {
-            reports.add(context.getById(reportId));
-        }
-        return reports;
+    //     ArrayList<Report> reports = context.getReports().stream()
+    //             .filter(r -> r.getFeedback() == null || r.getFeedback() == "")
+    //             .collect(Collectors.toCollection(ArrayList::new));
+
+    //     reports.forEach(r -> {
+    //         Map<String, Object> map = new HashMap<>();
+    //         map.put("id", r.getId());
+    //         if (r.getStudentId() != 0) {
+    //             map.put("student", context.getById(r.getStudentId()));
+    //         } else {
+    //             map.put("student", new Student());
+    //         }
+    //         if (r.getStudentId() != 0) {
+    //             Student student = context.getById(r.getStudentId());
+    //             map.put("studentName", student.getName());
+    //         } else {
+    //             map.put("studentName", "Report without a student lol");
+    //         }
+    //         map.put("dateSubmitted", r.getDateSubmitted());
+    //         map.put("totalMarks", r.getTotalMark());
+    //         map.put("feedback", r.getFeedback());
+
+    //         output.add(map);
+    //     });
+        
+    //     return output;
+    // }
+
+    public ArrayList<Map<String, Object>> viewAllStudentsWithReports() {
+        DataContext context = new DataContext();
+        ArrayList<Map<String, Object>> output = new ArrayList<>();
+
+        ArrayList<Student> students = context.getStudents().stream()
+                .filter(s -> !s.getReportIds().isEmpty())
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        students.forEach(s -> {
+            Map<String, Object> map = new HashMap<>();
+            if (!s.getReportIds().isEmpty()) {
+                map.put("reports", convertIdsToReports(context, s.getReportIds()));
+            }
+            map.put("name", s.getName());
+            map.put("student", s);
+
+            output.add(map);
+        });
+
+        return output;
     }
 
+    private ArrayList<Report> convertIdsToReports(DataContext context, ArrayList<Integer> reportIds) {
+        ArrayList<Report> reports = new ArrayList<>();
+        reportIds.forEach(r -> {
+            reports.add(context.getById(r));
+        });
+        return reports;
+    }
+    
     public ArrayList<Report> viewStudentReports(int studentId) {
         DataContext context = new DataContext();
         Student student = context.getById(studentId);
@@ -232,14 +287,6 @@ public class Lecturer extends User {
         context.updateReportById(reportId, r -> r.setFeedback(feedback));
 
         context.writeAllDataAsync();
-    }
-
-    public ArrayList<Student> viewAllStudentsWithReports() {
-        DataContext context = new DataContext();
-        ArrayList<Student> students = context.getStudents().stream()
-                .filter(s -> !s.getReportIds().isEmpty())
-                .collect(Collectors.toCollection(ArrayList::new));
-        return students;
     }
 
     @Override
