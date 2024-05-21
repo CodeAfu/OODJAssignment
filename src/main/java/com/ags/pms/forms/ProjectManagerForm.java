@@ -4,6 +4,7 @@
  */
 package com.ags.pms.forms;
 
+import com.ags.pms.models.ProjectManager;
 import com.ags.pms.models.User;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Dimension;
@@ -20,7 +21,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class ProjectManagerForm extends javax.swing.JFrame {
 
-    private User user;
+    private ProjectManager projectManager;
     
     public ProjectManagerForm() {
         initComponents();   
@@ -30,8 +31,7 @@ public class ProjectManagerForm extends javax.swing.JFrame {
      */
     public ProjectManagerForm(User user) {
         initComponents();   
-        this.user = user;
-        user.getEmail();
+        this.projectManager = (ProjectManager) user;
     }
 
     /**
@@ -95,8 +95,6 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("Project Mangaer");
-
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/ags/pms/forms/Male User.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanelDragLeftLayout = new javax.swing.GroupLayout(jPanelDragLeft);
         jPanelDragLeft.setLayout(jPanelDragLeftLayout);

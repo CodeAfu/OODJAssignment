@@ -32,8 +32,8 @@ public class ProjectManagementSystem {
     public static void main(String[] args) {
         try {
             // testSingleForm();
-            // app();
-            consoleTests();
+            app();
+            // consoleTests();
         } catch (Exception ex) {
             Helper.printErr(Helper.getStackTraceString(ex));
         }
@@ -61,27 +61,28 @@ public class ProjectManagementSystem {
             user = loginForm.getUser();
 
             if (user != null) {
-                if (user instanceof Lecturer) {
+                if (user.getClass().getSimpleName().equals("Lecturer")) {
                     Lecturer lecturer = (Lecturer) user;
                     LecturerForm lecturerForm = new LecturerForm(user);
                     lecturerForm.setVisible(true);
                     Helper.joinForm(lecturerForm);
 
-                } else if (user instanceof Admin) {
+                } else if (user.getClass().getSimpleName().equals("Admin")) {
                     Admin admin = (Admin) user;
                     // AdminForm adminForm = new AdminForm(admin);
                     // Helper.joinForm(adminForm);
                     running = false; // REMOVE THIS AFTER IMPELMENTING FORM
 
-                } else if (user instanceof Student) {
+                } else if (user.getClass().getSimpleName().equals("Student")) {
                     Student student = (Student) user;
                     // StudentForm studentForm = new StudentForm(student);
                     // Helper.joinForm(studentForm);
                     running = false; // REMOVE THIS AFTER IMPLEMENTING FORM
 
-                } else if (user instanceof ProjectManager) {
+                } else if (user.getClass().getSimpleName().equals("ProjectManager")) {
                     ProjectManager projectManager = (ProjectManager) user;
                     ProjectManagerForm projectManagerForm = new ProjectManagerForm(projectManager);
+                    projectManagerForm.setVisible(true);
                     Helper.joinForm(projectManagerForm);
                 }
             }
