@@ -154,9 +154,9 @@ public class Lecturer extends User {
         Request request = context.getRequest(r -> r.getLecturerId() == this.id);
 
         if (request == null) {
-            throw new NullPointerException("No Request found for User ID: " + this.id);
-            // Helper.printErr("No Request found for User ID: " + this.id);
-            // return null;
+            // throw new NullPointerException("No Request found for User ID: " + this.id);
+            Helper.printErr("No Request found for User ID: " + this.id);
+            return null;
         }
 
         if (request.getRequestType() != RequestType.SECONDMARKER) {

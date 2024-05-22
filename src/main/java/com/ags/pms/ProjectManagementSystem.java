@@ -62,26 +62,22 @@ public class ProjectManagementSystem {
 
             if (user != null) {
                 if (user.getClass().getSimpleName().equals("Lecturer")) {
-                    Lecturer lecturer = (Lecturer) user;
                     LecturerForm lecturerForm = new LecturerForm(user);
                     lecturerForm.setVisible(true);
                     Helper.joinForm(lecturerForm);
 
                 } else if (user.getClass().getSimpleName().equals("Admin")) {
-                    Admin admin = (Admin) user;
                     // AdminForm adminForm = new AdminForm(admin);
                     // Helper.joinForm(adminForm);
                     running = false; // REMOVE THIS AFTER IMPELMENTING FORM
 
                 } else if (user.getClass().getSimpleName().equals("Student")) {
-                    Student student = (Student) user;
                     // StudentForm studentForm = new StudentForm(student);
                     // Helper.joinForm(studentForm);
                     running = false; // REMOVE THIS AFTER IMPLEMENTING FORM
 
                 } else if (user.getClass().getSimpleName().equals("ProjectManager")) {
-                    ProjectManager projectManager = (ProjectManager) user;
-                    ProjectManagerForm projectManagerForm = new ProjectManagerForm(projectManager);
+                    ProjectManagerForm projectManagerForm = new ProjectManagerForm(user);
                     projectManagerForm.setVisible(true);
                     Helper.joinForm(projectManagerForm);
                 }

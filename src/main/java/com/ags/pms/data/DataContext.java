@@ -172,7 +172,7 @@ public class DataContext {
         return requests.stream()
                        .filter(request -> expression.action(request))
                        .findFirst()
-                       .orElseThrow(() -> new NoSuchElementException("ProjectManager not found"));
+                       .orElse(null);
     }
 
     public void updateAdminById(int id, Consumer<Admin> updater) {
