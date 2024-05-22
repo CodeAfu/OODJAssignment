@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
+import java.util.Comparator;
 
 import com.ags.pms.Helper;
 import com.ags.pms.data.DataContext;
@@ -99,8 +101,19 @@ public class Lecturer extends User {
 
     public ArrayList<Student> viewStudents() {
         DataContext context = new DataContext();
-        ArrayList<Student> students = context.getStudents();
-        return students;
+        return context.getStudents();
+    }
+
+
+
+    public Student viewStudent(int id) {
+        if (Integer.toString(id).charAt(0) != '4') {
+            Helper.printErr("Student ID must start with value 4: " + id);
+            return null;
+        }
+
+        DataContext context = new DataContext();
+        return context.getById(id);
     }
 
     public ArrayList<Request> viewPendingPresentationRequests() {
@@ -226,6 +239,7 @@ public class Lecturer extends User {
         
     //     return output;
     // }
+
 
     public ArrayList<Map<String, Object>> viewAllStudentsWithReports() {
         DataContext context = new DataContext();

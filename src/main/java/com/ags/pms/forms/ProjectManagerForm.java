@@ -5,6 +5,7 @@
 package com.ags.pms.forms;
 
 import com.ags.pms.data.DataContext;
+import com.ags.pms.models.AssessmentType;
 import com.ags.pms.models.Identifiable;
 import com.ags.pms.models.Lecturer;
 import com.ags.pms.models.ProjectManager;
@@ -70,6 +71,7 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     }
 
     private void populateData() {
+        jLabelUsername.setText(projectManager.getUsername());
         populatePresentationsRequestTable();
         populateSecondMarkerTable();
         populateSecondMarkerAcceptence();
@@ -78,6 +80,12 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         populatePresentationRequestComboBox();
         populateReportsTable();
         populateFilterStudentComboBox();
+        populateStudentAssessmentTable();
+        populateAssessmentTypeComboBox();
+        populateLecturerRoleTable();
+        populateLecturerRoleComboBox();
+        populateStudentAssignPMTable();
+
     }
 
     private void openDashboard() {
@@ -223,7 +231,6 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     }
 
 
-    // PROBABLY DEL
     private void populateSecondMarkerAcceptence() {
         Map<String, Object> result = projectManager.viewSecondMarkerAcceptance();
 
@@ -248,6 +255,194 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         } catch (InterruptedException e) {
         }
 
+    }
+
+    private void populateStudentAssessmentTable() {
+        DefaultTableModel model = (DefaultTableModel) jTableStudentAssessmentTypes.getModel();
+
+        // Clear the table before populating it again to avoid duplicate entries
+        model.setRowCount(0);
+
+        ArrayList<Student> students = projectManager.viewStudents();
+        
+        for (int i = 0; i < students.size(); i++) {
+            Object rowData[] = new Object[3]; // Moved declaration inside the loop
+            
+            rowData[0] = students.get(i).getId();
+            rowData[1] = students.get(i).getName();
+            rowData[2] = (students.get(i).getAssessmentType() != null) 
+                                ? students.get(i).getAssessmentType().toString() : null;
+
+            model.addRow(rowData);
+        }
+    }
+
+    private void populateAssessmentTypeComboBox() {
+        jComboBoxAssessmentType.removeAllItems();
+
+        for (AssessmentType type : AssessmentType.values()) {
+            jComboBoxAssessmentType.addItem(type);
+        }
+        
+        jComboBoxAssessmentType.setSelectedIndex(-1);
+    }
+
+    private void assignStudentAssessmentType() {
+        DefaultTableModel dtm = (DefaultTableModel) jTableStudentAssessmentTypes.getModel();
+        int selectedRow = jTableStudentAssessmentTypes.getSelectedRow();
+        AssessmentType selectedAssessmentType = (AssessmentType) jComboBoxAssessmentType.getSelectedItem();
+        
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(null, "Please Select a Student");
+            return;
+        }
+
+        if (selectedAssessmentType == null) {
+            JOptionPane.showMessageDialog(null, "Please Select an Assessment Type");
+            return;
+        }
+        
+        int studentId = (int) dtm.getValueAt(selectedRow, 0);
+        if (studentId == 0 || studentId == -1) {
+            JOptionPane.showMessageDialog(null, "Error fetching student");
+            return;
+        }
+
+        String currentAssessmentType = (String) dtm.getValueAt(selectedRow, 2);
+        String studentName = (String) dtm.getValueAt(selectedRow, 1);
+
+        if (currentAssessmentType != null ) {
+
+            int response = JOptionPane.showConfirmDialog(null, studentName + " has Assessment Type " + currentAssessmentType + ". Replace?", 
+                            "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+            if (response == JOptionPane.YES_OPTION) {
+                projectManager.assignStudentAssessmentType(studentId, selectedAssessmentType);
+            }
+        } else {
+            projectManager.assignStudentAssessmentType(studentId, selectedAssessmentType);
+        }
+
+        JOptionPane.showMessageDialog(null, "Student Assessment Type Updated");
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) { }
+
+        populateStudentAssessmentTable();
+    }
+
+    private void populateStudentAssignPMTable() {
+        DefaultTableModel model = (DefaultTableModel) jTableStudentAssignPM.getModel();
+
+        // Clear the table before populating it again to avoid duplicate entries
+        model.setRowCount(0);
+
+        ArrayList<Student> students = projectManager.viewStudents();
+        
+        for (int i = 0; i < students.size(); i++) {
+            Object rowData[] = new Object[4]; // Moved declaration inside the loop
+            
+            Lecturer supervisor = (Lecturer) students.get(i).fetchSupervisor();
+            Lecturer secondMarker = (Lecturer) students.get(i).fetchSecondMarker();
+
+            rowData[0] = students.get(i).getId();
+            rowData[1] = students.get(i).getName();
+            rowData[2] = (supervisor != null) 
+                            ? supervisor.getName() : null;
+            rowData[3] = (secondMarker != null) 
+                            ? secondMarker.getName() : null;
+
+            model.addRow(rowData);
+        }
+    }
+
+    private void populateLecturerRoleTable() {
+        DefaultTableModel model = (DefaultTableModel) jTableLecturerRoles.getModel();
+
+        // Clear the table before populating it again to avoid duplicate entries
+        model.setRowCount(0);
+
+        ArrayList<Lecturer> lecturers = projectManager.viewLecturersAndPMs();
+        
+        for (int i = 0; i < lecturers.size(); i++) {
+            Object rowData[] = new Object[3]; // Moved declaration inside the loop
+            
+            rowData[0] = lecturers.get(i).getId();
+            rowData[1] = lecturers.get(i).getName();
+            rowData[2] = (lecturers.get(i).getRole() != null) 
+                                ? lecturers.get(i).getRole().toString() : null;
+
+            model.addRow(rowData);
+        }
+    }
+
+    private void populateLecturerRoleComboBox() {
+        jComboBoxLecturerRoles.removeAllItems();
+
+        for (Role type : Role.values()) {
+            jComboBoxLecturerRoles.addItem(type);
+        }
+        
+        jComboBoxLecturerRoles.setSelectedIndex(-1);
+    }
+
+    private void assignLecturerRole() {
+        DefaultTableModel dtmLecturer = (DefaultTableModel) jTableLecturerRoles.getModel();
+        DefaultTableModel dtmStudent = (DefaultTableModel) jTableStudentAssignPM.getModel();
+
+        int selectedRowLecturer = jTableLecturerRoles.getSelectedRow();
+        int selectedRowStudent = jTableStudentAssignPM.getSelectedRow();
+
+        Role selectedRole = (Role) jComboBoxLecturerRoles.getSelectedItem();
+        
+        if (selectedRowLecturer == -1) {
+            JOptionPane.showMessageDialog(null, "Please Select a Lecturer");
+            return;
+        }
+        
+        if (selectedRowStudent == -1) {
+            JOptionPane.showMessageDialog(null, "Please Select a Student");
+            return;
+        }
+
+        if (selectedRole == null) {
+            JOptionPane.showMessageDialog(null, "Please Select a Role");
+            return;
+        }
+        
+        int lecturerId = (int) dtmLecturer.getValueAt(selectedRowLecturer, 0);
+        int studentId = (int) dtmStudent.getValueAt(selectedRowStudent, 0);
+
+        // Doesnt do anything I think
+        if (lecturerId == 0 || lecturerId == -1) {
+            JOptionPane.showMessageDialog(null, "Error fetching Lecturer");
+            return;
+        }
+
+        String lecturerName = (String) dtmLecturer.getValueAt(selectedRowLecturer, 1);
+        String currentRole = (String) dtmLecturer.getValueAt(selectedRowLecturer, 2);
+
+        if (currentRole != null ) {
+
+            int response = JOptionPane.showConfirmDialog(null, lecturerName + " has Role " + currentRole + ". Replace?", 
+                            "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+            if (response == JOptionPane.YES_OPTION) {
+                projectManager.assignRoleToLecturer(lecturerId, studentId, selectedRole);;
+            }
+        } else {
+            projectManager.assignRoleToLecturer(lecturerId, studentId, selectedRole);;
+        }
+
+        JOptionPane.showMessageDialog(null, "Lecturer Role Updated");
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) { }
+
+        populateLecturerRoleTable();
+        populateStudentAssignPMTable();
     }
 
     private void populatePresentationsRequestTable() {
@@ -296,15 +491,17 @@ public class ProjectManagerForm extends javax.swing.JFrame {
 
         jPanelTitle = new javax.swing.JPanel();
         jLabelTitle = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabelUsername = new javax.swing.JLabel();
         jPanelSide = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jPanelDragLeft = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         requestBtn = new javax.swing.JButton();
         dashboardBtn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
         availabelSlotsBtn = new javax.swing.JButton();
         viewSupviseeBtn = new javax.swing.JButton();
         viewReportBtn = new javax.swing.JButton();
@@ -365,9 +562,22 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabelSelectedReport = new javax.swing.JLabel();
         jPanelAssessment = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        jTableStudentAssessmentTypes = new javax.swing.JTable();
+        jPanel4 = new javax.swing.JPanel();
+        jLabelRequest4 = new javax.swing.JLabel();
+        jButtonAssignAssessment = new javax.swing.JButton();
+        jComboBoxAssessmentType = new javax.swing.JComboBox<>();
+        jLabelRequest2 = new javax.swing.JLabel();
         jPanelLecturerRole = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        jTableLecturerRoles = new javax.swing.JTable();
+        jPanel5 = new javax.swing.JPanel();
+        jLabelRequest5 = new javax.swing.JLabel();
+        jButtonAssignLecturerRole = new javax.swing.JButton();
+        jComboBoxLecturerRoles = new javax.swing.JComboBox<>();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        jTableStudentAssignPM = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1000, 700));
@@ -379,6 +589,12 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         jLabelTitle.setForeground(new java.awt.Color(0, 0, 51));
         jLabelTitle.setText("Project Management System");
 
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel3.setText("Welcome!");
+
+        jLabelUsername.setForeground(new java.awt.Color(0, 0, 0));
+
         javax.swing.GroupLayout jPanelTitleLayout = new javax.swing.GroupLayout(jPanelTitle);
         jPanelTitle.setLayout(jPanelTitleLayout);
         jPanelTitleLayout.setHorizontalGroup(
@@ -386,13 +602,22 @@ public class ProjectManagerForm extends javax.swing.JFrame {
             .addGroup(jPanelTitleLayout.createSequentialGroup()
                 .addGap(110, 110, 110)
                 .addComponent(jLabelTitle)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(22, 22, 22))
         );
         jPanelTitleLayout.setVerticalGroup(
             jPanelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelTitleLayout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addComponent(jLabelTitle)
+                .addGroup(jPanelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelTitleLayout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabelUsername))
+                    .addComponent(jLabelTitle))
                 .addContainerGap(40, Short.MAX_VALUE))
         );
 
@@ -401,12 +626,11 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         jPanelSide.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 266, -1, -1));
 
         jPanelDragLeft.setBackground(new java.awt.Color(102, 102, 255));
-
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel3.setText("Lecturer");
+        jPanelDragLeft.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanelDragLeft.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 8, -1, -1));
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/Male User_3.png"))); // NOI18N
+        jPanelDragLeft.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 20, 50, -1));
 
         requestBtn.setBackground(new java.awt.Color(110, 139, 251));
         requestBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -418,6 +642,7 @@ public class ProjectManagerForm extends javax.swing.JFrame {
                 requestBtnActionPerformed(evt);
             }
         });
+        jPanelDragLeft.add(requestBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 169, 237, 37));
 
         dashboardBtn.setBackground(new java.awt.Color(110, 139, 251));
         dashboardBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -429,6 +654,7 @@ public class ProjectManagerForm extends javax.swing.JFrame {
                 dashboardBtnActionPerformed(evt);
             }
         });
+        jPanelDragLeft.add(dashboardBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 237, 37));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel1.setText("Logout");
@@ -437,51 +663,12 @@ public class ProjectManagerForm extends javax.swing.JFrame {
                 jLabel1MouseClicked(evt);
             }
         });
+        jPanelDragLeft.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, -1, -1));
 
-        javax.swing.GroupLayout jPanelDragLeftLayout = new javax.swing.GroupLayout(jPanelDragLeft);
-        jPanelDragLeft.setLayout(jPanelDragLeftLayout);
-        jPanelDragLeftLayout.setHorizontalGroup(
-            jPanelDragLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(requestBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelDragLeftLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(dashboardBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(jPanelDragLeftLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanelDragLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addGroup(jPanelDragLeftLayout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(25, 25, 25))
-        );
-        jPanelDragLeftLayout.setVerticalGroup(
-            jPanelDragLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelDragLeftLayout.createSequentialGroup()
-                .addGroup(jPanelDragLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelDragLeftLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE))
-                    .addGroup(jPanelDragLeftLayout.createSequentialGroup()
-                        .addGroup(jPanelDragLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanelDragLeftLayout.createSequentialGroup()
-                                .addGap(26, 26, 26)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanelDragLeftLayout.createSequentialGroup()
-                                .addGap(15, 15, 15)
-                                .addComponent(jLabel5)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)))
-                .addComponent(dashboardBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(requestBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12))
-        );
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel8.setText("Project Manager");
+        jPanelDragLeft.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 150, -1));
 
         jPanelSide.add(jPanelDragLeft, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
@@ -936,8 +1123,63 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         jPanelAssessment.setPreferredSize(new java.awt.Dimension(800, 560));
         jPanelAssessment.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel8.setText("Assessment");
-        jPanelAssessment.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 100, -1, -1));
+        jTableStudentAssessmentTypes.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "ID", "Name", "Assessment Type"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.Object.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane6.setViewportView(jTableStudentAssessmentTypes);
+        if (jTableStudentAssessmentTypes.getColumnModel().getColumnCount() > 0) {
+            jTableStudentAssessmentTypes.getColumnModel().getColumn(0).setMaxWidth(50);
+        }
+
+        jPanelAssessment.add(jScrollPane6, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 80, -1, -1));
+
+        jPanel4.setBackground(new java.awt.Color(153, 153, 255));
+        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabelRequest4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabelRequest4.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequest4.setText("Select Assessment Type");
+        jPanel4.add(jLabelRequest4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 220, 40));
+
+        jButtonAssignAssessment.setText("Assign");
+        jButtonAssignAssessment.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonAssignAssessmentMouseClicked(evt);
+            }
+        });
+        jPanel4.add(jButtonAssignAssessment, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 130, 80, 30));
+
+        jPanel4.add(jComboBoxAssessmentType, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 160, -1));
+
+        jPanelAssessment.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 150, 260, 210));
+
+        jLabelRequest2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabelRequest2.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequest2.setText("Select a Student from the Table, and set the Assessment Type");
+        jPanelAssessment.add(jLabelRequest2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, 710, -1));
 
         jPanelContents.add(jPanelAssessment, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
@@ -945,8 +1187,91 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         jPanelLecturerRole.setPreferredSize(new java.awt.Dimension(800, 560));
         jPanelLecturerRole.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton1.setText("jButton1");
-        jPanelLecturerRole.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 160, -1, -1));
+        jTableLecturerRoles.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "ID", "Name", "Role"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane7.setViewportView(jTableLecturerRoles);
+        if (jTableLecturerRoles.getColumnModel().getColumnCount() > 0) {
+            jTableLecturerRoles.getColumnModel().getColumn(0).setMaxWidth(50);
+        }
+
+        jPanelLecturerRole.add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 370, 170));
+
+        jPanel5.setBackground(new java.awt.Color(153, 153, 255));
+        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabelRequest5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabelRequest5.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequest5.setText("Select Assessment Type");
+        jPanel5.add(jLabelRequest5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 220, 40));
+
+        jButtonAssignLecturerRole.setText("Assign");
+        jButtonAssignLecturerRole.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonAssignLecturerRoleMouseClicked(evt);
+            }
+        });
+        jPanel5.add(jButtonAssignLecturerRole, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 140, 80, 30));
+
+        jPanel5.add(jComboBoxLecturerRoles, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, 160, -1));
+
+        jPanelLecturerRole.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 270, 260, 210));
+
+        jTableStudentAssignPM.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "ID", "Name", "Supervisor", "Second Marker"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane8.setViewportView(jTableStudentAssignPM);
+        if (jTableStudentAssignPM.getColumnModel().getColumnCount() > 0) {
+            jTableStudentAssignPM.getColumnModel().getColumn(0).setMaxWidth(50);
+        }
+
+        jPanelLecturerRole.add(jScrollPane8, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 30, 380, 170));
 
         jPanelContents.add(jPanelLecturerRole, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
@@ -959,7 +1284,7 @@ public class ProjectManagerForm extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanelTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanelContents, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jPanelContents, javax.swing.GroupLayout.DEFAULT_SIZE, 803, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1066,6 +1391,14 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         jPanelReport.setVisible(false);
         jPanelAssessment.setVisible(false);
         jPanelLecturerRole.setVisible(true);    }//GEN-LAST:event_viewLecturerBtnMouseClicked
+
+    private void jButtonAssignAssessmentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonAssignAssessmentMouseClicked
+        assignStudentAssessmentType();
+    }//GEN-LAST:event_jButtonAssignAssessmentMouseClicked
+
+    private void jButtonAssignLecturerRoleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonAssignLecturerRoleMouseClicked
+        assignLecturerRole();
+    }//GEN-LAST:event_jButtonAssignLecturerRoleMouseClicked
 
     private void loadReportFromSelectedItem(int reportId) {
         DataContext context = new DataContext();
@@ -1210,13 +1543,16 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton availabelSlotsBtn;
     private javax.swing.JButton dashboardBtn;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonApplySecondMarker;
     private javax.swing.JButton jButtonApprovePresentation;
+    private javax.swing.JButton jButtonAssignAssessment;
+    private javax.swing.JButton jButtonAssignLecturerRole;
     private javax.swing.JButton jButtonFeedback;
     private javax.swing.JButton jButtonResetFilters;
     private javax.swing.JButton jButtonSwitchToSMApply;
+    private javax.swing.JComboBox<AssessmentType> jComboBoxAssessmentType;
     private javax.swing.JComboBox<Student> jComboBoxFilterStudent;
+    private javax.swing.JComboBox<Role> jComboBoxLecturerRoles;
     private javax.swing.JComboBox<Request> jComboBoxPresentations;
     private javax.swing.JComboBox<Student> jComboBoxStudentSecondMarker;
     private javax.swing.JLabel jLabel1;
@@ -1237,7 +1573,10 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelRequest;
     private javax.swing.JLabel jLabelRequest1;
     private javax.swing.JLabel jLabelRequest10;
+    private javax.swing.JLabel jLabelRequest2;
     private javax.swing.JLabel jLabelRequest3;
+    private javax.swing.JLabel jLabelRequest4;
+    private javax.swing.JLabel jLabelRequest5;
     private javax.swing.JLabel jLabelRequest6;
     private javax.swing.JLabel jLabelRequest7;
     private javax.swing.JLabel jLabelRequest8;
@@ -1253,9 +1592,12 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelSupervisor;
     private javax.swing.JLabel jLabelTitle;
     private javax.swing.JLabel jLabelTotalMarks;
+    private javax.swing.JLabel jLabelUsername;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanelAssessment;
     private javax.swing.JPanel jPanelAvailableSlots;
     private javax.swing.JPanel jPanelContents;
@@ -1272,9 +1614,15 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JTable jTableLecturerRoles;
     private javax.swing.JTable jTablePresentation;
     private javax.swing.JTable jTableReport;
     private javax.swing.JTable jTableSecondMarkerSlots;
+    private javax.swing.JTable jTableStudentAssessmentTypes;
+    private javax.swing.JTable jTableStudentAssignPM;
     private javax.swing.JTable jTableViewSupervisee;
     private javax.swing.JTextArea jTextAreaFeedback;
     private javax.swing.JButton requestBtn;

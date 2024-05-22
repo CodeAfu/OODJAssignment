@@ -3,7 +3,10 @@ package com.ags.pms.models;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -73,22 +76,39 @@ public class ProjectManager extends Lecturer {
         context.writeAllDataAsync();
     }
 
-    public void assignRoleToLecturer(int id, Role role) {
+    public void assignRoleToLecturer(int lecturerId, int studentId, Role role) {
         DataContext context = new DataContext();
-        User user = context.getById(id);
+        User lecturer = context.getById(lecturerId);
+        Student student = context.getById(studentId);
 
-        if (user instanceof Lecturer) {
-            context.updateLecturerById(id, lec -> lec.setRole(role));
-        } else if (user instanceof ProjectManager) {
-            context.updateProjectManagerById(id, pm -> pm.setRole(role));
+        if (role == Role.SUPERVISOR) {
+            student.setSupervisorId(lecturerId);
+        } else if (role == Role.SECONDMARKER) {
+            student.setSecondMarkerId(lecturerId);
+        }
+
+        if (lecturer instanceof Lecturer) {
+            context.updateLecturerById(lecturerId, lec -> lec.setRole(role));
+        } else if (lecturer instanceof ProjectManager) {
+            context.updateProjectManagerById(lecturerId, pm -> pm.setRole(role));
         }
 
         context.writeAllDataAsync();
     }
 
-    public ArrayList<Lecturer> viewLecturers() {
+    public ArrayList<Lecturer> viewLecturersAndPMs() {
         DataContext context = new DataContext();
-        return context.getLecturers();
+        ArrayList<Lecturer> output = new ArrayList<>();
+        ArrayList<Lecturer> lecturer = context.getLecturers();
+        ArrayList<ProjectManager> pms = context.getProjectManagers();
+
+        lecturer.forEach(l -> output.add(l));
+        pms.forEach(pm -> output.add(pm));
+
+
+        Collections.sort(output, Comparator.comparingInt(Lecturer::getId));
+
+        return output;
     }
 
     public ArrayList<Report> viewReportStatus() {

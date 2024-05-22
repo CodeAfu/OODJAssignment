@@ -68,6 +68,7 @@ public class LecturerForm extends javax.swing.JFrame {
     }
 
     private void populateData() {
+        jLabelUsername.setText(lecturer.getUsername());
         populatePresentationsRequestTable();
         populateSecondMarkerTable();
         populateSecondMarkerAcceptence();
@@ -284,6 +285,8 @@ public class LecturerForm extends javax.swing.JFrame {
 
         jPanelTitle = new javax.swing.JPanel();
         jLabelTitle = new javax.swing.JLabel();
+        jLabelUsername = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
         jPanelSide = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jPanelDragLeft = new javax.swing.JPanel();
@@ -360,6 +363,13 @@ public class LecturerForm extends javax.swing.JFrame {
         jLabelTitle.setForeground(new java.awt.Color(0, 0, 51));
         jLabelTitle.setText("Project Management System");
 
+        jLabelUsername.setForeground(new java.awt.Color(0, 0, 0));
+        jLabelUsername.setText("sample");
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel7.setText("Welcome!");
+
         javax.swing.GroupLayout jPanelTitleLayout = new javax.swing.GroupLayout(jPanelTitle);
         jPanelTitle.setLayout(jPanelTitleLayout);
         jPanelTitleLayout.setHorizontalGroup(
@@ -367,13 +377,22 @@ public class LecturerForm extends javax.swing.JFrame {
             .addGroup(jPanelTitleLayout.createSequentialGroup()
                 .addGap(110, 110, 110)
                 .addComponent(jLabelTitle)
-                .addContainerGap(253, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(36, 36, 36))
         );
         jPanelTitleLayout.setVerticalGroup(
             jPanelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelTitleLayout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addComponent(jLabelTitle)
+                .addGroup(jPanelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelTitleLayout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabelUsername))
+                    .addComponent(jLabelTitle))
                 .addContainerGap(40, Short.MAX_VALUE))
         );
 
@@ -889,7 +908,7 @@ public class LecturerForm extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanelTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanelContents, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jPanelContents, javax.swing.GroupLayout.DEFAULT_SIZE, 803, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1112,6 +1131,7 @@ public class LecturerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabelContents;
     private javax.swing.JLabel jLabelMarks;
     private javax.swing.JLabel jLabelMoodle;
@@ -1136,6 +1156,7 @@ public class LecturerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelSupervisor;
     private javax.swing.JLabel jLabelTitle;
     private javax.swing.JLabel jLabelTotalMarks;
+    private javax.swing.JLabel jLabelUsername;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

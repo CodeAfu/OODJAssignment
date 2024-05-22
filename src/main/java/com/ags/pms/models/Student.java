@@ -131,12 +131,20 @@ public class Student extends User {
     }
 
     public User fetchSupervisor() {
+        if (supervisorId == 0) {
+            Helper.printErr("No Supervisor fetched");
+            return null;
+        }
         DataContext context = new DataContext();
         User supervisor = context.getById(supervisorId);
         return supervisor;
     }
-
+    
     public User fetchSecondMarker() {
+        if (secondMarkerId == 0) {
+            Helper.printErr("No Supervisor fetched");
+            return null;
+        }
         DataContext context = new DataContext();
         User secondMarker = context.getById(secondMarkerId);
         return secondMarker;

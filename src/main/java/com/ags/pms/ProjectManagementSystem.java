@@ -68,18 +68,23 @@ public class ProjectManagementSystem {
 
                 } else if (user.getClass().getSimpleName().equals("Admin")) {
                     // AdminForm adminForm = new AdminForm(admin);
+                    // adminForm.setVisible(true);
                     // Helper.joinForm(adminForm);
+                    Helper.printErr("Admin not implemented.");
                     running = false; // REMOVE THIS AFTER IMPELMENTING FORM
-
+                    
                 } else if (user.getClass().getSimpleName().equals("Student")) {
                     // StudentForm studentForm = new StudentForm(student);
+                    // studentForm.setVisible(true);
                     // Helper.joinForm(studentForm);
+                    Helper.printErr("Student not implemented.");
                     running = false; // REMOVE THIS AFTER IMPLEMENTING FORM
 
                 } else if (user.getClass().getSimpleName().equals("ProjectManager")) {
                     ProjectManagerForm projectManagerForm = new ProjectManagerForm(user);
                     projectManagerForm.setVisible(true);
                     Helper.joinForm(projectManagerForm);
+
                 }
             }
             user = null;
