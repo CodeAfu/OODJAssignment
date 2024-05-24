@@ -244,13 +244,29 @@ public class AdminForm extends javax.swing.JFrame {
     private void deleteUser() {
         DefaultTableModel dtm = (DefaultTableModel) jTableExistingUsers.getModel();
         int selectedIndex = jTableExistingUsers.getSelectedRow();
-
+        
         if (selectedIndex == -1) {
             JOptionPane.showMessageDialog(null, "Please select a user from the table");
             return;
         }
-
+        
         int userId = (int) dtm.getValueAt(selectedIndex, 0);
+        String name = (String) dtm.getValueAt(selectedIndex, 1);
+
+        int response = JOptionPane.showConfirmDialog(null, "Delete " + name + ": (" + userId + ")?", "Confirm?", JOptionPane.YES_NO_OPTION);
+        
+        if (response == JOptionPane.NO_OPTION) {
+            JOptionPane.showMessageDialog(null, "Operation Cancelled");
+            return;
+        }
+        
+        admin.deleteUser(userId);
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {}
+        
+        populateExistingUsersTables();
     }
 
     /**

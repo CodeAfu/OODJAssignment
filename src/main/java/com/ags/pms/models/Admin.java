@@ -231,4 +231,10 @@ public class Admin extends User {
 
         context.writeAllDataAsync();
     }
+
+    public void deleteUser(int userId) {
+        DataContext context = new DataContext();
+        context.removeById(userId);
+        context.writeAllDataAsync();
+    }
 }
