@@ -34,8 +34,8 @@ public class ProjectManagementSystem {
     public static void main(String[] args) {
         try {
             // testSingleForm();
-            app();
-            // consoleTests();
+            // app();
+            consoleTests();
         } catch (Exception ex) {
             Helper.printErr(Helper.getStackTraceString(ex));
         }

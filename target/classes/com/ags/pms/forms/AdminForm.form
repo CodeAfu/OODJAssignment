@@ -895,7 +895,6 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Segoe UI" size="14" style="0"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="jTextField1"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="jTextFieldRegisterUsername">
@@ -903,7 +902,6 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Segoe UI" size="14" style="0"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="jTextField1"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="jTextFieldRegisterDoB">
@@ -911,7 +909,6 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Segoe UI" size="14" style="0"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="jTextField1"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="jTextFieldRegisterPassword">
@@ -919,7 +916,6 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Segoe UI" size="14" style="0"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="jTextField1"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="jTextFieldRegisterEmail">
@@ -927,7 +923,6 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Segoe UI" size="14" style="0"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="jTextField1"/>
                   </Properties>
                 </Component>
               </SubComponents>

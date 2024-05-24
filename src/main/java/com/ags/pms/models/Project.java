@@ -8,6 +8,7 @@ public class Project implements Identifiable {
     private String module;
     private AssessmentType assessmentType;
     private String details;
+    private int totalMark;
 
     public Project() {
     }
@@ -20,13 +21,13 @@ public class Project implements Identifiable {
         this.details = details;
     }
 
-    public Project(int id, String module, AssessmentType assessmentType, String details) {
+    public Project(int id, String module, AssessmentType assessmentType, String details, int totalMark) {
         this.id = id;
         this.module = module;
         this.assessmentType = assessmentType;
         this.details = details;
+        this.totalMark = totalMark;
     }
-
     public String getDetails() {
         return details;
     }
@@ -44,6 +45,12 @@ public class Project implements Identifiable {
     }
     public void setModule(String module) {
         this.module = module;
+    }
+    public int getTotalMark() {
+        return totalMark;
+    }
+    public void setTotalMark(int totalMark) {
+        this.totalMark = totalMark;
     }
     public AssessmentType getAssessmentType() {
         return assessmentType;

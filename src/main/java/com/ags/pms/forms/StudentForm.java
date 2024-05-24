@@ -5,8 +5,10 @@
 package com.ags.pms.forms;
 
 import com.ags.pms.data.DataContext;
+import com.ags.pms.data.IDHandler;
 import com.ags.pms.models.Identifiable;
 import com.ags.pms.models.Lecturer;
+import com.ags.pms.models.PresentationSlot;
 import com.ags.pms.models.Report;
 import com.ags.pms.models.Request;
 import com.ags.pms.models.Role;
@@ -19,6 +21,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,7 +50,7 @@ public class StudentForm extends javax.swing.JFrame {
     initComponents();
 
     try {
-        this.student = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "   ", new ArrayList<Integer>());
+        this.student = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Integer>(Arrays.asList(8000, 8001, 8002)));
     } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
             | BadPaddingException | InvalidAlgorithmParameterException e) {
         e.printStackTrace();
@@ -65,15 +68,149 @@ public class StudentForm extends javax.swing.JFrame {
     }
 
     private void populateData() {
-     
+        jLabelDashboardName.setText(student.getName());
         jLabelUsername.setText(student.getUsername());
+
+        populateReportsTables();
+        populatePendingPresentationTable();
+        populateApprovedPresentationTable();
+
     }
 
     private void openDashboard() {
         jPanelDashboard.setVisible(true);
+        jPanelPresentation.setVisible(false);
+        jPanelReports.setVisible(false);
+        jPanelMyRequests.setVisible(false);
     }
 
-    
+    private void populateReportsTables() {
+        DefaultTableModel model = (DefaultTableModel) jTableReport.getModel();
+        DefaultTableModel model2 = (DefaultTableModel) jTableDashboardReport.getModel();
+
+        model.setRowCount(0);
+        model2.setRowCount(0);
+
+        ArrayList<Report> reports = student.fetchReports();
+        
+        for (int i = 0; i < reports.size(); i++) {
+            Object rowData[] = new Object[6]; // Moved declaration inside the loop
+            
+            rowData[0] = reports.get(i).getId();
+            rowData[1] = student.getName();
+            rowData[2] = reports.get(i).fetchProject().getAssessmentType();
+            rowData[3] = reports.get(i).getMoodleLink();
+            rowData[4] = reports.get(i).getStudentMark();
+            rowData[5] = reports.get(i).getTotalMark();
+
+            model.addRow(rowData);
+            model2.addRow(rowData);
+        }
+    }
+
+    private void addReport() {
+        int projectId = Integer.parseInt(jTextFieldProjectID.getText());
+        int studentId = Integer.parseInt(jTextFieldStudentID.getText());
+        String moodle = jTextFieldMoodleLink.getText();
+        String contents = jTextAreaReportContents.getText();
+
+        student.createReport(studentId, projectId, moodle, contents);
+
+        JOptionPane.showMessageDialog(null, "Report Created");
+
+        jFrameCreateReport.dispose();
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {}
+
+        populateReportsTables();
+    }
+
+    private void createReportPopup() {
+        IDHandler id = new IDHandler();
+        id.initFromFile();
+
+        jTextFieldProjectID.setText(Integer.toString(id.getNextProjectId() - 1));
+        jTextFieldStudentID.setText(Integer.toString(student.getId()));
+        
+        jFrameCreateReport.pack();
+        jFrameCreateReport.setLocationRelativeTo(null);
+        jFrameCreateReport.setResizable(false);
+        jFrameCreateReport.setVisible(true);
+    }
+
+    private void removeReport() {
+        DefaultTableModel model = (DefaultTableModel) jTableReport.getModel();
+        int selectedIndex = jTableReport.getSelectedRow();
+
+        if (selectedIndex == -1 ) {
+            JOptionPane.showMessageDialog(null, "Please select a report from the table.");
+            return;
+        }
+        
+        int reportId = (int) model.getValueAt(selectedIndex, 0);
+        
+        int response = JOptionPane.showConfirmDialog(null, "Remove Report: " + reportId + "?", "Confirm?", JOptionPane.YES_NO_OPTION);
+
+        if (response == JOptionPane.NO_OPTION) {
+            JOptionPane.showMessageDialog(null, "Operation Cancelled");
+            return;
+        }
+        
+        student.removeReport(reportId);
+        
+        JOptionPane.showMessageDialog(null, "Report Deleted");
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {}
+        
+        populateReportsTables();
+    }
+
+    private void populatePendingPresentationTable() {
+        DefaultTableModel model = (DefaultTableModel) jTablePendingPresentations.getModel();
+
+        model.setRowCount(0);
+
+        ArrayList<Request> requests = student.viewPendingPresentationRequests();
+        
+        for (int i = 0; i < requests.size(); i++) {
+            Object rowData[] = new Object[5]; // Moved declaration inside the loop
+            
+            // id name module presentation availability
+            rowData[0] = requests.get(i).getId();
+            rowData[1] = student.getName();
+            rowData[2] = requests.get(i).getModule();
+            rowData[3] = requests.get(i).fetchPresentationSlot().getPresentationDate();
+            rowData[4] = requests.get(i).fetchPresentationSlot().isAvailable();
+
+            model.addRow(rowData);
+        }
+    }
+
+    private void populateApprovedPresentationTable() {
+        DefaultTableModel model = (DefaultTableModel) jTableApprovedPresentations.getModel();
+
+        model.setRowCount(0);
+
+        ArrayList<Request> requests = student.viewApprovedPresentationRequests();
+        
+        for (int i = 0; i < requests.size(); i++) {
+            Object rowData[] = new Object[5]; // Moved declaration inside the loop
+            
+            rowData[0] = requests.get(i).getId();
+            rowData[1] = student.getName();
+            rowData[2] = requests.get(i).getModule();
+            rowData[3] = requests.get(i).fetchPresentationSlot().getPresentationDate();
+            rowData[4] = requests.get(i).fetchPresentationSlot().isAvailable();
+
+            model.addRow(rowData);
+        }
+    }
+
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -98,10 +235,11 @@ public class StudentForm extends javax.swing.JFrame {
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jTextFieldStudentID = new javax.swing.JTextField();
-        jTextFieldContents = new javax.swing.JTextField();
         jTextFieldProjectID = new javax.swing.JTextField();
         jTextFieldMoodleLink = new javax.swing.JTextField();
         jButtonCreate = new javax.swing.JButton();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTextAreaReportContents = new javax.swing.JTextArea();
         jFrameRequestPresentation = new javax.swing.JFrame();
         jPanelRequestPresentation = new javax.swing.JPanel();
         jLabel19 = new javax.swing.JLabel();
@@ -131,7 +269,7 @@ public class StudentForm extends javax.swing.JFrame {
         jPanelDashboard = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jLabelUsername = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
+        jLabelDashboardName = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTableDashboardReport = new javax.swing.JTable();
@@ -139,10 +277,10 @@ public class StudentForm extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jScrollPane8 = new javax.swing.JScrollPane();
-        jTableApprovedPresentation = new javax.swing.JTable();
+        jTableApprovedPresentations = new javax.swing.JTable();
         jButtonRequest = new javax.swing.JButton();
         jScrollPane9 = new javax.swing.JScrollPane();
-        jTableStudentRequests = new javax.swing.JTable();
+        jTablePendingPresentations = new javax.swing.JTable();
         jPanelReports = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableReport = new javax.swing.JTable();
@@ -183,28 +321,19 @@ public class StudentForm extends javax.swing.JFrame {
         jLabel18.setForeground(new java.awt.Color(0, 0, 0));
         jLabel18.setText("Create Report");
 
-        jTextFieldStudentID.setText("jTextField1");
+        jTextFieldStudentID.setEnabled(false);
         jTextFieldStudentID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextFieldStudentIDActionPerformed(evt);
             }
         });
 
-        jTextFieldContents.setText("jTextField1");
-        jTextFieldContents.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldContentsActionPerformed(evt);
-            }
-        });
-
-        jTextFieldProjectID.setText("jTextField1");
         jTextFieldProjectID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextFieldProjectIDActionPerformed(evt);
             }
         });
 
-        jTextFieldMoodleLink.setText("jTextField1");
         jTextFieldMoodleLink.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextFieldMoodleLinkActionPerformed(evt);
@@ -213,6 +342,15 @@ public class StudentForm extends javax.swing.JFrame {
 
         jButtonCreate.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jButtonCreate.setText("Create");
+        jButtonCreate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonCreateMouseClicked(evt);
+            }
+        });
+
+        jTextAreaReportContents.setColumns(20);
+        jTextAreaReportContents.setRows(5);
+        jScrollPane5.setViewportView(jTextAreaReportContents);
 
         javax.swing.GroupLayout jPanelCreateReportLayout = new javax.swing.GroupLayout(jPanelCreateReport);
         jPanelCreateReport.setLayout(jPanelCreateReportLayout);
@@ -221,30 +359,28 @@ public class StudentForm extends javax.swing.JFrame {
             .addGroup(jPanelCreateReportLayout.createSequentialGroup()
                 .addGroup(jPanelCreateReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelCreateReportLayout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addComponent(jLabel18))
+                    .addGroup(jPanelCreateReportLayout.createSequentialGroup()
+                        .addGap(108, 108, 108)
+                        .addComponent(jButtonCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanelCreateReportLayout.createSequentialGroup()
                         .addGap(52, 52, 52)
                         .addGroup(jPanelCreateReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel16)
                             .addGroup(jPanelCreateReportLayout.createSequentialGroup()
                                 .addComponent(jLabel15)
                                 .addGap(18, 18, 18)
                                 .addComponent(jTextFieldProjectID))
                             .addGroup(jPanelCreateReportLayout.createSequentialGroup()
-                                .addGroup(jPanelCreateReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel14)
-                                    .addComponent(jLabel16))
+                                .addComponent(jLabel14)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanelCreateReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextFieldContents)
-                                    .addComponent(jTextFieldStudentID)))
+                                .addComponent(jTextFieldStudentID))
                             .addGroup(jPanelCreateReportLayout.createSequentialGroup()
                                 .addComponent(jLabel17)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextFieldMoodleLink, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(jPanelCreateReportLayout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(jLabel18))
-                    .addGroup(jPanelCreateReportLayout.createSequentialGroup()
-                        .addGap(108, 108, 108)
-                        .addComponent(jButtonCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jTextFieldMoodleLink, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane5))))
                 .addContainerGap(48, Short.MAX_VALUE))
         );
         jPanelCreateReportLayout.setVerticalGroup(
@@ -262,13 +398,13 @@ public class StudentForm extends javax.swing.JFrame {
                     .addComponent(jTextFieldStudentID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanelCreateReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel16)
-                    .addComponent(jTextFieldContents, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanelCreateReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel17)
                     .addComponent(jTextFieldMoodleLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 228, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel16)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(jButtonCreate)
                 .addGap(32, 32, 32))
         );
@@ -499,11 +635,6 @@ public class StudentForm extends javax.swing.JFrame {
                 reportBtnMouseClicked(evt);
             }
         });
-        reportBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                reportBtnActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanelDragLeftLayout = new javax.swing.GroupLayout(jPanelDragLeft);
         jPanelDragLeft.setLayout(jPanelDragLeftLayout);
@@ -561,6 +692,11 @@ public class StudentForm extends javax.swing.JFrame {
         requestsBtn.setMaximumSize(new java.awt.Dimension(93, 27));
         requestsBtn.setMinimumSize(new java.awt.Dimension(93, 27));
         requestsBtn.setPreferredSize(new java.awt.Dimension(93, 27));
+        requestsBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                requestsBtnMouseClicked(evt);
+            }
+        });
         jPanelSide.add(requestsBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 280, 237, 37));
 
         presentationBtn.setBackground(new java.awt.Color(110, 139, 251));
@@ -572,9 +708,9 @@ public class StudentForm extends javax.swing.JFrame {
         presentationBtn.setMinimumSize(new java.awt.Dimension(93, 27));
         presentationBtn.setName("presentationBtn"); // NOI18N
         presentationBtn.setPreferredSize(new java.awt.Dimension(93, 27));
-        presentationBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                presentationBtnActionPerformed(evt);
+        presentationBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                presentationBtnMouseClicked(evt);
             }
         });
         jPanelSide.add(presentationBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 230, 237, 37));
@@ -592,9 +728,9 @@ public class StudentForm extends javax.swing.JFrame {
         jLabelUsername.setForeground(new java.awt.Color(0, 0, 0));
         jLabelUsername.setText("sample");
 
-        jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jLabel12.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel12.setText("jLabel12");
+        jLabelDashboardName.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabelDashboardName.setForeground(new java.awt.Color(0, 0, 0));
+        jLabelDashboardName.setText("jLabel12");
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(0, 0, 0));
@@ -641,7 +777,7 @@ public class StudentForm extends javax.swing.JFrame {
                             .addGroup(jPanelDashboardLayout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel12))))
+                                .addComponent(jLabelDashboardName))))
                     .addGroup(jPanelDashboardLayout.createSequentialGroup()
                         .addGap(46, 46, 46)
                         .addGroup(jPanelDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -654,7 +790,7 @@ public class StudentForm extends javax.swing.JFrame {
             .addGroup(jPanelDashboardLayout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addGroup(jPanelDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabelDashboardName, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabelUsername)
@@ -679,7 +815,7 @@ public class StudentForm extends javax.swing.JFrame {
         jLabel9.setForeground(new java.awt.Color(0, 0, 0));
         jLabel9.setText("Approved Requests");
 
-        jTableApprovedPresentation.setModel(new javax.swing.table.DefaultTableModel(
+        jTableApprovedPresentations.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null}
@@ -703,7 +839,7 @@ public class StudentForm extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane8.setViewportView(jTableApprovedPresentation);
+        jScrollPane8.setViewportView(jTableApprovedPresentations);
 
         jButtonRequest.setForeground(new java.awt.Color(255, 255, 255));
         jButtonRequest.setText("New Request");
@@ -713,7 +849,7 @@ public class StudentForm extends javax.swing.JFrame {
             }
         });
 
-        jTableStudentRequests.setModel(new javax.swing.table.DefaultTableModel(
+        jTablePendingPresentations.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null}
@@ -737,7 +873,7 @@ public class StudentForm extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane9.setViewportView(jTableStudentRequests);
+        jScrollPane9.setViewportView(jTablePendingPresentations);
 
         javax.swing.GroupLayout jPanelPresentationLayout = new javax.swing.GroupLayout(jPanelPresentation);
         jPanelPresentation.setLayout(jPanelPresentationLayout);
@@ -811,8 +947,18 @@ public class StudentForm extends javax.swing.JFrame {
         jLabel6.setText("Report");
 
         jButtonRemoveReport.setText("Remove Report");
+        jButtonRemoveReport.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonRemoveReportMouseClicked(evt);
+            }
+        });
 
         jButtonAddReport.setText("Add Report");
+        jButtonAddReport.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonAddReportMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanelReportsLayout = new javax.swing.GroupLayout(jPanelReports);
         jPanelReports.setLayout(jPanelReportsLayout);
@@ -938,29 +1084,20 @@ public class StudentForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void reportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_reportBtnActionPerformed
-
-    private void presentationBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_presentationBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_presentationBtnActionPerformed
-
     private void jButtonRequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRequestActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonRequestActionPerformed
 
     private void reportBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_reportBtnMouseClicked
-        // TODO add your handling code here:
+        jPanelDashboard.setVisible(false);
+        jPanelPresentation.setVisible(false);
+        jPanelReports.setVisible(true);
+        jPanelMyRequests.setVisible(false);
     }//GEN-LAST:event_reportBtnMouseClicked
 
     private void jTextFieldStudentIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldStudentIDActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldStudentIDActionPerformed
-
-    private void jTextFieldContentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldContentsActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldContentsActionPerformed
 
     private void jTextFieldProjectIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldProjectIDActionPerformed
         // TODO add your handling code here:
@@ -993,6 +1130,32 @@ public class StudentForm extends javax.swing.JFrame {
     private void dashboardBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dashboardBtnMouseClicked
         openDashboard();
     }//GEN-LAST:event_dashboardBtnMouseClicked
+
+    private void presentationBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_presentationBtnMouseClicked
+        jPanelDashboard.setVisible(false);
+        jPanelPresentation.setVisible(true);
+        jPanelReports.setVisible(false);
+        jPanelMyRequests.setVisible(false);
+    }//GEN-LAST:event_presentationBtnMouseClicked
+
+    private void requestsBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_requestsBtnMouseClicked
+        jPanelDashboard.setVisible(false);
+        jPanelPresentation.setVisible(false);
+        jPanelReports.setVisible(false);
+        jPanelMyRequests.setVisible(true);
+    }//GEN-LAST:event_requestsBtnMouseClicked
+
+    private void jButtonAddReportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonAddReportMouseClicked
+        createReportPopup();
+    }//GEN-LAST:event_jButtonAddReportMouseClicked
+
+    private void jButtonRemoveReportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonRemoveReportMouseClicked
+        removeReport();
+    }//GEN-LAST:event_jButtonRemoveReportMouseClicked
+
+    private void jButtonCreateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonCreateMouseClicked
+        addReport();
+    }//GEN-LAST:event_jButtonCreateMouseClicked
 
 
     /**
@@ -1067,7 +1230,6 @@ public class StudentForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
@@ -1087,6 +1249,7 @@ public class StudentForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabelDashboardName;
     private javax.swing.JLabel jLabelTitle;
     private javax.swing.JLabel jLabelUsername;
     private javax.swing.JPanel jPanelContents;
@@ -1103,16 +1266,17 @@ public class StudentForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
-    private javax.swing.JTable jTableApprovedPresentation;
+    private javax.swing.JTable jTableApprovedPresentations;
     private javax.swing.JTable jTableApprovedRequests;
     private javax.swing.JTable jTableDashboardReport;
+    private javax.swing.JTable jTablePendingPresentations;
     private javax.swing.JTable jTablePendingRequests;
     private javax.swing.JTable jTableReport;
-    private javax.swing.JTable jTableStudentRequests;
+    private javax.swing.JTextArea jTextAreaReportContents;
     private javax.swing.JTextField jTextFieldAvailability;
-    private javax.swing.JTextField jTextFieldContents;
     private javax.swing.JTextField jTextFieldModule;
     private javax.swing.JTextField jTextFieldMoodleLink;
     private javax.swing.JTextField jTextFieldPresentationDate;

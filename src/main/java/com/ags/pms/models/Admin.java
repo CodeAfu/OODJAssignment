@@ -198,17 +198,19 @@ public class Admin extends User {
     public void registerUser(String name, String dob, String email, String username, String password, String role) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         DataContext context = new DataContext();
 
-        switch (role) {
-            case "Student":
-                Student student = new Student(context.fetchNextStudentId(), name, dob, email, username, password);
-                context.addStudent(student);
-            case "Lecturer":
-                Lecturer lecturer = new Lecturer(context.fetchNextLecturerId(), name, dob, email, username, password, Role.NONE);
-                context.addLecturer(lecturer);
-            case "Project Manager":
-                ProjectManager pm = new ProjectManager(context.fetchNextLecturerId(), name, dob, email, username, password, Role.NONE, new ArrayList<>());
-                context.addProjectManager(pm);
+        if (role.equals("Student")) {
+            Student student = new Student(context.fetchNextStudentId(), name, dob, email, username, password);
+            context.addStudent(student);
         }
+        else if (role.equals("Lecturer")) {
+            Lecturer lecturer = new Lecturer(context.fetchNextLecturerId(), name, dob, email, username, password, Role.NONE);
+            context.addLecturer(lecturer);
+        }
+        else if (role.equals("Project Manager")) {
+            ProjectManager pm = new ProjectManager(context.fetchNextLecturerId(), name, dob, email, username, password, Role.NONE, new ArrayList<>());
+            context.addProjectManager(pm);
+        }
+        
         context.writeAllDataAsync();
     }
 

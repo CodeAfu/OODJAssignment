@@ -4,12 +4,14 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.xml.crypto.Data;
 
 import com.ags.pms.Helper;
 import com.ags.pms.data.DataContext;
@@ -150,11 +152,16 @@ public class Student extends User {
         return secondMarker;
     }
 
-    private Report createReport(Project project, String moodleLink, int totalMarks) {
+    public void createReport(int studentId, int projectId, String moodleLink, String contents) {
         DataContext context = new DataContext();
-        int id = context.fetchNextReportId();
-        Report report = new Report(id, project.getId(), moodleLink, totalMarks);
-        return report;
+        Project project = context.getById(projectId);
+
+        Report report = new Report(context.fetchNextReportId(), projectId, studentId, 
+                                   contents, moodleLink, project.getTotalMark());
+                                   
+        reportIds.add(report.getId());
+        context.addReport(report);
+        context.writeAllDataAsync();
     }
 
     public void addReport(int reportId) {
@@ -181,15 +188,23 @@ public class Student extends User {
         context.writeAllDataAsync();
     }
 
-    public ArrayList<Request> viewPresentationRequests() {
+    public ArrayList<Request> viewPendingPresentationRequests() {
         DataContext context = new DataContext();
         ArrayList<Request> myRequests = context.getRequests().stream()
-                .filter(r -> r.getLecturerId() == this.id && r.getRequestType() == RequestType.PRESENTATION)
+                .filter(r -> r.getLecturerId() == this.id && r.getRequestType() == RequestType.PRESENTATION && r.isApproved() == false)
                 .collect(Collectors.toCollection(ArrayList::new));
         return myRequests;
     }
 
-    public ArrayList<Request> viewAllRequests() {
+    public ArrayList<Request> viewApprovedPresentationRequests() {
+        DataContext context = new DataContext();
+        ArrayList<Request> myRequests = context.getRequests().stream()
+                .filter(r -> r.getLecturerId() == this.id && r.getRequestType() == RequestType.PRESENTATION && r.isApproved() == true)
+                .collect(Collectors.toCollection(ArrayList::new));
+        return myRequests;
+    }
+
+    public ArrayList<Request> viewAllPresentationRequests() {
         DataContext context = new DataContext();
         ArrayList<Request> myRequests = context.getRequests().stream()
                 .filter(r -> r.getLecturerId() == this.id && r.getRequestType() == RequestType.PRESENTATION)
@@ -227,5 +242,35 @@ public class Student extends User {
     @Override
     public String toString() {
         return this.getName();
+    }
+
+    public ArrayList<Report> fetchReports() {
+        DataContext context = new DataContext();
+        ArrayList<Report> reports = new ArrayList<>();
+
+        for (int id : reportIds) {
+            reports.add(context.getById(id));
+        }
+        return reports;   
+    }
+
+    public void removeReport(int reportId) {
+        boolean exists = false;
+
+        for (int id : reportIds) {
+            if (id == reportId) {
+                exists = true;
+                break;
+            }
+        }
+
+        if (!exists) {
+            Helper.printErr("No Report matched for this student: " + reportId);
+            return;
+        }
+        
+        DataContext context = new DataContext();
+        reportIds.removeIf(id -> id == reportId);
+        context.removeById(reportId);
     }
 }

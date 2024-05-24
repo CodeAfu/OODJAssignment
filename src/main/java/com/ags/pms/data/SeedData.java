@@ -42,8 +42,9 @@ public class SeedData {
         ArrayList<Report> reports = new ArrayList<>();
         ArrayList<Request> requests = new ArrayList<>();
 
-        Project project1 = new Project(7000, "Computer Science", AssessmentType.CP1, "Do this project!!!!!!");
-        Project project2 = new Project(7001, "Cybersecurity", AssessmentType.CP2, "Do this project!!!!!!");
+   
+        Project project1 = new Project(7000, "Computer Science", AssessmentType.CP1, "Do this project!!!!!!", 100);
+        Project project2 = new Project(7001, "Cybersecurity", AssessmentType.CP2, "Do this project!!!!!!", 100);
         Report report1 = new Report(8000, project1.getId(), false, null, "https://sample.moodle.com/sample-link/1", -1, 100);
         Report report2 = new Report(8001, project2.getId(), true, new Date(), "https://sample.moodle.com/sample-link/2", 30, 100);
         ProjectManager projectManager1 = new ProjectManager(2005, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com", "josh_lecturerPM", "verySecurePasswordMate", Role.SUPERVISOR, new ArrayList<Integer>(Arrays.asList(4001, 4002)));
@@ -110,7 +111,6 @@ public class SeedData {
         presentationSlots.add(presentationSlot2);
         presentationSlots.add(presentationSlot3);
         
-
         futures = CompletableFuture.allOf(
             handler.writeJsonAsync(students),
             handler.writeJsonAsync(lecturers),
@@ -128,8 +128,8 @@ public class SeedData {
     public static void executeWithContext() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         DataContext context = new DataContext();
 
-        Project project1 = new Project(7000, "Computer Science", AssessmentType.CP1, "Do this project!!!!!!");
-        Project project2 = new Project(7001, "Cybersecurity", AssessmentType.CP2, "Do this project!!!!!!");
+        Project project1 = new Project(7000, "Computer Science", AssessmentType.CP1, "Do this project!!!!!!", 100);
+        Project project2 = new Project(7001, "Cybersecurity", AssessmentType.CP2, "Do this project!!!!!!", 100);
         Report report1 = new Report(8000, project1.getId(), false, null, "https://sample.moodle.com/sample-link/1", -1, 100);
         Report report2 = new Report(8001, project2.getId(), true, new Date(), "https://sample.moodle.com/sample-link/2", 30, 100);
         ProjectManager projectManager1 = new ProjectManager(2005, "JoshuaPM", "11/01/1980", "joshuaPM@lecturer.com", "josh_lecturerPM", "verySecurePasswordMate", Role.SUPERVISOR, new ArrayList<Integer>(Arrays.asList(4001, 4002)));
@@ -155,7 +155,9 @@ public class SeedData {
         Request request1 = new Request(6000, 2003, 4001, 5001, RequestType.PRESENTATION, "Computer Science");
         Request request2 = new Request(6001, 2004, 4002, 5002, RequestType.PRESENTATION, "Computer Science");
         Request request3 = new Request(6002, 2001, 4003, RequestType.SUPERVISOR);
-        Request request4 = new Request(6003, 2002, 4004, RequestType.SECONDMARKER);
+        Request request4 = new Request(6003, 2002, 4002, RequestType.SECONDMARKER);
+        Request request5 = new Request(6004, 2003, 4001, RequestType.SECONDMARKER);
+        Request request6 = new Request(6005, 2004, 4004, RequestType.SECONDMARKER);
 
 
         context.addStudent(student1);
@@ -188,6 +190,8 @@ public class SeedData {
         context.addRequest(request2);
         context.addRequest(request3);
         context.addRequest(request4);
+        context.addRequest(request5);
+        context.addRequest(request6);
 
         context.addPresentationSlot(presentationSlot1);
         context.addPresentationSlot(presentationSlot2);

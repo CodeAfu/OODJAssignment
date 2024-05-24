@@ -108,8 +108,6 @@ public class AdminForm extends javax.swing.JFrame {
         }
     }
 
-
-
     private void updatePopup() {
         DefaultTableModel dtm = (DefaultTableModel) jTableExistingUsers.getModel();
         int selectedIndex = jTableExistingUsers.getSelectedRow();
@@ -122,8 +120,6 @@ public class AdminForm extends javax.swing.JFrame {
         int userId = (int) dtm.getValueAt(selectedIndex, 0);
         updateSelectedUser = admin.fetchUser(userId);
 
-        System.out.println(updateSelectedUser.getDob());
-        System.out.println(updateSelectedUser.getPassword());
         jTextFieldUpdateName.setText(updateSelectedUser.getName());
         jTextFieldUpdateEmail.setText(updateSelectedUser.getEmail());
         jTextFieldUpdateDoB.setText(updateSelectedUser.getDob());
@@ -265,7 +261,7 @@ public class AdminForm extends javax.swing.JFrame {
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {}
-        
+
         populateExistingUsersTables();
     }
 
@@ -724,19 +720,14 @@ public class AdminForm extends javax.swing.JFrame {
         });
 
         jTextFieldRegisterName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextFieldRegisterName.setText("jTextField1");
 
         jTextFieldRegisterUsername.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextFieldRegisterUsername.setText("jTextField1");
 
         jTextFieldRegisterDoB.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextFieldRegisterDoB.setText("jTextField1");
 
         jTextFieldRegisterPassword.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextFieldRegisterPassword.setText("jTextField1");
 
         jTextFieldRegisterEmail.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextFieldRegisterEmail.setText("jTextField1");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -988,6 +979,20 @@ public class AdminForm extends javax.swing.JFrame {
             Helper.printErr(Helper.getStackTraceString(e));
             JOptionPane.showMessageDialog(null, "Error at registerUser. (jBtnRegisterMouseClicked)");        
         }
+
+        JOptionPane.showMessageDialog(null, "User Created");
+
+        jTextFieldRegisterName.setText("");
+        jTextFieldRegisterDoB.setText("");
+        jTextFieldRegisterEmail.setText("");
+        jTextFieldRegisterUsername.setText("");
+        jTextFieldRegisterPassword.setText("");
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {}
+
+        populateExistingUsersTables();
     }//GEN-LAST:event_jBtnRegisterMouseClicked
 
     private void jButtonUpdateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonUpdateMouseClicked

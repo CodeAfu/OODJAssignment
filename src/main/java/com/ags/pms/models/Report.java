@@ -17,7 +17,17 @@ public class Report implements Identifiable {
     private int totalMark;
     private String feedback;
     
+    
     public Report() {
+    }
+    
+    public Report(int id, int projectId, int studentId, String contents, String moodleLink, int totalMark) {
+        this.id = id;
+        this.projectId = projectId;
+        this.studentId = studentId;
+        this.contents = contents;
+        this.moodleLink = moodleLink;
+        this.totalMark = totalMark;
     }
     
     public Report(int id, int projectId, int studentId, boolean submitted, Date dateSubmitted, String moodleLink,
