@@ -13,9 +13,11 @@ import com.ags.pms.models.*;
 import com.ags.pms.services.*;
 import com.ags.pms.data.DataContext;
 import com.ags.pms.data.SeedData;
+import com.ags.pms.forms.AdminForm;
 import com.ags.pms.forms.LecturerForm;
 import com.ags.pms.forms.Login;
 import com.ags.pms.forms.ProjectManagerForm;
+import com.ags.pms.forms.StudentForm;
 import com.ags.pms.io.FileName;
 import com.ags.pms.io.JsonHandler;
 
@@ -67,18 +69,14 @@ public class ProjectManagementSystem {
                     Helper.joinForm(lecturerForm);
 
                 } else if (user.getClass().getSimpleName().equals("Admin")) {
-                    // AdminForm adminForm = new AdminForm(admin);
-                    // adminForm.setVisible(true);
-                    // Helper.joinForm(adminForm);
-                    Helper.printErr("Admin not implemented.");
-                    running = false; // REMOVE THIS AFTER IMPELMENTING FORM
+                    AdminForm adminForm = new AdminForm(user);
+                    adminForm.setVisible(true);
+                    Helper.joinForm(adminForm);
                     
                 } else if (user.getClass().getSimpleName().equals("Student")) {
-                    // StudentForm studentForm = new StudentForm(student);
-                    // studentForm.setVisible(true);
-                    // Helper.joinForm(studentForm);
-                    Helper.printErr("Student not implemented.");
-                    running = false; // REMOVE THIS AFTER IMPLEMENTING FORM
+                    StudentForm studentForm = new StudentForm(user);
+                    studentForm.setVisible(true);
+                    Helper.joinForm(studentForm);
 
                 } else if (user.getClass().getSimpleName().equals("ProjectManager")) {
                     ProjectManagerForm projectManagerForm = new ProjectManagerForm(user);

@@ -142,6 +142,7 @@ Note:
         - List Reports (Table) { pm.viewReportStatus() } <- Not sure the significance of this menu
 - Admin:
     - Register Students/Lecturer
+    
     - Update Menu (Register Student,  Assign Project Manager to Lecturer)
 
 

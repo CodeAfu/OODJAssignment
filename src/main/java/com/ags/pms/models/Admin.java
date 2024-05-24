@@ -4,6 +4,9 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 
 import javax.crypto.BadPaddingException;
@@ -25,6 +28,20 @@ public class Admin extends User {
 
     public Admin(String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         super(username, password);
+    }
+
+
+    public ArrayList<User> fetchAllUsers() {
+        DataContext context = new DataContext();
+        ArrayList<User> users = new ArrayList<>();
+
+        context.getStudents().forEach(s -> users.add(s));
+        context.getProjectManagers().forEach(pm -> users.add(pm));
+        context.getLecturers().forEach(l -> users.add(l));
+
+        Collections.sort(users, Comparator.comparingInt(User::getId));
+
+        return users;
     }
 
     public void registerStudent(int id, String name, String dob, String email, String username, String password) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {

@@ -242,7 +242,6 @@ public class LecturerForm extends javax.swing.JFrame {
     private void populatePresentationsRequestTable() {
         DefaultTableModel model = (DefaultTableModel) jTablePresentation.getModel();
 
-        // Clear the table before populating it again to avoid duplicate entries
         model.setRowCount(0);
 
         ArrayList<Request> presentations = lecturer.viewPendingPresentationRequests();
