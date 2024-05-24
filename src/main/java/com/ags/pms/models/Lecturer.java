@@ -202,8 +202,7 @@ public class Lecturer extends User {
             context.removeById(request.getId());
         }
 
-        Request request = new Request(context.fetchNextRequestId(), this.id, studentId, RequestType.SECONDMARKER,
-                false);
+        Request request = new Request(context.fetchNextRequestId(), this.id, studentId, RequestType.SECONDMARKER);
         context.addRequest(request);
         context.writeAllDataAsync();
     }

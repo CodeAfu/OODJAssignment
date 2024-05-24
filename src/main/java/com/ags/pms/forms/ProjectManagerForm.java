@@ -4,6 +4,7 @@
  */
 package com.ags.pms.forms;
 
+import com.ags.pms.Helper;
 import com.ags.pms.data.DataContext;
 import com.ags.pms.models.AssessmentType;
 import com.ags.pms.models.Identifiable;
@@ -14,6 +15,7 @@ import com.ags.pms.models.Request;
 import com.ags.pms.models.Role;
 import com.ags.pms.models.Student;
 import com.ags.pms.models.User;
+import com.fasterxml.jackson.core.JsonPointer;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Dimension;
 import java.awt.Window;
@@ -44,6 +46,7 @@ import java.util.Arrays;
  */
 public class ProjectManagerForm extends javax.swing.JFrame {
 
+    ArrayList<Request> lecSecondMarkerRequests;
     private ProjectManager projectManager;
     private int selectedReportId;
 
@@ -73,9 +76,8 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private void populateData() {
         jLabelUsername.setText(projectManager.getUsername());
         populatePresentationsRequestTable();
-        populateSecondMarkerTable();
+        populateSecondMarkerRequestTable();
         populateSecondMarkerAcceptence();
-        populateSecondMarkerComboBox();
         populateSupervisees();
         populatePresentationRequestComboBox();
         populateReportsTable();
@@ -91,7 +93,7 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private void openDashboard() {
         jPanelDashboard.setVisible(true);
         jPanelViewPresentation.setVisible(false);
-        jPanelAvailableSlots.setVisible(false);
+        jPanelMarkerRequests.setVisible(false);
         jPanelViewSupervisee.setVisible(false);
         jPanelReport.setVisible(false);
         jPanelAssessment.setVisible(false);
@@ -101,38 +103,55 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private void openAvailableSlots() {
         jPanelDashboard.setVisible(false);
         jPanelViewPresentation.setVisible(false);
-        jPanelAvailableSlots.setVisible(true);
+        jPanelMarkerRequests.setVisible(true);
         jPanelViewSupervisee.setVisible(false);
         jPanelReport.setVisible(false);
         jPanelAssessment.setVisible(false);
         jPanelLecturerRole.setVisible(false);
     }
 
-    private void populateSecondMarkerTable() {
-        DefaultTableModel model = (DefaultTableModel) jTableSecondMarkerSlots.getModel();
-        model.setRowCount(0);
-        ArrayList<Student> students = projectManager.viewSecondMarkerSlots();
+    private void acceptSecondMarkerRequest(int reqId) {
+        boolean isCompleted = false;
 
-        for (int i = 0; i < students.size(); i++) {
-
-             Object rowData[] = new Object[3];
-             rowData[0] = students.get(i).getId();
-             rowData[1] = students.get(i).getName();
-             rowData[2] = students.get(i).getSecondMarkerId() != 0;
-     
-             model.addRow(rowData);
+        int response = JOptionPane.showConfirmDialog(null, "Request fulfilled. Delete?", "Confirm", 
+                                                     JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (response == JOptionPane.YES_OPTION) {
+            isCompleted = true;
         }
 
-        jTableSecondMarkerSlots.setFocusable(false);
-        jTableSecondMarkerSlots.setRowSelectionAllowed(false);
-        jTableSecondMarkerSlots.setCellSelectionEnabled(false);
-
+        projectManager.acceptSecondMarkerRequest(reqId, isCompleted);
+        populateSecondMarkerRequestTable();
+        loadRequestFromSelectedItem();
     }
+
+    private void rejectSecondMarkerRequest(int reqId) {
+        boolean isCompleted = false;
+        int response = JOptionPane.showConfirmDialog(null, "Request fulfilled. Delete?", "Confirm", 
+                                                     JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (response == JOptionPane.YES_OPTION) {
+            isCompleted = true;
+        }
+
+        projectManager.rejectSecondMarkerRequest(reqId, isCompleted);
+        populateSecondMarkerRequestTable();
+        loadRequestFromSelectedItem();
+    }
+
+    private void populateSecondMarkerRequestTable() {
+        DefaultTableModel model = (DefaultTableModel) jTableSecondMarkerRequests.getModel();
+        model.setRowCount(0);
+        lecSecondMarkerRequests = projectManager.viewSecondMarkerRequests();
+
+        for (int i = 0; i < lecSecondMarkerRequests.size(); i++) {
+
+            Object rowData[] = new Object[4];
+            rowData[0] = lecSecondMarkerRequests.get(i).getId();
+            rowData[1] = lecSecondMarkerRequests.get(i).fetchStudent().getName();
+            rowData[2] = lecSecondMarkerRequests.get(i).fetchLecturer().getName();
+            rowData[3] = lecSecondMarkerRequests.get(i).getRequestType();
     
-    private void populateSecondMarkerComboBox() {
-        jComboBoxStudentSecondMarker.removeAllItems();
-        ArrayList<Student> studentSecondMarkerList = projectManager.viewSecondMarkerSlots();
-        studentSecondMarkerList.forEach(s -> jComboBoxStudentSecondMarker.addItem(s));
+            model.addRow(rowData);
+        }
     }
 
     private void populatePresentationRequestComboBox() {
@@ -246,7 +265,6 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         jLabelRequestLecturerName.setText(myLecturer.getName());
         jLabelRequestStudentId.setText(Integer.toString(student.getId()));
         jLabelRequestStudentName.setText(student.getName());
-        jLabelRequestIsApproved.setText(isApproved ? "Approved" : "Pending");
 
         DefaultTableModel model = (DefaultTableModel) jTablePresentation.getModel();
 
@@ -502,8 +520,8 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         dashboardBtn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        availabelSlotsBtn = new javax.swing.JButton();
-        viewSupviseeBtn = new javax.swing.JButton();
+        markerRequestTabBtn = new javax.swing.JButton();
+        viewSuperviseeBtn = new javax.swing.JButton();
         viewReportBtn = new javax.swing.JButton();
         viewAssessmentBtn = new javax.swing.JButton();
         viewLecturerBtn = new javax.swing.JButton();
@@ -515,17 +533,12 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jButtonApprovePresentation = new javax.swing.JButton();
         jComboBoxPresentations = new javax.swing.JComboBox<>();
-        jPanelAvailableSlots = new javax.swing.JPanel();
+        jPanelMarkerRequests = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTableSecondMarkerSlots = new javax.swing.JTable();
+        jTableSecondMarkerRequests = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
-        jComboBoxStudentSecondMarker = new javax.swing.JComboBox<>();
         jLabelRequest = new javax.swing.JLabel();
-        jLabelRequest1 = new javax.swing.JLabel();
-        jButtonApplySecondMarker = new javax.swing.JButton();
-        jLabelRequest3 = new javax.swing.JLabel();
-        jLabelRequestIsApproved = new javax.swing.JLabel();
-        jLabelRequest6 = new javax.swing.JLabel();
+        jButtonAcceptSecondMarker = new javax.swing.JButton();
         jLabelRequest7 = new javax.swing.JLabel();
         jLabelRequest8 = new javax.swing.JLabel();
         jLabelRequest9 = new javax.swing.JLabel();
@@ -534,7 +547,13 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         jLabelRequestStudentName = new javax.swing.JLabel();
         jLabelRequest10 = new javax.swing.JLabel();
         jLabelRequestLecturerId = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        jLabelRequest11 = new javax.swing.JLabel();
+        jLabelRequest12 = new javax.swing.JLabel();
+        jLabelRequest13 = new javax.swing.JLabel();
+        jLabelRequestApproved = new javax.swing.JLabel();
+        jLabelRequestType = new javax.swing.JLabel();
+        jLabelRequestModule = new javax.swing.JLabel();
+        jButtonRejectSecondMarker = new javax.swing.JButton();
         jPanelViewSupervisee = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTableViewSupervisee = new javax.swing.JTable();
@@ -580,7 +599,6 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         jTableStudentAssignPM = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1000, 700));
         setResizable(false);
 
         jPanelTitle.setBackground(new java.awt.Color(245, 246, 248));
@@ -672,34 +690,29 @@ public class ProjectManagerForm extends javax.swing.JFrame {
 
         jPanelSide.add(jPanelDragLeft, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
-        availabelSlotsBtn.setBackground(new java.awt.Color(110, 139, 251));
-        availabelSlotsBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        availabelSlotsBtn.setForeground(new java.awt.Color(0, 0, 0));
-        availabelSlotsBtn.setText("Available Slots");
-        availabelSlotsBtn.setBorderPainted(false);
-        availabelSlotsBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                availabelSlotsBtnActionPerformed(evt);
-            }
-        });
-        jPanelSide.add(availabelSlotsBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 223, 240, 37));
-
-        viewSupviseeBtn.setBackground(new java.awt.Color(110, 139, 251));
-        viewSupviseeBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        viewSupviseeBtn.setForeground(new java.awt.Color(0, 0, 0));
-        viewSupviseeBtn.setText("View Supervisee List");
-        viewSupviseeBtn.setBorderPainted(false);
-        viewSupviseeBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+        markerRequestTabBtn.setBackground(new java.awt.Color(110, 139, 251));
+        markerRequestTabBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        markerRequestTabBtn.setForeground(new java.awt.Color(0, 0, 0));
+        markerRequestTabBtn.setText("Second Marker Requests");
+        markerRequestTabBtn.setBorderPainted(false);
+        markerRequestTabBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                viewSupviseeBtnMouseClicked(evt);
+                markerRequestTabBtnMouseClicked(evt);
             }
         });
-        viewSupviseeBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewSupviseeBtnActionPerformed(evt);
+        jPanelSide.add(markerRequestTabBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 223, 240, 37));
+
+        viewSuperviseeBtn.setBackground(new java.awt.Color(110, 139, 251));
+        viewSuperviseeBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        viewSuperviseeBtn.setForeground(new java.awt.Color(0, 0, 0));
+        viewSuperviseeBtn.setText("View Supervisee List");
+        viewSuperviseeBtn.setBorderPainted(false);
+        viewSuperviseeBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                viewSuperviseeBtnMouseClicked(evt);
             }
         });
-        jPanelSide.add(viewSupviseeBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 280, 237, 37));
+        jPanelSide.add(viewSuperviseeBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 280, 237, 37));
 
         viewReportBtn.setBackground(new java.awt.Color(110, 139, 251));
         viewReportBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -808,23 +821,23 @@ public class ProjectManagerForm extends javax.swing.JFrame {
 
         jPanelContents.add(jPanelViewPresentation, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
-        jPanelAvailableSlots.setBackground(new java.awt.Color(204, 204, 255));
-        jPanelAvailableSlots.setPreferredSize(new java.awt.Dimension(800, 560));
-        jPanelAvailableSlots.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanelMarkerRequests.setBackground(new java.awt.Color(204, 204, 255));
+        jPanelMarkerRequests.setPreferredSize(new java.awt.Dimension(800, 560));
+        jPanelMarkerRequests.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jTableSecondMarkerSlots.setModel(new javax.swing.table.DefaultTableModel(
+        jTableSecondMarkerRequests.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Id", "Name", "Available Slots"
+                "ID", "Student Name", "Lecturer Name", "Request Type"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Boolean.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -835,49 +848,33 @@ public class ProjectManagerForm extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(jTableSecondMarkerSlots);
-        if (jTableSecondMarkerSlots.getColumnModel().getColumnCount() > 0) {
-            jTableSecondMarkerSlots.getColumnModel().getColumn(0).setMaxWidth(80);
-            jTableSecondMarkerSlots.getColumnModel().getColumn(2).setPreferredWidth(20);
+        jTableSecondMarkerRequests.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableSecondMarkerRequestsMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(jTableSecondMarkerRequests);
+        if (jTableSecondMarkerRequests.getColumnModel().getColumnCount() > 0) {
+            jTableSecondMarkerRequests.getColumnModel().getColumn(0).setMaxWidth(80);
         }
 
-        jPanelAvailableSlots.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 30, -1, 480));
+        jPanelMarkerRequests.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 30, -1, 480));
 
         jPanel1.setBackground(new java.awt.Color(153, 153, 255));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.add(jComboBoxStudentSecondMarker, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 270, 100, -1));
-
         jLabelRequest.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabelRequest.setForeground(new java.awt.Color(0, 51, 51));
-        jLabelRequest.setText("My Request:");
+        jLabelRequest.setText("Details:");
         jPanel1.add(jLabelRequest, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 90, 20));
 
-        jLabelRequest1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabelRequest1.setForeground(new java.awt.Color(0, 51, 51));
-        jLabelRequest1.setText("Apply for Second Marker");
-        jPanel1.add(jLabelRequest1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 200, 220, 40));
-
-        jButtonApplySecondMarker.setText("Apply");
-        jButtonApplySecondMarker.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonApplySecondMarkerActionPerformed(evt);
+        jButtonAcceptSecondMarker.setText("Accept");
+        jButtonAcceptSecondMarker.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonAcceptSecondMarkerMouseClicked(evt);
             }
         });
-        jPanel1.add(jButtonApplySecondMarker, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 320, 80, 30));
-
-        jLabelRequest3.setForeground(new java.awt.Color(0, 51, 51));
-        jLabelRequest3.setText("Student");
-        jPanel1.add(jLabelRequest3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 270, 60, 20));
-
-        jLabelRequestIsApproved.setForeground(new java.awt.Color(0, 51, 51));
-        jLabelRequestIsApproved.setText("null");
-        jPanel1.add(jLabelRequestIsApproved, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 130, 100, 20));
-
-        jLabelRequest6.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabelRequest6.setForeground(new java.awt.Color(0, 51, 51));
-        jLabelRequest6.setText("Approved:");
-        jPanel1.add(jLabelRequest6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 60, 20));
+        jPanel1.add(jButtonAcceptSecondMarker, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 210, 80, 30));
 
         jLabelRequest7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabelRequest7.setForeground(new java.awt.Color(0, 51, 51));
@@ -886,8 +883,8 @@ public class ProjectManagerForm extends javax.swing.JFrame {
 
         jLabelRequest8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabelRequest8.setForeground(new java.awt.Color(0, 51, 51));
-        jLabelRequest8.setText("Student Name:");
-        jPanel1.add(jLabelRequest8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, 90, 20));
+        jLabelRequest8.setText("Approved:");
+        jPanel1.add(jLabelRequest8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 170, 90, 20));
 
         jLabelRequest9.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabelRequest9.setForeground(new java.awt.Color(0, 51, 51));
@@ -915,13 +912,44 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         jLabelRequestLecturerId.setText("null");
         jPanel1.add(jLabelRequestLecturerId, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 50, 100, 20));
 
-        jPanelAvailableSlots.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 60, 240, 410));
+        jLabelRequest11.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabelRequest11.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequest11.setText("Student Name:");
+        jPanel1.add(jLabelRequest11, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, 90, 20));
 
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel7.setText("I think we delete this");
-        jPanelAvailableSlots.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 10, 180, 40));
+        jLabelRequest12.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabelRequest12.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequest12.setText("Request Type:");
+        jPanel1.add(jLabelRequest12, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 90, 20));
 
-        jPanelContents.add(jPanelAvailableSlots, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        jLabelRequest13.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabelRequest13.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequest13.setText("Module:");
+        jPanel1.add(jLabelRequest13, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 90, 20));
+
+        jLabelRequestApproved.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequestApproved.setText("null");
+        jPanel1.add(jLabelRequestApproved, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 170, 100, 20));
+
+        jLabelRequestType.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequestType.setText("null");
+        jPanel1.add(jLabelRequestType, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 130, 100, 20));
+
+        jLabelRequestModule.setForeground(new java.awt.Color(0, 51, 51));
+        jLabelRequestModule.setText("null");
+        jPanel1.add(jLabelRequestModule, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 150, 100, 20));
+
+        jButtonRejectSecondMarker.setText("Reject");
+        jButtonRejectSecondMarker.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonRejectSecondMarkerMouseClicked(evt);
+            }
+        });
+        jPanel1.add(jButtonRejectSecondMarker, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 210, 80, 30));
+
+        jPanelMarkerRequests.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 60, 240, 410));
+
+        jPanelContents.add(jPanelMarkerRequests, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         jPanelViewSupervisee.setBackground(new java.awt.Color(204, 204, 255));
         jPanelViewSupervisee.setPreferredSize(new java.awt.Dimension(800, 560));
@@ -1346,17 +1374,15 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonFeedbackActionPerformed
 
     private void jTableReportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableReportMouseClicked
-        DefaultTableModel dtm = (DefaultTableModel) jTableReport.getModel();
-        selectedReportId = (int) dtm.getValueAt(jTableReport.getSelectedRow(), 0);
-        jLabelSelectedReport.setText(Integer.toString(selectedReportId));
-        loadReportFromSelectedItem(selectedReportId);
+
+        loadReportFromSelectedItem();
 
     }//GEN-LAST:event_jTableReportMouseClicked
 
     private void viewSupviseeBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_viewSupviseeBtnMouseClicked
         jPanelDashboard.setVisible(false);
         jPanelViewPresentation.setVisible(false);
-        jPanelAvailableSlots.setVisible(false);
+        jPanelMarkerRequests.setVisible(false);
         jPanelViewSupervisee.setVisible(false);
         jPanelReport.setVisible(true);
         jPanelAssessment.setVisible(false);
@@ -1366,7 +1392,7 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private void viewReportBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_viewReportBtnMouseClicked
         jPanelDashboard.setVisible(false);
         jPanelViewPresentation.setVisible(false);
-        jPanelAvailableSlots.setVisible(false);
+        jPanelMarkerRequests.setVisible(false);
         jPanelViewSupervisee.setVisible(false);
         jPanelReport.setVisible(true);
         jPanelAssessment.setVisible(false);
@@ -1376,7 +1402,7 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private void viewAssessmentBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_viewAssessmentBtnMouseClicked
         jPanelDashboard.setVisible(false);
         jPanelViewPresentation.setVisible(false);
-        jPanelAvailableSlots.setVisible(false);
+        jPanelMarkerRequests.setVisible(false);
         jPanelViewSupervisee.setVisible(false);
         jPanelReport.setVisible(false);
         jPanelAssessment.setVisible(true);
@@ -1386,11 +1412,12 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private void viewLecturerBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_viewLecturerBtnMouseClicked
         jPanelDashboard.setVisible(false);
         jPanelViewPresentation.setVisible(false);
-        jPanelAvailableSlots.setVisible(false);
+        jPanelMarkerRequests.setVisible(false);
         jPanelViewSupervisee.setVisible(false);
         jPanelReport.setVisible(false);
         jPanelAssessment.setVisible(false);
-        jPanelLecturerRole.setVisible(true);    }//GEN-LAST:event_viewLecturerBtnMouseClicked
+        jPanelLecturerRole.setVisible(true);
+    }//GEN-LAST:event_viewLecturerBtnMouseClicked
 
     private void jButtonAssignAssessmentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonAssignAssessmentMouseClicked
         assignStudentAssessmentType();
@@ -1400,7 +1427,88 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         assignLecturerRole();
     }//GEN-LAST:event_jButtonAssignLecturerRoleMouseClicked
 
-    private void loadReportFromSelectedItem(int reportId) {
+    private void viewSuperviseeBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_viewSuperviseeBtnMouseClicked
+        jPanelDashboard.setVisible(false);
+        jPanelViewPresentation.setVisible(false);
+        jPanelMarkerRequests.setVisible(false);
+        jPanelViewSupervisee.setVisible(true);
+        jPanelReport.setVisible(false);
+        jPanelAssessment.setVisible(false);
+        jPanelLecturerRole.setVisible(false);
+    }//GEN-LAST:event_viewSuperviseeBtnMouseClicked
+
+    private void markerRequestTabBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_markerRequestTabBtnMouseClicked
+        jPanelDashboard.setVisible(false);
+        jPanelViewPresentation.setVisible(false);
+        jPanelMarkerRequests.setVisible(true);
+        jPanelViewSupervisee.setVisible(false);
+        jPanelReport.setVisible(false);
+        jPanelAssessment.setVisible(false);
+        jPanelLecturerRole.setVisible(false);
+    }//GEN-LAST:event_markerRequestTabBtnMouseClicked
+
+    private void jTableSecondMarkerRequestsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableSecondMarkerRequestsMouseClicked
+        DefaultTableModel dtm = (DefaultTableModel) jTableSecondMarkerRequests.getModel();
+        int selectedRequestId = (int) dtm.getValueAt(jTableSecondMarkerRequests.getSelectedRow(), 0);
+
+        Request request = lecSecondMarkerRequests.stream()
+                .filter(r -> r.getId() == selectedRequestId)
+                .findFirst()
+                .orElse(null);
+
+        if (request == null) {
+            JOptionPane.showMessageDialog(null, "Request is null: " + selectedRequestId);
+        }
+
+        jLabelSelectedReport.setText(Integer.toString(selectedRequestId));
+        loadRequestFromSelectedItem();
+    }//GEN-LAST:event_jTableSecondMarkerRequestsMouseClicked
+
+    private void jButtonAcceptSecondMarkerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonAcceptSecondMarkerMouseClicked
+        DefaultTableModel dtm = (DefaultTableModel) jTableSecondMarkerRequests.getModel();
+        int selectedRow = jTableSecondMarkerRequests.getSelectedRow();
+        int reqId = (int) dtm.getValueAt(selectedRow, 0);
+
+        acceptSecondMarkerRequest(reqId);
+    }//GEN-LAST:event_jButtonAcceptSecondMarkerMouseClicked
+
+    private void jButtonRejectSecondMarkerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonRejectSecondMarkerMouseClicked
+        DefaultTableModel dtm = (DefaultTableModel) jTableSecondMarkerRequests.getModel();
+        int selectedRow = jTableSecondMarkerRequests.getSelectedRow();
+        int reqId = (int) dtm.getValueAt(selectedRow, 0);
+        
+        rejectSecondMarkerRequest(reqId);
+    }//GEN-LAST:event_jButtonRejectSecondMarkerMouseClicked
+
+    private void loadRequestFromSelectedItem() {
+        DefaultTableModel dtm = (DefaultTableModel) jTableSecondMarkerRequests.getModel();
+        int selectedRow = jTableSecondMarkerRequests.getSelectedRow();
+        if (selectedRow == -1) {
+            Helper.printErr("SecondMarker Selection Labels not updated.");
+            return;    
+        }
+        int reqId = (int) dtm.getValueAt(selectedRow, 0);
+        Request request = projectManager.fetchRequest(reqId);
+        
+        jLabelRequestLecturerId.setText(request.getLecturerId() == 0 ? "null" : Integer.toString(request.getLecturerId()));
+        jLabelRequestLecturerName.setText(request.fetchLecturer() == null ? "null" : request.fetchLecturer().getName());
+        jLabelRequestStudentId.setText(request.getStudentId() == 0 ? "null" : Integer.toString(request.getStudentId()));
+        jLabelRequestStudentName.setText(request.fetchStudent() == null ? "null" : request.fetchStudent().getName());
+        jLabelRequestType.setText(request.getRequestType() == null ? "null" : request.getRequestType().toString());
+        jLabelRequestModule.setText(request.getModule() == null ? "null" : request.getModule());
+        String approvedText = "null";
+        Boolean approved = request.isApproved();
+        if (approved != null) {
+            approvedText = Boolean.toString(approved);
+        }
+        jLabelRequestApproved.setText(approvedText);
+    }
+
+    private void loadReportFromSelectedItem() {
+        DefaultTableModel dtm = (DefaultTableModel) jTableReport.getModel();
+        int reportId = (int) dtm.getValueAt(jTableReport.getSelectedRow(), 0);
+        jLabelSelectedReport.setText(Integer.toString(reportId));
+        
         DataContext context = new DataContext();
         Report report = context.getById(reportId);
 
@@ -1418,30 +1526,10 @@ public class ProjectManagerForm extends javax.swing.JFrame {
 
     }
 
-    private void jButtonApplySecondMarkerActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonApplySecondMarkerActionPerformed
-        if (jComboBoxStudentSecondMarker.getSelectedIndex() == -1) {
-            JOptionPane.showMessageDialog(null, "Please select an entry.");
-            return;
-        }
-        Student student = (Student) jComboBoxStudentSecondMarker.getSelectedItem();
-        if (projectManager.hasSecondMarkerRequest()) {
-            String message = "You already have a pending request. Overwrite?";
-            int reply = JOptionPane.showConfirmDialog(null, message, "", JOptionPane.YES_NO_OPTION);
-            if (reply == JOptionPane.NO_OPTION) {
-                return;
-            }
-        }
-        projectManager.applyForSecondMarker(student.getId());
-        JOptionPane.showMessageDialog(null, 
-            "Second Marker Request has been submitted. Please wait for review from Project Manager");
-        populateSecondMarkerComboBox();
-        populateSecondMarkerAcceptence();
-    }// GEN-LAST:event_jButtonApplySecondMarkerActionPerformed
-
     private void requestBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_requestBtnActionPerformed
         jPanelDashboard.setVisible(false);
         jPanelViewPresentation.setVisible(true);
-        jPanelAvailableSlots.setVisible(false);
+        jPanelMarkerRequests.setVisible(false);
         jPanelViewSupervisee.setVisible(false);
         jPanelReport.setVisible(false);
         jTablePresentation.setEnabled(false);
@@ -1452,7 +1540,7 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private void viewSupviseeBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_viewSupviseeBtnActionPerformed
         jPanelDashboard.setVisible(false);
         jPanelViewPresentation.setVisible(false);
-        jPanelAvailableSlots.setVisible(false);
+        jPanelMarkerRequests.setVisible(false);
         jPanelViewSupervisee.setVisible(true);
         jPanelReport.setVisible(false);
         jPanelAssessment.setVisible(false);
@@ -1470,7 +1558,7 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private void feedbackBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_feedbackBtnActionPerformed
         jPanelDashboard.setVisible(false);
         jPanelViewPresentation.setVisible(false);
-        jPanelAvailableSlots.setVisible(false);
+        jPanelMarkerRequests.setVisible(false);
         jPanelViewSupervisee.setVisible(false);
         jPanelReport.setVisible(true);
         jPanelAssessment.setVisible(false);
@@ -1541,20 +1629,19 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton availabelSlotsBtn;
     private javax.swing.JButton dashboardBtn;
-    private javax.swing.JButton jButtonApplySecondMarker;
+    private javax.swing.JButton jButtonAcceptSecondMarker;
     private javax.swing.JButton jButtonApprovePresentation;
     private javax.swing.JButton jButtonAssignAssessment;
     private javax.swing.JButton jButtonAssignLecturerRole;
     private javax.swing.JButton jButtonFeedback;
+    private javax.swing.JButton jButtonRejectSecondMarker;
     private javax.swing.JButton jButtonResetFilters;
     private javax.swing.JButton jButtonSwitchToSMApply;
     private javax.swing.JComboBox<AssessmentType> jComboBoxAssessmentType;
     private javax.swing.JComboBox<Student> jComboBoxFilterStudent;
     private javax.swing.JComboBox<Role> jComboBoxLecturerRoles;
     private javax.swing.JComboBox<Request> jComboBoxPresentations;
-    private javax.swing.JComboBox<Student> jComboBoxStudentSecondMarker;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel16;
@@ -1563,7 +1650,6 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabelContents;
     private javax.swing.JLabel jLabelMarks;
@@ -1571,21 +1657,23 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelProjectAssessmentType;
     private javax.swing.JLabel jLabelProjectModule;
     private javax.swing.JLabel jLabelRequest;
-    private javax.swing.JLabel jLabelRequest1;
     private javax.swing.JLabel jLabelRequest10;
+    private javax.swing.JLabel jLabelRequest11;
+    private javax.swing.JLabel jLabelRequest12;
+    private javax.swing.JLabel jLabelRequest13;
     private javax.swing.JLabel jLabelRequest2;
-    private javax.swing.JLabel jLabelRequest3;
     private javax.swing.JLabel jLabelRequest4;
     private javax.swing.JLabel jLabelRequest5;
-    private javax.swing.JLabel jLabelRequest6;
     private javax.swing.JLabel jLabelRequest7;
     private javax.swing.JLabel jLabelRequest8;
     private javax.swing.JLabel jLabelRequest9;
-    private javax.swing.JLabel jLabelRequestIsApproved;
+    private javax.swing.JLabel jLabelRequestApproved;
     private javax.swing.JLabel jLabelRequestLecturerId;
     private javax.swing.JLabel jLabelRequestLecturerName;
+    private javax.swing.JLabel jLabelRequestModule;
     private javax.swing.JLabel jLabelRequestStudentId;
     private javax.swing.JLabel jLabelRequestStudentName;
+    private javax.swing.JLabel jLabelRequestType;
     private javax.swing.JLabel jLabelSelectedReport;
     private javax.swing.JLabel jLabelStudentId;
     private javax.swing.JLabel jLabelStudentName;
@@ -1599,11 +1687,11 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanelAssessment;
-    private javax.swing.JPanel jPanelAvailableSlots;
     private javax.swing.JPanel jPanelContents;
     private javax.swing.JPanel jPanelDashboard;
     private javax.swing.JPanel jPanelDragLeft;
     private javax.swing.JPanel jPanelLecturerRole;
+    private javax.swing.JPanel jPanelMarkerRequests;
     private javax.swing.JPanel jPanelReport;
     private javax.swing.JPanel jPanelSide;
     private javax.swing.JPanel jPanelTitle;
@@ -1620,15 +1708,16 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private javax.swing.JTable jTableLecturerRoles;
     private javax.swing.JTable jTablePresentation;
     private javax.swing.JTable jTableReport;
-    private javax.swing.JTable jTableSecondMarkerSlots;
+    private javax.swing.JTable jTableSecondMarkerRequests;
     private javax.swing.JTable jTableStudentAssessmentTypes;
     private javax.swing.JTable jTableStudentAssignPM;
     private javax.swing.JTable jTableViewSupervisee;
     private javax.swing.JTextArea jTextAreaFeedback;
+    private javax.swing.JButton markerRequestTabBtn;
     private javax.swing.JButton requestBtn;
     private javax.swing.JButton viewAssessmentBtn;
     private javax.swing.JButton viewLecturerBtn;
     private javax.swing.JButton viewReportBtn;
-    private javax.swing.JButton viewSupviseeBtn;
+    private javax.swing.JButton viewSuperviseeBtn;
     // End of variables declaration//GEN-END:variables
 }

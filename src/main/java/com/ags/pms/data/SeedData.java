@@ -66,10 +66,12 @@ public class SeedData {
         PresentationSlot presentationSlot1 = new PresentationSlot(5000, 4001, new Date(), false);
         PresentationSlot presentationSlot2 = new PresentationSlot(5001);
         PresentationSlot presentationSlot3 = new PresentationSlot(5002);
-        Request request1 = new Request(6000, 2003, 4001, 5001, RequestType.PRESENTATION, "Computer Science", false);
-        Request request2 = new Request(6001, 2004, 4002, 5002, RequestType.PRESENTATION, "Computer Science", true);
-        Request request3 = new Request(6002, 2001, 4003, RequestType.SUPERVISOR, false);
-        Request request4 = new Request(6003, 2002, 4004, RequestType.SECONDMARKER, true);
+        Request request1 = new Request(6000, 2003, 4001, 5001, RequestType.PRESENTATION, "Computer Science");
+        Request request2 = new Request(6001, 2004, 4002, 5002, RequestType.PRESENTATION, "Computer Science");
+        Request request3 = new Request(6002, 2001, 4003, RequestType.SUPERVISOR);
+        Request request4 = new Request(6003, 2002, 4002, RequestType.SECONDMARKER);
+        Request request5 = new Request(6004, 2003, 4001, RequestType.SECONDMARKER);
+        Request request6 = new Request(6005, 2004, 4004, RequestType.SECONDMARKER);
 
         students.add(student1);
         students.add(student2);
@@ -101,6 +103,8 @@ public class SeedData {
         requests.add(request2);
         requests.add(request3);
         requests.add(request4);
+        requests.add(request5);
+        requests.add(request6);
 
         presentationSlots.add(presentationSlot1);
         presentationSlots.add(presentationSlot2);
@@ -148,10 +152,10 @@ public class SeedData {
         PresentationSlot presentationSlot1 = new PresentationSlot(5000, 4001, new Date(), false);
         PresentationSlot presentationSlot2 = new PresentationSlot(5001);
         PresentationSlot presentationSlot3 = new PresentationSlot(5002);
-        Request request1 = new Request(6000, 2003, 4001, 5001, RequestType.PRESENTATION, "Computer Science", false);
-        Request request2 = new Request(6001, 2004, 4002, 5002, RequestType.PRESENTATION, "Computer Science", true);
-        Request request3 = new Request(6002, 2001, 4003, RequestType.SUPERVISOR, false);
-        Request request4 = new Request(6003, 2002, 4004, RequestType.SECONDMARKER, true);
+        Request request1 = new Request(6000, 2003, 4001, 5001, RequestType.PRESENTATION, "Computer Science");
+        Request request2 = new Request(6001, 2004, 4002, 5002, RequestType.PRESENTATION, "Computer Science");
+        Request request3 = new Request(6002, 2001, 4003, RequestType.SUPERVISOR);
+        Request request4 = new Request(6003, 2002, 4004, RequestType.SECONDMARKER);
 
 
         context.addStudent(student1);

@@ -35,6 +35,7 @@ public class DataContext {
     private Map<String, List<? extends Identifiable>> collections = new HashMap<>();
     private Map<String, List<? extends User>> userCollections = new HashMap<>();
 
+
     private ArrayList<Lecturer> lecturers = new ArrayList<>();
     private ArrayList<Student> students = new ArrayList<>();
     private ArrayList<Admin> admins = new ArrayList<>();

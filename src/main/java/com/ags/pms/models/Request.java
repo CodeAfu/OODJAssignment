@@ -11,6 +11,7 @@ public class Request implements Identifiable {
     private RequestType requestType;
     private String module;
     private boolean isApproved;
+    private boolean isCompletedRequest;
 
     private Student student;
     private Lecturer lecturer;
@@ -20,7 +21,6 @@ public class Request implements Identifiable {
         this.id = id;
         this.studentId = studentId;
         this.module = module;
-        fetchForeignKeyVariables();
     }
 
     public Request() {
@@ -32,27 +32,22 @@ public class Request implements Identifiable {
         this.studentId = studentId;
         this.requestType = requestType;
         this.module = module;
-        fetchForeignKeyVariables();
     }
 
-    public Request(int id, int lecturerId, int studentId, int presentationSlotId, RequestType requestType, String module, boolean isApproved) {
+    public Request(int id, int lecturerId, int studentId, int presentationSlotId, RequestType requestType, String module) {
         this.id = id;
         this.lecturerId = lecturerId;
         this.studentId = studentId;
         this.presentationSlotId = presentationSlotId;
         this.requestType = requestType;
         this.module = module;
-        this.isApproved = isApproved;
-        fetchForeignKeyVariables();
     }
     
-    public Request(int id, int lecturerId, int studentId, RequestType requestType, boolean isApproved) {
+    public Request(int id, int lecturerId, int studentId, RequestType requestType) {
         this.id = id;
         this.lecturerId = lecturerId;
         this.studentId = studentId;
         this.requestType = requestType;
-        this.isApproved = isApproved;
-        fetchForeignKeyVariables();
     }
 
     public void fetchForeignKeyVariables() {
@@ -144,6 +139,15 @@ public class Request implements Identifiable {
     public void setApproved(boolean isApproved) {
         this.isApproved = isApproved;
     }
+    
+    public boolean isCompletedRequest() {
+        return isCompletedRequest;
+    }
+
+    public void setCompletedRequest(boolean isCompletedRequest) {
+        this.isCompletedRequest = isCompletedRequest;
+    }
+
 
     public User viewUser() {
         DataContext context = new DataContext();

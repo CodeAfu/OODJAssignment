@@ -4,6 +4,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -96,6 +97,15 @@ public class ProjectManager extends Lecturer {
         context.writeAllDataAsync();
     }
 
+    public ArrayList<Request> viewSecondMarkerRequests() {
+        DataContext context = new DataContext();
+        ArrayList<Request> requests = context.getRequests().stream()
+                                            .filter(r -> r.getRequestType() == RequestType.SECONDMARKER && r.isCompletedRequest() == false)
+                                            .collect(Collectors.toCollection(ArrayList::new));
+
+        return requests;
+    }
+
     public ArrayList<Lecturer> viewLecturersAndPMs() {
         DataContext context = new DataContext();
         ArrayList<Lecturer> output = new ArrayList<>();
@@ -111,6 +121,35 @@ public class ProjectManager extends Lecturer {
         return output;
     }
 
+    public void acceptSecondMarkerRequest(int reqId, boolean isCompleteRequest) {
+        DataContext context = new DataContext();
+        
+        Request request = context.getById(reqId);
+        context.updateStudentById(request.getStudentId(), s -> s.setSecondMarkerId(request.getLecturerId()));
+        context.updateLecturerById(request.getLecturerId(), l -> setRole(Role.SECONDMARKER));
+
+        context.updateRequestById(reqId, r -> r.setApproved(true));
+        
+        if (isCompleteRequest) {
+            context.updateRequestById(reqId, r -> r.setCompletedRequest(true));
+        }
+
+        context.writeAllDataAsync();
+    }
+
+    public void rejectSecondMarkerRequest(int reqId, boolean isCompleteRequest) {
+        DataContext context = new DataContext();
+        
+        context.updateRequestById(reqId, r -> r.setApproved(false));
+        
+        if (isCompleteRequest) {
+            context.updateRequestById(reqId, r -> r.setCompletedRequest(true));
+        }
+
+        context.writeAllDataAsync();
+    }
+
+
     public ArrayList<Report> viewReportStatus() {
         DataContext context = new DataContext();
         return context.getReports();
@@ -119,5 +158,10 @@ public class ProjectManager extends Lecturer {
     @Override
     public String toString() {
         return this.getName();
+    }
+
+    public Request fetchRequest(int reqId) {
+        DataContext context = new DataContext();
+        return context.getById(reqId);
     }
 }
