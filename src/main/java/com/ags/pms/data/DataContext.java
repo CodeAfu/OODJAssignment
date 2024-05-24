@@ -176,6 +176,14 @@ public class DataContext {
                        .orElse(null);
     }
 
+    public void updateById(int id, Consumer<User> updater) {
+        Optional<? extends User> obj = userCollections.values().stream()
+                .flatMap(Collection::stream)
+                .filter(o -> o.getId() == id)
+                .findFirst();
+        obj.ifPresent(updater);
+    }
+
     public void updateAdminById(int id, Consumer<Admin> updater) {
         Optional<Admin> obj = admins.stream()
                 .filter(o -> o.getId() == id)

@@ -5,12 +5,14 @@
  */
 package com.ags.pms.forms;
 
+import com.ags.pms.Helper;
 import com.ags.pms.data.DataContext;
 import com.ags.pms.models.Admin;
 import com.ags.pms.models.Identifiable;
 import com.ags.pms.models.Lecturer;
 import com.ags.pms.models.Report;
 import com.ags.pms.models.Request;
+import com.ags.pms.models.RequestType;
 import com.ags.pms.models.Role;
 import com.ags.pms.models.Student;
 import com.ags.pms.models.User;
@@ -33,6 +35,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JOptionPane;
+import javax.swing.JToolTip;
+
 import java.util.stream.Collectors;
 import javax.swing.ListSelectionModel;
 
@@ -44,6 +48,7 @@ import javax.swing.ListSelectionModel;
 public class AdminForm extends javax.swing.JFrame {
 
     private Admin admin;
+    private User updateSelectedUser;
 
     public AdminForm() {
         initComponents();
@@ -70,7 +75,7 @@ public class AdminForm extends javax.swing.JFrame {
     private void populateData() {
         jLabelUsername.setText(admin.getUsername());
         jLabelDashboardName.setText(admin.getName());
-        populateExistingUsersTable();
+        populateExistingUsersTables();
     }
 
     private void openDashboard() {
@@ -79,28 +84,174 @@ public class AdminForm extends javax.swing.JFrame {
         jPanelRegister.setVisible(false);
     }
 
-    private void populateExistingUsersTable() {
+    private void populateExistingUsersTables() {
         DefaultTableModel model = (DefaultTableModel) jTableExistingUsers.getModel();
         DefaultTableModel model2 = (DefaultTableModel) jTableExistingUsersDashboard.getModel();
 
         model.setRowCount(0);
+        model2.setRowCount(0);
 
         ArrayList<User> users = admin.fetchAllUsers();
         
         for (int i = 0; i < users.size(); i++) {
-            Object rowData[] = new Object[5]; // Moved declaration inside the loop
+            Object rowData[] = new Object[6]; // Moved declaration inside the loop
             
             rowData[0] = users.get(i).getId();
-            rowData[1] = users.get(i).getName();
-            rowData[2] = users.get(i).getDob();
-            rowData[3] = users.get(i).getEmail();
-            rowData[4] = users.get(i).getUsername();
+            rowData[1] = users.get(i).getClass().getSimpleName();
+            rowData[2] = users.get(i).getName();
+            rowData[3] = users.get(i).getDob();
+            rowData[4] = users.get(i).getEmail();
+            rowData[5] = users.get(i).getUsername();
 
             model.addRow(rowData);
             model2.addRow(rowData);
         }
     }
 
+
+
+    private void updatePopup() {
+        DefaultTableModel dtm = (DefaultTableModel) jTableExistingUsers.getModel();
+        int selectedIndex = jTableExistingUsers.getSelectedRow();
+
+        if (selectedIndex == -1) {
+            JOptionPane.showMessageDialog(null, "Please select a user from the table");
+            return;
+        }
+
+        int userId = (int) dtm.getValueAt(selectedIndex, 0);
+        updateSelectedUser = admin.fetchUser(userId);
+
+        System.out.println(updateSelectedUser.getDob());
+        System.out.println(updateSelectedUser.getPassword());
+        jTextFieldUpdateName.setText(updateSelectedUser.getName());
+        jTextFieldUpdateEmail.setText(updateSelectedUser.getEmail());
+        jTextFieldUpdateDoB.setText(updateSelectedUser.getDob());
+        jTextFieldUpdateUsername.setText(updateSelectedUser.getUsername());
+        jTextFieldUpdatePassword.setText(updateSelectedUser.getPassword());
+
+        jFrameUpdatePopup.pack();
+        jFrameUpdatePopup.setLocationRelativeTo(null);
+        jFrameUpdatePopup.setResizable(false);
+        jFrameUpdatePopup.setVisible(true);
+
+    }
+
+    private void updateUser() {
+        String name = jTextFieldUpdateName.getText();
+        String dob = jTextFieldUpdateDoB.getText();
+        String email = jTextFieldUpdateEmail.getText();
+        String username = jTextFieldUpdateUsername.getText();
+        String password = jTextFieldUpdatePassword.getText();
+
+        admin.updateUser(updateSelectedUser.getId(), name, dob, email, username, password);
+
+        JOptionPane.showMessageDialog(null, "User updated");
+
+        jFrameUpdatePopup.dispose();
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {}
+
+        populateExistingUsersTables();
+    }
+
+    private void demotePM() {
+        DefaultTableModel dtm = (DefaultTableModel) jTableExistingUsers.getModel();
+        int selectedIndex = jTableExistingUsers.getSelectedRow();
+
+        if (selectedIndex == -1) {
+            JOptionPane.showMessageDialog(null, "Please select a user from the table");
+            return;
+        }
+
+        int userId = (int) dtm.getValueAt(selectedIndex, 0);
+        String role = ((String) dtm.getValueAt(selectedIndex, 1)).trim();
+        String name = ((String) dtm.getValueAt(selectedIndex, 2)).trim();
+
+        if (!role.equals("ProjectManager")) {
+            JOptionPane.showMessageDialog(null, "You can only demote PM to Lecturer");
+            return;
+        }
+        
+        int response = JOptionPane.showConfirmDialog(null, "Demote " + name + " to a Lecturer?", "Confirm?", JOptionPane.YES_NO_OPTION);
+        
+        if (response == JOptionPane.NO_OPTION) {
+            JOptionPane.showMessageDialog(null, "Operation Cancelled");
+            return;
+        }
+        
+        try {
+            admin.demoteProjectManager(userId);
+        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
+                | BadPaddingException | InvalidAlgorithmParameterException e) {
+            Helper.printErr(Helper.getStackTraceString(e));
+            JOptionPane.showMessageDialog(null, "Error while promoting to PM.");
+        }
+
+        JOptionPane.showMessageDialog(null, name + " Demoted");
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {}
+
+        populateExistingUsersTables();
+    }
+
+    private void promoteLecturer() {
+        DefaultTableModel dtm = (DefaultTableModel) jTableExistingUsers.getModel();
+        int selectedIndex = jTableExistingUsers.getSelectedRow();
+
+        if (selectedIndex == -1) {
+            JOptionPane.showMessageDialog(null, "Please select a user from the table");
+            return;
+        }
+
+        int userId = (int) dtm.getValueAt(selectedIndex, 0);
+        String role = ((String) dtm.getValueAt(selectedIndex, 1)).trim();
+        String name = ((String) dtm.getValueAt(selectedIndex, 2)).trim();
+
+        if (!role.equals("Lecturer")) {
+            JOptionPane.showMessageDialog(null, "You can only promote from Lecturer to PM");
+            return;
+        }
+        
+        int response = JOptionPane.showConfirmDialog(null, "Promote " + name + " to a PM?", "Confirm?", JOptionPane.YES_NO_OPTION);
+        
+        if (response == JOptionPane.NO_OPTION) {
+            JOptionPane.showMessageDialog(null, "Operation Cancelled");
+            return;
+        }
+        
+        try {
+            admin.promoteLecturer(userId, RequestType.NULL);
+        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
+                | BadPaddingException | InvalidAlgorithmParameterException e) {
+            Helper.printErr(Helper.getStackTraceString(e));
+            JOptionPane.showMessageDialog(null, "Error while promoting to PM.");
+        }
+
+        JOptionPane.showMessageDialog(null, name + " is now a PM!");
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {}
+
+        populateExistingUsersTables();
+    }
+    
+    private void deleteUser() {
+        DefaultTableModel dtm = (DefaultTableModel) jTableExistingUsers.getModel();
+        int selectedIndex = jTableExistingUsers.getSelectedRow();
+
+        if (selectedIndex == -1) {
+            JOptionPane.showMessageDialog(null, "Please select a user from the table");
+            return;
+        }
+
+        int userId = (int) dtm.getValueAt(selectedIndex, 0);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -118,6 +269,19 @@ public class AdminForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jFrameUpdatePopup = new javax.swing.JFrame();
+        jPanel2 = new javax.swing.JPanel();
+        jTextFieldUpdateName = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        jTextFieldUpdateEmail = new javax.swing.JTextField();
+        jTextFieldUpdateDoB = new javax.swing.JTextField();
+        jTextFieldUpdatePassword = new javax.swing.JTextField();
+        jTextFieldUpdateUsername = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
         jPanelTitle = new javax.swing.JPanel();
         jLabelTitle = new javax.swing.JLabel();
         jPanelSide = new javax.swing.JPanel();
@@ -147,11 +311,11 @@ public class AdminForm extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jBtnRegister = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
+        jTextFieldRegisterName = new javax.swing.JTextField();
+        jTextFieldRegisterUsername = new javax.swing.JTextField();
+        jTextFieldRegisterDoB = new javax.swing.JTextField();
+        jTextFieldRegisterPassword = new javax.swing.JTextField();
+        jTextFieldRegisterEmail = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         jPanelUpdate = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -160,6 +324,119 @@ public class AdminForm extends javax.swing.JFrame {
         jButtonUpdate = new javax.swing.JButton();
         jButtonDelete = new javax.swing.JButton();
         jButtonPromote = new javax.swing.JButton();
+        jButtonDemote = new javax.swing.JButton();
+
+        jFrameUpdatePopup.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel2.setBackground(new java.awt.Color(83, 116, 240));
+        jPanel2.setPreferredSize(new java.awt.Dimension(400, 300));
+
+        jTextFieldUpdateName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTextFieldUpdateName.setText("jTextField1");
+
+        jLabel14.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel14.setText("Name:");
+
+        jLabel16.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel16.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel16.setText("Email:");
+
+        jLabel17.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel17.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel17.setText("Date of Birth:");
+
+        jLabel18.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel18.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel18.setText("Username:");
+
+        jLabel19.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel19.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel19.setText("Passsword:");
+
+        jTextFieldUpdateEmail.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTextFieldUpdateEmail.setText("jTextField1");
+
+        jTextFieldUpdateDoB.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTextFieldUpdateDoB.setText("jTextField1");
+
+        jTextFieldUpdatePassword.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTextFieldUpdatePassword.setText("jTextField1");
+
+        jTextFieldUpdateUsername.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTextFieldUpdateUsername.setText("jTextField1");
+
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButton1.setText("Update");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel17)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextFieldUpdateDoB, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel14)
+                                    .addComponent(jLabel16))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jTextFieldUpdateName, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextFieldUpdateEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel19)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextFieldUpdatePassword, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextFieldUpdateUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(108, 108, 108)
+                        .addComponent(jButton1)))
+                .addContainerGap(98, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(36, 36, 36)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextFieldUpdateName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel14))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel16)
+                    .addComponent(jTextFieldUpdateEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel17)
+                    .addComponent(jTextFieldUpdateDoB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel18)
+                    .addComponent(jTextFieldUpdateUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel19)
+                    .addComponent(jTextFieldUpdatePassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(32, 32, 32)
+                .addComponent(jButton1)
+                .addContainerGap(95, Short.MAX_VALUE))
+        );
+
+        jFrameUpdatePopup.getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 350));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -316,20 +593,20 @@ public class AdminForm extends javax.swing.JFrame {
 
         jTableExistingUsersDashboard.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Name", "DOB", "Email", "Username"
+                "ID", "Role", "Name", "DOB", "Email", "Username"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, true, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -341,6 +618,9 @@ public class AdminForm extends javax.swing.JFrame {
             }
         });
         jScrollPane2.setViewportView(jTableExistingUsersDashboard);
+        if (jTableExistingUsersDashboard.getColumnModel().getColumnCount() > 0) {
+            jTableExistingUsersDashboard.getColumnModel().getColumn(0).setMaxWidth(50);
+        }
 
         jLabel15.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel15.setForeground(new java.awt.Color(0, 0, 0));
@@ -421,26 +701,26 @@ public class AdminForm extends javax.swing.JFrame {
 
         jBtnRegister.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jBtnRegister.setText("Register");
-        jBtnRegister.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBtnRegisterActionPerformed(evt);
+        jBtnRegister.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jBtnRegisterMouseClicked(evt);
             }
         });
 
-        jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField1.setText("jTextField1");
+        jTextFieldRegisterName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTextFieldRegisterName.setText("jTextField1");
 
-        jTextField2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField2.setText("jTextField1");
+        jTextFieldRegisterUsername.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTextFieldRegisterUsername.setText("jTextField1");
 
-        jTextField3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField3.setText("jTextField1");
+        jTextFieldRegisterDoB.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTextFieldRegisterDoB.setText("jTextField1");
 
-        jTextField4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField4.setText("jTextField1");
+        jTextFieldRegisterPassword.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTextFieldRegisterPassword.setText("jTextField1");
 
-        jTextField5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField5.setText("jTextField1");
+        jTextFieldRegisterEmail.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTextFieldRegisterEmail.setText("jTextField1");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -453,23 +733,23 @@ public class AdminForm extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jTextFieldRegisterName, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jTextFieldRegisterDoB, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jTextFieldRegisterEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jTextFieldRegisterUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel10)
                         .addGap(18, 18, 18)
-                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jTextFieldRegisterPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jBtnRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(122, Short.MAX_VALUE))
         );
@@ -481,29 +761,29 @@ public class AdminForm extends javax.swing.JFrame {
                 .addGap(29, 29, 29)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel6)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldRegisterName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(22, 22, 22)
                         .addComponent(jLabel8))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jTextFieldRegisterDoB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(23, 23, 23)
                         .addComponent(jLabel9))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jTextFieldRegisterEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(16, 16, 16)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel11)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldRegisterUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldRegisterPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
                 .addComponent(jBtnRegister)
                 .addContainerGap(118, Short.MAX_VALUE))
@@ -523,20 +803,20 @@ public class AdminForm extends javax.swing.JFrame {
 
         jTableExistingUsers.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Name", "DOB", "Email", "Username"
+                "ID", "Role", "Name", "DOB", "Email", "Username"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -548,6 +828,9 @@ public class AdminForm extends javax.swing.JFrame {
             }
         });
         jScrollPane1.setViewportView(jTableExistingUsers);
+        if (jTableExistingUsers.getColumnModel().getColumnCount() > 0) {
+            jTableExistingUsers.getColumnModel().getColumn(0).setMaxWidth(50);
+        }
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(0, 0, 0));
@@ -555,12 +838,35 @@ public class AdminForm extends javax.swing.JFrame {
 
         jButtonUpdate.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonUpdate.setText("Update");
+        jButtonUpdate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonUpdateMouseClicked(evt);
+            }
+        });
 
         jButtonDelete.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonDelete.setText("Delete");
+        jButtonDelete.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonDeleteMouseClicked(evt);
+            }
+        });
 
         jButtonPromote.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonPromote.setText("Promote");
+        jButtonPromote.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonPromoteMouseClicked(evt);
+            }
+        });
+
+        jButtonDemote.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButtonDemote.setText("Demote");
+        jButtonDemote.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonDemoteMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanelUpdateLayout = new javax.swing.GroupLayout(jPanelUpdate);
         jPanelUpdate.setLayout(jPanelUpdateLayout);
@@ -571,9 +877,11 @@ public class AdminForm extends javax.swing.JFrame {
                 .addGroup(jPanelUpdateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanelUpdateLayout.createSequentialGroup()
                         .addComponent(jButtonUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonPromote, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(389, 389, 389)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonDemote, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(287, 287, 287)
                         .addComponent(jButtonDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanelUpdateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel13)
@@ -591,8 +899,9 @@ public class AdminForm extends javax.swing.JFrame {
                 .addGroup(jPanelUpdateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonUpdate)
                     .addComponent(jButtonDelete)
-                    .addComponent(jButtonPromote))
-                .addContainerGap(144, Short.MAX_VALUE))
+                    .addComponent(jButtonPromote)
+                    .addComponent(jButtonDemote))
+                .addContainerGap(148, Short.MAX_VALUE))
         );
 
         jPanelContents.add(jPanelUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
@@ -627,10 +936,6 @@ public class AdminForm extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxUsersActionPerformed
 
-    private void jBtnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnRegisterActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jBtnRegisterActionPerformed
-
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
         this.dispose();
     }//GEN-LAST:event_jLabel1MouseClicked
@@ -650,6 +955,44 @@ public class AdminForm extends javax.swing.JFrame {
         jPanelUpdate.setVisible(false);
         jPanelRegister.setVisible(true);
     }//GEN-LAST:event_registerBtnMouseClicked
+
+    private void jBtnRegisterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jBtnRegisterMouseClicked
+        
+        String name = jTextFieldRegisterName.getText();
+        String dob = jTextFieldRegisterDoB.getText();
+        String email = jTextFieldRegisterEmail.getText();
+        String username = jTextFieldRegisterUsername.getText();
+        String password =  jTextFieldRegisterPassword.getText();
+        String role = ((String) jComboBoxUsers.getSelectedItem()).trim();
+
+        try {
+            admin.registerUser(name, dob, email, username, password, role);
+        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
+                | BadPaddingException | InvalidAlgorithmParameterException e) {
+            Helper.printErr(Helper.getStackTraceString(e));
+            JOptionPane.showMessageDialog(null, "Error at registerUser. (jBtnRegisterMouseClicked)");        
+        }
+    }//GEN-LAST:event_jBtnRegisterMouseClicked
+
+    private void jButtonUpdateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonUpdateMouseClicked
+        updatePopup();
+    }//GEN-LAST:event_jButtonUpdateMouseClicked
+
+    private void jButtonPromoteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonPromoteMouseClicked
+        promoteLecturer();
+    }//GEN-LAST:event_jButtonPromoteMouseClicked
+
+    private void jButtonDeleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonDeleteMouseClicked
+        deleteUser();
+    }//GEN-LAST:event_jButtonDeleteMouseClicked
+
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        updateUser();
+    }//GEN-LAST:event_jButton1MouseClicked
+
+    private void jButtonDemoteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonDemoteMouseClicked
+        demotePM();
+    }//GEN-LAST:event_jButtonDemoteMouseClicked
 
     /**
      * @param args the command line arguments
@@ -714,16 +1057,24 @@ public class AdminForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton dashboardBtn;
     private javax.swing.JButton jBtnRegister;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonDelete;
+    private javax.swing.JButton jButtonDemote;
     private javax.swing.JButton jButtonPromote;
     private javax.swing.JButton jButtonUpdate;
     private javax.swing.JComboBox<String> jComboBoxUsers;
+    private javax.swing.JFrame jFrameUpdatePopup;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -736,6 +1087,7 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelTitle;
     private javax.swing.JLabel jLabelUsername;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanelContents;
     private javax.swing.JPanel jPanelDashboard;
     private javax.swing.JPanel jPanelDragLeft;
@@ -747,11 +1099,16 @@ public class AdminForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTableExistingUsers;
     private javax.swing.JTable jTableExistingUsersDashboard;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
+    private javax.swing.JTextField jTextFieldRegisterDoB;
+    private javax.swing.JTextField jTextFieldRegisterEmail;
+    private javax.swing.JTextField jTextFieldRegisterName;
+    private javax.swing.JTextField jTextFieldRegisterPassword;
+    private javax.swing.JTextField jTextFieldRegisterUsername;
+    private javax.swing.JTextField jTextFieldUpdateDoB;
+    private javax.swing.JTextField jTextFieldUpdateEmail;
+    private javax.swing.JTextField jTextFieldUpdateName;
+    private javax.swing.JTextField jTextFieldUpdatePassword;
+    private javax.swing.JTextField jTextFieldUpdateUsername;
     private javax.swing.JButton registerBtn;
     private javax.swing.JButton updateBtn;
     // End of variables declaration//GEN-END:variables

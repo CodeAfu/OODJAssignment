@@ -1,5 +1,5 @@
 package com.ags.pms.models;
 
 public enum RequestType {
-    SECONDMARKER, PRESENTATION, SUPERVISOR
+    SECONDMARKER, PRESENTATION, SUPERVISOR, NULL
 }

@@ -12,6 +12,7 @@ import java.util.Iterator;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.xml.crypto.Data;
 
 import com.ags.pms.Helper;
 import com.ags.pms.data.DataContext;
@@ -131,7 +132,7 @@ public class Admin extends User {
         context.writeAllDataAsync();
     }
 
-    public void allotProjectManager(int lecturerId, RequestType requestType) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+    public void promoteLecturer(int lecturerId, RequestType requestType) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         DataContext context = new DataContext();
         Lecturer lecturer = context.getLecturerByID(lecturerId);
 
@@ -170,6 +171,64 @@ public class Admin extends User {
         context.removeById(projectManager.getId());
         context.addLecturer(lecturer);
         
+        context.writeAllDataAsync();
+    }
+
+    public void demoteProjectManager(int pmId) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+        DataContext context = new DataContext();
+        ProjectManager pm = context.getProjectManagerByID(pmId);
+        
+        if (pm == null) {
+            Helper.printErr("Lecturer not found for ID: " + pmId);
+            return;
+        }
+        
+        pm.setProjectManager(false);
+        
+        Lecturer lecturer = new Lecturer(pm.getId(),
+            pm.getName(), pm.getDob(), pm.getEmail(), 
+            pm.getUsername(), pm.getPassword(), Role.NONE);
+            
+        context.removeById(pm.getId());
+        context.addLecturer(lecturer);
+        
+        context.writeAllDataAsync();
+    }
+
+    public void registerUser(String name, String dob, String email, String username, String password, String role) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+        DataContext context = new DataContext();
+
+        switch (role) {
+            case "Student":
+                Student student = new Student(context.fetchNextStudentId(), name, dob, email, username, password);
+                context.addStudent(student);
+            case "Lecturer":
+                Lecturer lecturer = new Lecturer(context.fetchNextLecturerId(), name, dob, email, username, password, Role.NONE);
+                context.addLecturer(lecturer);
+            case "Project Manager":
+                ProjectManager pm = new ProjectManager(context.fetchNextLecturerId(), name, dob, email, username, password, Role.NONE, new ArrayList<>());
+                context.addProjectManager(pm);
+        }
+        context.writeAllDataAsync();
+    }
+
+    public User fetchUser(int userId) {
+        DataContext context = new DataContext();
+        return context.getById(userId);
+    }
+
+    public void updateUser(int id, String name, String dob, String email, String username, String password) {
+        DataContext context = new DataContext();
+        context.populateUserCollection();
+
+        context.updateById(id, u -> {
+            u.setName(name);
+            u.setDob(dob);
+            u.setEmail(email);
+            u.setUsername(username);
+            u.setPassword(password);
+        });
+
         context.writeAllDataAsync();
     }
 }
