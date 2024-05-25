@@ -191,7 +191,7 @@ public class Student extends User {
     public ArrayList<Request> viewPendingPresentationRequests() {
         DataContext context = new DataContext();
         ArrayList<Request> myRequests = context.getRequests().stream()
-                .filter(r -> r.getLecturerId() == this.id && r.getRequestType() == RequestType.PRESENTATION && r.isApproved() == false)
+                .filter(r -> r.getStudentId() == this.id && r.getRequestType() == RequestType.PRESENTATION && r.isApproved() == false)
                 .collect(Collectors.toCollection(ArrayList::new));
         return myRequests;
     }
@@ -199,7 +199,7 @@ public class Student extends User {
     public ArrayList<Request> viewApprovedPresentationRequests() {
         DataContext context = new DataContext();
         ArrayList<Request> myRequests = context.getRequests().stream()
-                .filter(r -> r.getLecturerId() == this.id && r.getRequestType() == RequestType.PRESENTATION && r.isApproved() == true)
+                .filter(r -> r.getStudentId() == this.id && r.getRequestType() == RequestType.PRESENTATION && r.isApproved() == true)
                 .collect(Collectors.toCollection(ArrayList::new));
         return myRequests;
     }
@@ -230,11 +230,11 @@ public class Student extends User {
             PresentationSlot slot = context.getById(slotId);
             Student student = context.getById(slot.getStudentId());
             details.append(slot.getId())
-                    .append(", ")
-                    .append(student.getName())
-                    .append(", ")
-                    .append(slot.getPresentationDate().toString())
-                    .append("\n");
+                   .append(", ")
+                   .append(student.getName())
+                   .append(", ")
+                   .append(slot.getPresentationDate().toString())
+                   .append("\n");
         }
         return details.toString();
     }
@@ -272,5 +272,34 @@ public class Student extends User {
         DataContext context = new DataContext();
         reportIds.removeIf(id -> id == reportId);
         context.removeById(reportId);
+    }
+
+    public ArrayList<PresentationSlot> fetchAvailablePresentationSlots() {
+        DataContext context = new DataContext();
+        ArrayList<PresentationSlot> presentationSlots 
+                = context.getPresentationSlots().stream()
+                                                .filter(ps -> ps.isAvailable() == true)
+                                                .collect(Collectors.toCollection(ArrayList::new));
+        return presentationSlots;
+    }
+
+    public void sendPresentationRequest(int psId, String module) {
+        DataContext context = new DataContext();
+
+        PresentationSlot slot = context.getById(psId);
+        Request request = new Request(context.fetchNextRequestId(), slot.getLecturerId(), this.id, slot.getId(),
+                                      RequestType.PRESENTATION, module);
+        context.addRequest(request);
+
+        context.writeAllDataAsync();
+    }
+
+    public ArrayList<PresentationSlot> fetchMyPresentationSlots() {
+        DataContext context = new DataContext();
+        ArrayList<PresentationSlot> slots = new ArrayList<>();
+
+        presentationSlotIds.forEach(id -> slots.add(context.getById(id)));
+
+        return slots;
     }
 }

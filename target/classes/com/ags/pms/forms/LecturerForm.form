@@ -565,7 +565,7 @@
                       <Table columnCount="3" rowCount="0">
                         <Column editable="false" title="Id" type="java.lang.Integer"/>
                         <Column editable="false" title="Name" type="java.lang.String"/>
-                        <Column editable="false" title="Available Slots" type="java.lang.Boolean"/>
+                        <Column editable="false" title="Has Marker" type="java.lang.Boolean"/>
                       </Table>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">

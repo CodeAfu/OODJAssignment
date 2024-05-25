@@ -31,6 +31,9 @@ import com.ags.pms.models.Student;
 import com.ags.pms.models.User;
 import com.formdev.flatlaf.json.ParseException;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 public class Helper {
     
     public static void printErr(String text) {
@@ -106,7 +109,7 @@ public class Helper {
     }
 
     public static DateFormat getDateFormat() {
-        return new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        return new SimpleDateFormat("dd/MM/yyyy hh:mm a");
     }
 
     public static Date parseDate(String date) {
@@ -214,4 +217,9 @@ public class Helper {
             }
         }
     }
+
+    public static Date convertToDate(LocalDateTime dateTime) {
+        return Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
 }

@@ -1,7 +1,12 @@
 package com.ags.pms.models;
 
 import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
+import java.text.DateFormat;
+
+import com.ags.pms.Helper;
 import com.ags.pms.data.DataContext;
 
 // CREATED BY PROJECTMANAGER - Free Slots for students to apply
@@ -9,39 +14,46 @@ public class PresentationSlot implements Identifiable {
 
     private int id;
     private int studentId;
+    private int lecturerId;
     private String module;
     private Date presentationDate;
     private boolean isAvailable;
-
+    
     public PresentationSlot() {
         this.isAvailable = true;
     }
-
-    public PresentationSlot(int id, int studentId, Date presentationDate, boolean isAvailable) {
+    
+    public PresentationSlot(int id, int lecturerId, LocalDateTime presentationDate) {
+        this.isAvailable = true;
+        this.id = id;
+        this.lecturerId = lecturerId;
+        this.presentationDate = Helper.convertToDate(presentationDate);
+    }
+    
+    public PresentationSlot(int id, int studentId, LocalDateTime presentationDate, boolean isAvailable) {
         this.id = id;
         this.studentId = studentId;
-        this.presentationDate = presentationDate;
+        this.presentationDate = Helper.convertToDate(presentationDate);
         this.isAvailable = isAvailable;
     }
 
-    public PresentationSlot(int id) {
-        this.isAvailable = true;
-        this.id = id;
-    }
-
-    public PresentationSlot(int studentId, Date presentationDate, String module) {
+    public PresentationSlot(int studentId, LocalDateTime presentationDate, String module) {
         DataContext context = new DataContext();
         this.id = context.fetchNextPresentationSlotId();
         this.isAvailable = false;
-        this.module = module;
         this.studentId = studentId;
-        this.presentationDate = presentationDate;
+        this.presentationDate = Helper.convertToDate(presentationDate);
+        this.module = module;
     }
 
     public Student fetchStudent() {
         DataContext context = new DataContext();
-        Student student = context.getById(studentId);
-        return student;
+        return context.getById(studentId);
+    }
+
+    public Lecturer fetchLecturer() {
+        DataContext context = new DataContext();
+        return context.getById(lecturerId);
     }
 
     public int getId() {
@@ -58,6 +70,14 @@ public class PresentationSlot implements Identifiable {
 
     public void setStudentId(int studentId) {
         this.studentId = studentId;
+    }
+
+    public int getLecturerId() {
+        return lecturerId;
+    }
+
+    public void setLecturerId(int lecturerId) {
+        this.lecturerId = lecturerId;
     }
 
     public String getModule() {
@@ -84,5 +104,9 @@ public class PresentationSlot implements Identifiable {
         this.isAvailable = isAvailable;
     }
 
-
+    @Override
+    public String toString() {
+        DateFormat formatter = Helper.getDateFormat();
+        return id + ": " + formatter.format(presentationDate);
+    }
 }

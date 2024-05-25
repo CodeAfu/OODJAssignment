@@ -1374,9 +1374,10 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonFeedbackActionPerformed
 
     private void jTableReportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableReportMouseClicked
-
+        DefaultTableModel dtm = (DefaultTableModel) jTableReport.getModel();
+        selectedReportId = (int) dtm.getValueAt(jTableReport.getSelectedRow(), 0);
+        jLabelSelectedReport.setText(Integer.toString(selectedReportId));
         loadReportFromSelectedItem();
-
     }//GEN-LAST:event_jTableReportMouseClicked
 
     private void viewSupviseeBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_viewSupviseeBtnMouseClicked
@@ -1522,8 +1523,9 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         // These values not properly added into data
         jLabelStudentName.setText(report.fetchStudent().getName());
         jLabelStudentId.setText(Integer.toString(report.fetchStudent().getId()));
-        jLabelSupervisor.setText(report.fetchStudent().fetchSupervisor().getName());
-
+        Lecturer supervisor = (Lecturer) report.fetchStudent().fetchSupervisor();
+        String supervisorName = supervisor == null ? "null" : supervisor.getName();
+        jLabelSupervisor.setText(supervisorName);
     }
 
     private void requestBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_requestBtnActionPerformed

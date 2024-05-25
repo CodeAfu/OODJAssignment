@@ -600,7 +600,7 @@ public class LecturerForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Id", "Name", "Available Slots"
+                "Id", "Name", "Has Marker"
             }
         ) {
             Class[] types = new Class [] {
@@ -972,13 +972,13 @@ public class LecturerForm extends javax.swing.JFrame {
         DefaultTableModel dtm = (DefaultTableModel) jTableReport.getModel();
         selectedReportId = (int) dtm.getValueAt(jTableReport.getSelectedRow(), 0);
         jLabelSelectedReport.setText(Integer.toString(selectedReportId));
-        loadReportFromSelectedItem(selectedReportId);
+        loadReportFromSelectedItem();
 
     }//GEN-LAST:event_jTableReportMouseClicked
 
-    private void loadReportFromSelectedItem(int reportId) {
+    private void loadReportFromSelectedItem() {
         DataContext context = new DataContext();
-        Report report = context.getById(reportId);
+        Report report = context.getById(selectedReportId);
 
         jLabelMoodle.setText(report.getMoodleLink());
         jLabelMarks.setText(Integer.toString(report.getStudentMark()));
@@ -990,8 +990,9 @@ public class LecturerForm extends javax.swing.JFrame {
         // These values not properly added into data
         jLabelStudentName.setText(report.fetchStudent().getName());
         jLabelStudentId.setText(Integer.toString(report.fetchStudent().getId()));
-        jLabelSupervisor.setText(report.fetchStudent().fetchSupervisor().getName());
-
+        Lecturer supervisor = (Lecturer) report.fetchStudent().fetchSupervisor();
+        String supervisorName = supervisor == null ? "null" : supervisor.getName();
+        jLabelSupervisor.setText(supervisorName);
     }
 
     private void jButtonApplySecondMarkerActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonApplySecondMarkerActionPerformed
