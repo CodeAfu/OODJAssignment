@@ -115,6 +115,11 @@ public class Lecturer extends User {
         return context.getById(id);
     }
 
+    public ArrayList<Project> viewProjects() {
+        DataContext context = new DataContext();
+        return context.getProjects();
+    }
+
     public ArrayList<Request> viewPendingPresentationRequests() {
         DataContext context = new DataContext();
         ArrayList<Request> presentationRequests = (ArrayList<Request>) context.getRequests().stream()

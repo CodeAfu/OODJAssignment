@@ -10,6 +10,7 @@ import com.ags.pms.data.IDHandler;
 import com.ags.pms.models.Identifiable;
 import com.ags.pms.models.Lecturer;
 import com.ags.pms.models.PresentationSlot;
+import com.ags.pms.models.Project;
 import com.ags.pms.models.Report;
 import com.ags.pms.models.Request;
 import com.ags.pms.models.Role;
@@ -51,7 +52,7 @@ public class StudentForm extends javax.swing.JFrame {
     initComponents();
 
     try {
-        this.student = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar", "GoodStuff", new ArrayList<Integer>(Arrays.asList(8000, 8001)));
+        this.student = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "std", "std", new ArrayList<Integer>(Arrays.asList(8000, 8001)), new ArrayList<>(Arrays.asList(7000, 7001)));
     } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
             | BadPaddingException | InvalidAlgorithmParameterException e) {
         e.printStackTrace();
@@ -72,6 +73,7 @@ public class StudentForm extends javax.swing.JFrame {
         jLabelDashboardName.setText(student.getName());
         jLabelUsername.setText(student.getUsername());
 
+        populateProjectsTables();
         populateReportsTables();
         populatePendingPresentationTable();
         populateApprovedPresentationTable();
@@ -86,6 +88,25 @@ public class StudentForm extends javax.swing.JFrame {
         jPanelMyPresentationSlots.setVisible(false);
     }
 
+    private void populateProjectsTables() {
+        DefaultTableModel model = (DefaultTableModel) jTableProjectList.getModel();
+
+        model.setRowCount(0);
+
+        ArrayList<Project> projects = student.fetchProjects();
+
+        for (int i = 0; i < projects.size(); i++) {
+            Object rowData[] = new Object[4];
+            
+            rowData[0] = projects.get(i).getId();
+            rowData[1] = projects.get(i).getAssessmentType();
+            rowData[2] = projects.get(i).getDetails();
+            rowData[3] = projects.get(i).getTotalMark();
+
+            model.addRow(rowData);
+        }
+    }
+
     private void populateReportsTables() {
         DefaultTableModel model = (DefaultTableModel) jTableReport.getModel();
         DefaultTableModel model2 = (DefaultTableModel) jTableDashboardReport.getModel();
@@ -96,7 +117,7 @@ public class StudentForm extends javax.swing.JFrame {
         ArrayList<Report> reports = student.fetchReports();
         
         for (int i = 0; i < reports.size(); i++) {
-            Object rowData[] = new Object[6]; // Moved declaration inside the loop
+            Object rowData[] = new Object[6];
             
             rowData[0] = reports.get(i).getId();
             rowData[1] = student.getName();
@@ -180,7 +201,7 @@ public class StudentForm extends javax.swing.JFrame {
         DateFormat formatter = Helper.getDateFormat();
         
         for (int i = 0; i < requests.size(); i++) {
-            Object rowData[] = new Object[5]; // Moved declaration inside the loop
+            Object rowData[] = new Object[5];
             
             // id name module presentation availability
             rowData[0] = requests.get(i).getId();
@@ -202,7 +223,7 @@ public class StudentForm extends javax.swing.JFrame {
         ArrayList<Request> requests = student.viewApprovedPresentationRequests();
         
         for (int i = 0; i < requests.size(); i++) {
-            Object rowData[] = new Object[5]; // Moved declaration inside the loop
+            Object rowData[] = new Object[5];
             
             rowData[0] = requests.get(i).getId();
             rowData[1] = requests.get(i).fetchLecturer().getName();
@@ -250,7 +271,6 @@ public class StudentForm extends javax.swing.JFrame {
         populatePendingPresentationTable();
         populateMyPresentationSlots();
     }
-
     
     private void populateMyPresentationSlots() {
         DefaultTableModel model = (DefaultTableModel) jTableMyPresentationSlots.getModel();
@@ -338,6 +358,9 @@ public class StudentForm extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jButtonRemoveReport = new javax.swing.JButton();
         jButtonAddReport = new javax.swing.JButton();
+        jLabel11 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTableProjectList = new javax.swing.JTable();
         jPanelPresentation = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
@@ -871,33 +894,76 @@ public class StudentForm extends javax.swing.JFrame {
             }
         });
 
+        jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel11.setText("Projects");
+
+        jTableProjectList.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "ID", "Assesement Type", "Details", "Total Marks"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(jTableProjectList);
+        if (jTableProjectList.getColumnModel().getColumnCount() > 0) {
+            jTableProjectList.getColumnModel().getColumn(0).setMaxWidth(50);
+            jTableProjectList.getColumnModel().getColumn(3).setMaxWidth(180);
+        }
+
         javax.swing.GroupLayout jPanelReportsLayout = new javax.swing.GroupLayout(jPanelReports);
         jPanelReports.setLayout(jPanelReportsLayout);
         jPanelReportsLayout.setHorizontalGroup(
             jPanelReportsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelReportsLayout.createSequentialGroup()
                 .addGap(66, 66, 66)
-                .addGroup(jPanelReportsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 666, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelReportsLayout.createSequentialGroup()
-                        .addComponent(jButtonAddReport, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonRemoveReport, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(616, 616, 616))
+                .addGroup(jPanelReportsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 666, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanelReportsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 666, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelReportsLayout.createSequentialGroup()
+                            .addComponent(jButtonAddReport, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonRemoveReport, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(68, 68, 68))
         );
         jPanelReportsLayout.setVerticalGroup(
             jPanelReportsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelReportsLayout.createSequentialGroup()
-                .addGap(66, 66, 66)
-                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(45, 45, 45)
+                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(7, 7, 7)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanelReportsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonRemoveReport)
                     .addComponent(jButtonAddReport))
-                .addContainerGap(171, Short.MAX_VALUE))
+                .addGap(44, 44, 44))
         );
 
         jPanelContents.add(jPanelReports, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 560));
@@ -1244,6 +1310,7 @@ public class StudentForm extends javax.swing.JFrame {
     private javax.swing.JFrame jFrameRequestPresentation;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
@@ -1275,6 +1342,7 @@ public class StudentForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanelSide;
     private javax.swing.JPanel jPanelTitle;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
@@ -1284,6 +1352,7 @@ public class StudentForm extends javax.swing.JFrame {
     private javax.swing.JTable jTableDashboardReport;
     private javax.swing.JTable jTableMyPresentationSlots;
     private javax.swing.JTable jTablePendingPresentations;
+    private javax.swing.JTable jTableProjectList;
     private javax.swing.JTable jTableReport;
     private javax.swing.JTextArea jTextAreaReportContents;
     private javax.swing.JTextField jTextFieldModule;

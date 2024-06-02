@@ -1,5 +1,6 @@
 package com.ags.pms.models;
 
+import java.lang.reflect.Array;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -14,6 +15,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import com.ags.pms.data.DataContext;
+import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
 
 public class ProjectManager extends Lecturer {
 
@@ -33,6 +35,7 @@ public class ProjectManager extends Lecturer {
         super(username, password);
         this.isProjectManager = true;
     }
+    
 
     public ArrayList<Integer> getSuperviseeIds() {
         return superviseeIds;
@@ -58,7 +61,7 @@ public class ProjectManager extends Lecturer {
 
         students.forEach(student -> {
             if (student.getId() == id) {
-                student.addProject(project.getId());
+                student.addProjectId(project.getId());
                 return;
             }
         });
@@ -163,5 +166,58 @@ public class ProjectManager extends Lecturer {
     public Request fetchRequest(int reqId) {
         DataContext context = new DataContext();
         return context.getById(reqId);
+    }
+
+    public void removeProject(int projectId) {
+        DataContext context = new DataContext();
+        context.removeById(projectId);
+        context.writeAllDataAsync();
+    }
+
+    public Project viewProject(int projectId) {
+        DataContext context = new DataContext();
+        return context.getById(projectId);
+    }
+    
+    public void addProject(String module, AssessmentType assessmentType, String details, int totalMark) {
+        DataContext context = new DataContext();
+        Project project = new Project(context.fetchNextProjectId(), module, assessmentType, details, totalMark);
+        context.addProject(project);
+
+        context.writeAllDataAsync();
+    }
+    
+    public void editProject(int projectId, String module, AssessmentType assessmentType, String details, int totalMark) {
+        DataContext context = new DataContext();
+        context.updateProjectById(projectId, p -> {
+            p.setModule(module);
+            p.setAssessmentType(assessmentType);
+            p.setDetails(details);
+            p.setTotalMark(totalMark);
+        });
+
+        context.writeAllDataAsync();
+    }
+
+    public void assignProjectsToStudents() {
+        DataContext context = new DataContext();
+        ArrayList<Project> projects = context.getProjects();
+        ArrayList<Student> students = context.getStudents();
+        boolean changed = false;
+
+        for (Project project : projects) {
+            for (Student student : students) {
+                if (!student.getProjectIds().contains(project.getId()) 
+                        && student.getModules().contains(project.getModule())) {
+                    context.updateStudentById(student.getId(), s -> {
+
+                        s.addProjectId(project.getId());
+                    });
+                    changed = true;
+                }
+            }
+        }
+        if (!changed) return;
+        context.writeAllDataAsync();
     }
 }

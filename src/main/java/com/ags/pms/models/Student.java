@@ -20,52 +20,62 @@ import net.bytebuddy.implementation.bind.annotation.Super;
 
 public class Student extends User {
 
-    private ArrayList<Integer> reportIds;
-    private ArrayList<Integer> presentationSlotIds;
-    private ArrayList<Integer> projectIds;
-    private ArrayList<String> modules;
+    private ArrayList<Integer> reportIds = new ArrayList<>();
+    private ArrayList<Integer> presentationSlotIds = new ArrayList<>();
+    private ArrayList<Integer> projectIds = new ArrayList<>();
+    private ArrayList<String> modules = new ArrayList<>();
     private AssessmentType assessmentType;
     private int supervisorId;
     private int secondMarkerId;
 
     public Student(int id, String name, String dob, String email, String username, String password,
-            ArrayList<Integer> reports, ArrayList<Integer> presentationSlots, ArrayList<Integer> projects,
+            ArrayList<Integer> reportIds, ArrayList<Integer> presentationSlotIds, ArrayList<Integer> projectsIds,
             ArrayList<String> modules, int supervisorId, int secondMarkerId)
             throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException,
             BadPaddingException, InvalidAlgorithmParameterException {
         super(id, name, dob, email, username, password);
-        this.reportIds = reports;
-        this.presentationSlotIds = presentationSlots;
-        this.projectIds = projects;
+        this.reportIds = reportIds;
+        this.presentationSlotIds = presentationSlotIds;
+        this.projectIds = projectsIds;
         this.modules = modules;
         this.supervisorId = supervisorId;
         this.secondMarkerId = secondMarkerId;
     }
 
-    // Debug
+    public Student(int id, String name, String dob, String email, String username, String password,
+            ArrayList<Integer> reportIds, ArrayList<Integer> presentationSlotIds, ArrayList<Integer> projectsIds,
+            ArrayList<String> modules)
+            throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException,
+            BadPaddingException, InvalidAlgorithmParameterException {
+        super(id, name, dob, email, username, password);
+        this.reportIds = reportIds;
+        this.presentationSlotIds = presentationSlotIds;
+        this.projectIds = projectsIds;
+        this.modules = modules;
+    }
+
     public Student() {
         super();
-        reportIds = new ArrayList<Integer>();
-        presentationSlotIds = new ArrayList<>();
-        modules = new ArrayList<>();
     }
 
     public Student(int id, String name, String dob, String email, String username, String password)
             throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException,
             BadPaddingException, InvalidAlgorithmParameterException {
         super(id, name, dob, email, username, password);
-        reportIds = new ArrayList<>();
-        presentationSlotIds = new ArrayList<>();
-        modules = new ArrayList<>();
+        this.reportIds = new ArrayList<>();
+        this.projectIds = new ArrayList<>();
+        this.presentationSlotIds = new ArrayList<>();
+        this.modules = new ArrayList<>();
     }
 
     public Student(int id, String name, String dob, String email, String username, String password,
-            ArrayList<Integer> reports) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
+            ArrayList<Integer> reportIds, ArrayList<Integer> projectIds) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
             IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         super(id, name, dob, email, username, password);
-        this.reportIds = reports;
-        presentationSlotIds = new ArrayList<>();
-        modules = new ArrayList<>();
+        this.reportIds = reportIds;
+        this.projectIds = projectIds;
+        this.presentationSlotIds = new ArrayList<>();
+        this.modules = new ArrayList<>();
     }
 
     public ArrayList<Integer> getReportIds() {
@@ -96,7 +106,7 @@ public class Student extends User {
         this.projectIds = projectIds;
     }
 
-    public void addProject(int projectId) {
+    public void addProjectId(int projectId) {
         this.projectIds.add(projectId);
     }
 
@@ -150,6 +160,16 @@ public class Student extends User {
         DataContext context = new DataContext();
         User secondMarker = context.getById(secondMarkerId);
         return secondMarker;
+    }
+
+    public ArrayList<Project> fetchProjects() {
+        if (projectIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+        DataContext context = new DataContext();
+        ArrayList<Project> projects = new ArrayList<>();
+        projectIds.forEach(id -> projects.add(context.getById(id)));
+        return projects;
     }
 
     public void createReport(int studentId, int projectId, String moodleLink, String contents) {

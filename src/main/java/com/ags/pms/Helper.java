@@ -222,4 +222,16 @@ public class Helper {
         return Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 
+    public static boolean isNumeric(String s) {
+        char[] charArray = s.toCharArray();
+        boolean isNegative = charArray.length > 0 && charArray[0] == '-';
+        int startIndex = isNegative ? 1 : 0;
+
+        for (int i = startIndex; i < charArray.length; i++) {
+            if (!Character.isDigit(charArray[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

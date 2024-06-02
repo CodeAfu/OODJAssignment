@@ -125,7 +125,7 @@ public class ProjectManagementSystem {
         DataContext context = new DataContext();
 
         Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass",
-                new ArrayList<Integer>());
+                new ArrayList<Integer>(), new ArrayList<>());
 
         // context.addPresentationSlot(slot);
         // context.addRequest(request);
@@ -225,9 +225,9 @@ public class ProjectManagementSystem {
         ArrayList<ProjectManager> projectManagers = new ArrayList<>();
 
         Student student1 = new Student(4001, "John Doe", "10/02/2024", "johndoe@email.com", "johnUser", "TestPass",
-                new ArrayList<Integer>());
+                new ArrayList<Integer>(), new ArrayList<>());
         Student student2 = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "john_kumar",
-                "GoodStuff", new ArrayList<Integer>());
+                "GoodStuff", new ArrayList<Integer>(), new ArrayList<>());
         students.add(student1);
         students.add(student2);
 

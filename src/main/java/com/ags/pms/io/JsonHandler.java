@@ -34,7 +34,6 @@ public class JsonHandler {
 
     public void writeData(String filename, String contents) {
         try {
-
             FileWriter writer = new FileWriter(getPath(filename));
             writer.write(contents);
             writer.close();
@@ -267,8 +266,5 @@ public class JsonHandler {
     private String getPath(String filename) {
         return this.absolutePath + this.path + filename;
     }
-
-
-
 
 }
