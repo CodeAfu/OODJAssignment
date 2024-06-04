@@ -1,7 +1,9 @@
 package com.ags.pms.models;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
+import com.ags.pms.Helper;
 import com.ags.pms.data.DataContext;
 
 public class Report implements Identifiable {
@@ -17,17 +19,18 @@ public class Report implements Identifiable {
     private int totalMark;
     private String feedback;
     
-    
     public Report() {
     }
     
-    public Report(int id, int projectId, int studentId, String contents, String moodleLink, int totalMark) {
+    public Report(int id, int projectId, int studentId, String contents, Date dateSubmitted, String moodleLink, int totalMark) {
         this.id = id;
         this.projectId = projectId;
         this.studentId = studentId;
         this.contents = contents;
+        this.dateSubmitted = dateSubmitted;
         this.moodleLink = moodleLink;
         this.totalMark = totalMark;
+        this.submitted = true;
     }
     
     public Report(int id, int projectId, int studentId, boolean submitted, Date dateSubmitted, String moodleLink,
@@ -43,18 +46,6 @@ public class Report implements Identifiable {
         this.feedback = feedback;
     }
 
-    public Report(int projectId, boolean submitted, Date dateSubmitted, String moodleLink,
-            int studentMark, int totalMark) {
-        DataContext context = new DataContext();
-        this.id = context.fetchNextReportId();
-        this.projectId = projectId;
-        this.submitted = submitted;
-        this.dateSubmitted = dateSubmitted;
-        this.moodleLink = moodleLink;
-        this.studentMark = studentMark;
-        this.totalMark = totalMark;
-    }
-
     public Report(int id, int projectId, int studentId, boolean submitted, Date dateSubmitted, String moodleLink,
             int studentMark, int totalMark) {
         this.id = id;
@@ -67,27 +58,15 @@ public class Report implements Identifiable {
         this.totalMark = totalMark;
     }
 
-
-    public Report(int id, int projectId, String moodleLink, int studentMark, int totalMark) {
+    public Report(int id, int projectId, int studentId, boolean submitted, LocalDateTime dateSubmitted, String moodleLink,
+            int studentMark, int totalMark) {
         this.id = id;
         this.projectId = projectId;
+        this.studentId = studentId;
+        this.submitted = submitted;
+        this.dateSubmitted = Helper.convertToDate(dateSubmitted);
         this.moodleLink = moodleLink;
         this.studentMark = studentMark;
-        this.totalMark = totalMark;
-    }
-
-    public Report(int id, int projectId, int studentMark, int totalMark) {
-        this.id = id;
-        this.projectId = projectId;
-        this.moodleLink = "https://sample.moodle.com/test-report";
-        this.studentMark = studentMark;
-        this.totalMark = totalMark;
-    }
-
-    public Report(int id, int projectId, String moodleLink, int totalMark) {
-        this.id = id;
-        this.projectId = projectId;
-        this.moodleLink = moodleLink;
         this.totalMark = totalMark;
     }
 

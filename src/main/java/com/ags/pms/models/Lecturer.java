@@ -128,7 +128,7 @@ public class Lecturer extends User {
         return presentationRequests;
     }
 
-    public void assignPresentationSlot(int requestId, int studentId, int presentationSlotId) {
+    public void assignPresentationSlot(int requestId, int studentId, int presentationSlotId, String module) {
         DataContext context = new DataContext();
         PresentationSlot slot = context.getById(presentationSlotId);
 
@@ -136,7 +136,10 @@ public class Lecturer extends User {
             throw new IllegalArgumentException("Presentation slot is not available. How did you even make this request?: " + slot.getId());
         }
 
-        context.updatePresentationSlotById(presentationSlotId, ps -> ps.setAvailable(false));
+        context.updatePresentationSlotById(presentationSlotId, ps -> {
+            ps.setAvailable(false);
+            ps.setModule(module);
+        });
         context.updateStudentById(studentId, s -> s.addPresentationSlotId(slot.getId()));
         context.updateRequestById(requestId, r -> r.setApproved(true));
 
@@ -192,7 +195,7 @@ public class Lecturer extends User {
         return result;
     }
 
-    public void applyForSecondMarker(int studentId) {
+    public void applyForSecondMarker(int studentId, String module) {
         DataContext context = new DataContext();
 
         if (hasSecondMarkerRequest()) {
@@ -201,12 +204,12 @@ public class Lecturer extends User {
                     .findFirst()
                     .orElse(null);
 
-            if (request == null) throw new NullPointerException("wtf just happened bro (applyForSecondMarker)");
+            if (request == null) throw new NullPointerException("Unexpected Error. (applyForSecondMarker)");
 
             context.removeById(request.getId());
         }
 
-        Request request = new Request(context.fetchNextRequestId(), this.id, studentId, RequestType.SECONDMARKER);
+        Request request = new Request(context.fetchNextRequestId(), this.id, studentId, RequestType.SECONDMARKER, module);
         context.addRequest(request);
         context.writeAllDataAsync();
     }
@@ -309,5 +312,11 @@ public class Lecturer extends User {
     @Override
     public String toString() {
         return this.getName();
+    }
+
+    public ArrayList<String> getStudentModules(int studentId) {
+        DataContext context = new DataContext();
+        Student student = context.getById(studentId);
+        return student.getModules();
     }
 }

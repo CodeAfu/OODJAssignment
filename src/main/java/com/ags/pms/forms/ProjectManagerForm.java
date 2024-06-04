@@ -23,6 +23,7 @@ import java.awt.Window;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Level;
@@ -35,6 +36,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.DateFormatter;
 import javax.swing.JOptionPane;
 import java.util.stream.Collectors;
 import javax.swing.ListSelectionModel;
@@ -474,17 +476,17 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         model.setRowCount(0);
 
         ArrayList<Request> presentations = projectManager.viewPendingPresentationRequests();
+        DateFormat formatter = Helper.getDateFormat();
 
         for (int i = 0; i < presentations.size(); i++) {
-            Object rowData[] = new Object[7];
+            Object rowData[] = new Object[6];
 
             rowData[0] = presentations.get(i).getId();
             rowData[1] = presentations.get(i).getStudentId();
             rowData[2] = presentations.get(i).viewUser().getName();
-            rowData[3] = presentations.get(i).fetchPresentationSlot().getPresentationDate();
-            rowData[4] = presentations.get(i).fetchPresentationSlot().getModule();
-            rowData[5] = presentations.get(i).getModule();
-            rowData[6] = presentations.get(i).isApproved();
+            rowData[3] = formatter.format(presentations.get(i).fetchPresentationSlot().getPresentationDate());
+            rowData[4] = presentations.get(i).getModule();
+            rowData[5] = presentations.get(i).isApproved();
 
             model.addRow(rowData);
         }
@@ -1137,14 +1139,14 @@ public class ProjectManagerForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Student ID", "Student Name", "Module", "Date", "Module", "Approved"
+                "ID", "Student ID", "Student Name", "Date", "Module", "Approved"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
+                java.lang.Object.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -1159,7 +1161,7 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         if (jTablePresentation.getColumnModel().getColumnCount() > 0) {
             jTablePresentation.getColumnModel().getColumn(0).setMaxWidth(80);
             jTablePresentation.getColumnModel().getColumn(1).setMaxWidth(50);
-            jTablePresentation.getColumnModel().getColumn(6).setMaxWidth(100);
+            jTablePresentation.getColumnModel().getColumn(5).setMaxWidth(100);
         }
 
         jPanelViewPresentation.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 750, 180));
@@ -1529,9 +1531,9 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         jLabelMarks.setText("jLabel7");
         jPanel3.add(jLabelMarks, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 260, -1, -1));
 
-        jLabelMoodle.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabelMoodle.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabelMoodle.setText("jLabel7");
-        jPanel3.add(jLabelMoodle, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 330, -1, -1));
+        jPanel3.add(jLabelMoodle, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, -1, -1));
 
         jLabelProjectAssessmentType.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabelProjectAssessmentType.setText("jLabel7");
@@ -1782,7 +1784,7 @@ public class ProjectManagerForm extends javax.swing.JFrame {
             return;
         }
         Request request = (Request) jComboBoxPresentations.getSelectedItem();
-        projectManager.assignPresentationSlot(request.getId(), request.getStudentId(), request.getPresentationSlotId());
+        projectManager.assignPresentationSlot(request.getId(), request.getStudentId(), request.getPresentationSlotId(), request.getModule());
         JOptionPane.showMessageDialog(null, "Presentation Request Approved!");
         try {
             Thread.sleep(100);

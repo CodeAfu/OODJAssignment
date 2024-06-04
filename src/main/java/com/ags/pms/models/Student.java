@@ -4,6 +4,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -176,8 +177,8 @@ public class Student extends User {
         DataContext context = new DataContext();
         Project project = context.getById(projectId);
 
-        Report report = new Report(context.fetchNextReportId(), projectId, studentId, 
-                                   contents, moodleLink, project.getTotalMark());
+        Report report = new Report(context.fetchNextReportId(), projectId, studentId, contents, 
+                                   new Date(), moodleLink, project.getTotalMark());
                                    
         reportIds.add(report.getId());
         context.addReport(report);

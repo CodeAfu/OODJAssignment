@@ -895,11 +895,10 @@
                 <Component class="javax.swing.JTable" name="jTablePresentation">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="7" rowCount="0">
+                      <Table columnCount="6" rowCount="0">
                         <Column editable="false" title="ID" type="java.lang.Object"/>
                         <Column editable="false" title="Student ID" type="java.lang.Integer"/>
                         <Column editable="false" title="Student Name" type="java.lang.String"/>
-                        <Column editable="false" title="Module" type="java.lang.String"/>
                         <Column editable="false" title="Date" type="java.lang.String"/>
                         <Column editable="false" title="Module" type="java.lang.String"/>
                         <Column editable="false" title="Approved" type="java.lang.Boolean"/>
@@ -913,11 +912,6 @@
                           <Renderer/>
                         </Column>
                         <Column maxWidth="50" minWidth="-1" prefWidth="-1" resizable="true">
-                          <Title/>
-                          <Editor/>
-                          <Renderer/>
-                        </Column>
-                        <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                           <Title/>
                           <Editor/>
                           <Renderer/>
@@ -1790,13 +1784,13 @@
                 <Component class="javax.swing.JLabel" name="jLabelMoodle">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Segoe UI" size="18" style="1"/>
+                      <Font name="Segoe UI" size="14" style="1"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="jLabel7"/>
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-                      <AbsoluteConstraints x="30" y="330" width="-1" height="-1"/>
+                      <AbsoluteConstraints x="10" y="340" width="-1" height="-1"/>
                     </Constraint>
                   </Constraints>
                 </Component>

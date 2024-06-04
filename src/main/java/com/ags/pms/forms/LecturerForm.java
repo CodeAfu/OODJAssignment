@@ -4,6 +4,7 @@
  */
 package com.ags.pms.forms;
 
+import com.ags.pms.Helper;
 import com.ags.pms.data.DataContext;
 import com.ags.pms.models.Identifiable;
 import com.ags.pms.models.Lecturer;
@@ -43,6 +44,7 @@ public class LecturerForm extends javax.swing.JFrame {
 
     private Lecturer lecturer;
     private int selectedReportId;
+    private int selectedStudentId;
 
     public LecturerForm() {
     initComponents();
@@ -265,6 +267,16 @@ public class LecturerForm extends javax.swing.JFrame {
         jTablePresentation.setCellSelectionEnabled(false);
     }
 
+    private void popupModuleSelection(int studentId) {
+        ArrayList<String> modules = lecturer.getStudentModules(studentId);
+        jComboBoxStudentModules.removeAllItems();
+        modules.forEach(m -> jComboBoxStudentModules.addItem(m));
+
+        jFrameSecondMarkerModuleSelect.pack();
+        jFrameSecondMarkerModuleSelect.setResizable(false);
+        jFrameSecondMarkerModuleSelect.setLocationRelativeTo(null);
+        jFrameSecondMarkerModuleSelect.setVisible(true);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -282,6 +294,11 @@ public class LecturerForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jFrameSecondMarkerModuleSelect = new javax.swing.JFrame();
+        jPanelMeh = new javax.swing.JPanel();
+        jComboBoxStudentModules = new javax.swing.JComboBox<>();
+        jLabel8 = new javax.swing.JLabel();
+        jButtonSelectModule = new javax.swing.JButton();
         jPanelTitle = new javax.swing.JPanel();
         jLabelTitle = new javax.swing.JLabel();
         jLabelUsername = new javax.swing.JLabel();
@@ -351,6 +368,55 @@ public class LecturerForm extends javax.swing.JFrame {
         jButtonFeedback = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         jLabelSelectedReport = new javax.swing.JLabel();
+
+        jFrameSecondMarkerModuleSelect.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanelMeh.setBackground(new java.awt.Color(204, 204, 255));
+
+        jComboBoxStudentModules.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel8.setText("Select Module");
+
+        jButtonSelectModule.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jButtonSelectModule.setText("Select");
+        jButtonSelectModule.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonSelectModuleMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanelMehLayout = new javax.swing.GroupLayout(jPanelMeh);
+        jPanelMeh.setLayout(jPanelMehLayout);
+        jPanelMehLayout.setHorizontalGroup(
+            jPanelMehLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelMehLayout.createSequentialGroup()
+                .addGroup(jPanelMehLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelMehLayout.createSequentialGroup()
+                        .addGap(96, 96, 96)
+                        .addComponent(jLabel8))
+                    .addGroup(jPanelMehLayout.createSequentialGroup()
+                        .addGap(120, 120, 120)
+                        .addComponent(jButtonSelectModule))
+                    .addGroup(jPanelMehLayout.createSequentialGroup()
+                        .addGap(40, 40, 40)
+                        .addComponent(jComboBoxStudentModules, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(56, Short.MAX_VALUE))
+        );
+        jPanelMehLayout.setVerticalGroup(
+            jPanelMehLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelMehLayout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jComboBoxStudentModules, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButtonSelectModule)
+                .addContainerGap(21, Short.MAX_VALUE))
+        );
+
+        jFrameSecondMarkerModuleSelect.getContentPane().add(jPanelMeh, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 340, 170));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1000, 700));
@@ -834,9 +900,9 @@ public class LecturerForm extends javax.swing.JFrame {
         jLabelMarks.setText("jLabel7");
         jPanel3.add(jLabelMarks, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 260, -1, -1));
 
-        jLabelMoodle.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabelMoodle.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabelMoodle.setText("jLabel7");
-        jPanel3.add(jLabelMoodle, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 330, -1, -1));
+        jPanel3.add(jLabelMoodle, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, -1, -1));
 
         jLabelProjectAssessmentType.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabelProjectAssessmentType.setText("jLabel7");
@@ -930,7 +996,7 @@ public class LecturerForm extends javax.swing.JFrame {
             return;
         }
         Request request = (Request) jComboBoxPresentations.getSelectedItem();
-        lecturer.assignPresentationSlot(request.getId(), request.getStudentId(), request.getPresentationSlotId());
+        lecturer.assignPresentationSlot(request.getId(), request.getStudentId(), request.getPresentationSlotId(), request.getModule());
         JOptionPane.showMessageDialog(null, "Presentation Request Approved!");
         try {
             Thread.sleep(100);
@@ -976,6 +1042,28 @@ public class LecturerForm extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jTableReportMouseClicked
 
+    private void jButtonSelectModuleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonSelectModuleMouseClicked
+        if (jComboBoxStudentModules.getSelectedIndex() < 0) {
+            JOptionPane.showMessageDialog(null, "Please select a module.");
+            return;
+        }
+        String selectedModule = jComboBoxStudentModules.getSelectedItem().toString();
+
+        lecturer.applyForSecondMarker(selectedStudentId, selectedModule);
+        JOptionPane.showMessageDialog(null, 
+            "Second Marker Request has been submitted. Please wait for review from Project Manager");
+        
+        jFrameSecondMarkerModuleSelect.dispose();
+
+        sleep(100);
+
+        populateSecondMarkerComboBox();
+        populateSecondMarkerAcceptence();
+
+    }//GEN-LAST:event_jButtonSelectModuleMouseClicked
+
+
+
     private void loadReportFromSelectedItem() {
         DataContext context = new DataContext();
         Report report = context.getById(selectedReportId);
@@ -1008,12 +1096,13 @@ public class LecturerForm extends javax.swing.JFrame {
                 return;
             }
         }
-        lecturer.applyForSecondMarker(student.getId());
-        JOptionPane.showMessageDialog(null, 
-            "Second Marker Request has been submitted. Please wait for review from Project Manager");
-        populateSecondMarkerComboBox();
-        populateSecondMarkerAcceptence();
+        selectedStudentId = student.getId();
+
+        popupModuleSelection(student.getId());
+
+
     }// GEN-LAST:event_jButtonApplySecondMarkerActionPerformed
+
 
     private void requestBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_requestBtnActionPerformed
         jPanelDashboard.setVisible(false);
@@ -1111,6 +1200,15 @@ public class LecturerForm extends javax.swing.JFrame {
         });
     }
 
+    private void sleep(int i) {
+        try {
+            Thread.sleep(i);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton availabelSlotsBtn;
     private javax.swing.JButton dashboardBtn;
@@ -1119,10 +1217,13 @@ public class LecturerForm extends javax.swing.JFrame {
     private javax.swing.JButton jButtonApprovePresentation;
     private javax.swing.JButton jButtonFeedback;
     private javax.swing.JButton jButtonResetFilters;
+    private javax.swing.JButton jButtonSelectModule;
     private javax.swing.JButton jButtonSwitchToSMApply;
     private javax.swing.JComboBox<Student> jComboBoxFilterStudent;
     private javax.swing.JComboBox<Request> jComboBoxPresentations;
+    private javax.swing.JComboBox<String> jComboBoxStudentModules;
     private javax.swing.JComboBox<Student> jComboBoxStudentSecondMarker;
+    private javax.swing.JFrame jFrameSecondMarkerModuleSelect;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel16;
@@ -1132,6 +1233,7 @@ public class LecturerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabelContents;
     private javax.swing.JLabel jLabelMarks;
     private javax.swing.JLabel jLabelMoodle;
@@ -1164,6 +1266,7 @@ public class LecturerForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanelContents;
     private javax.swing.JPanel jPanelDashboard;
     private javax.swing.JPanel jPanelDragLeft;
+    private javax.swing.JPanel jPanelMeh;
     private javax.swing.JPanel jPanelReport;
     private javax.swing.JPanel jPanelSide;
     private javax.swing.JPanel jPanelTitle;
