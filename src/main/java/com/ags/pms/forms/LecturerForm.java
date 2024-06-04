@@ -19,6 +19,7 @@ import java.awt.Window;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Level;
@@ -75,7 +76,6 @@ public class LecturerForm extends javax.swing.JFrame {
         populateSecondMarkerTable();
         populateSecondMarkerAcceptence();
         populateSecondMarkerComboBox();
-        populateSupervisees();
         populatePresentationRequestComboBox();
         populateReportsTable();
         populateFilterStudentComboBox();
@@ -85,7 +85,6 @@ public class LecturerForm extends javax.swing.JFrame {
         jPanelDashboard.setVisible(true);
         jPanelViewPresentation.setVisible(false);
         jPanelAvailableSlots.setVisible(false);
-        jPanelViewSupervisee.setVisible(false);
         jPanelReport.setVisible(false);
     }
 
@@ -93,7 +92,6 @@ public class LecturerForm extends javax.swing.JFrame {
         jPanelDashboard.setVisible(false);
         jPanelViewPresentation.setVisible(false);
         jPanelAvailableSlots.setVisible(true);
-        jPanelViewSupervisee.setVisible(false);
         jPanelReport.setVisible(false);
     }
 
@@ -128,28 +126,6 @@ public class LecturerForm extends javax.swing.JFrame {
         jComboBoxPresentations.removeAllItems();
         ArrayList<Request> presentationRequests = lecturer.viewPendingPresentationRequests();
         presentationRequests.forEach(p -> jComboBoxPresentations.addItem(p));
-    }
-
-    private void populateSupervisees() {
-        DefaultTableModel model = (DefaultTableModel) jTableViewSupervisee.getModel();
-        model.setRowCount(0);
-        ArrayList<Map<String, Object>> students = lecturer.viewSupervisees();
-
-        for (int i = 0; i < students.size(); i++) {
-
-            Object rowData[] = new Object[4];
-            rowData[0] = students.get(i).get("id");
-            rowData[1] = students.get(i).get("name");
-            rowData[2] = students.get(i).get("supervisorName");
-            rowData[3] = students.get(i).get("secondMarkerName");
-    
-            model.addRow(rowData);
-
-        }
-        jTableViewSupervisee.setFocusable(false);
-        jTableViewSupervisee.setRowSelectionAllowed(false);
-        jTableViewSupervisee.setCellSelectionEnabled(false);
-
     }
 
     private void populateReportsTable() {
@@ -247,17 +223,17 @@ public class LecturerForm extends javax.swing.JFrame {
         model.setRowCount(0);
 
         ArrayList<Request> presentations = lecturer.viewPendingPresentationRequests();
-        
+        DateFormat formatter = Helper.getDateFormat();        
+
         for (int i = 0; i < presentations.size(); i++) {
-            Object rowData[] = new Object[7]; // Moved declaration inside the loop
+            Object rowData[] = new Object[6]; // Moved declaration inside the loop
             
             rowData[0] = presentations.get(i).getId();
             rowData[1] = presentations.get(i).getStudentId();
             rowData[2] = presentations.get(i).viewUser().getName();
-            rowData[3] = presentations.get(i).fetchPresentationSlot().getPresentationDate();
-            rowData[4] = presentations.get(i).fetchPresentationSlot().getModule();
-            rowData[5] = presentations.get(i).getModule();
-            rowData[6] = presentations.get(i).isApproved();
+            rowData[4] = presentations.get(i).getModule();
+            rowData[3] = formatter.format(presentations.get(i).fetchPresentationSlot().getPresentationDate());
+            rowData[5] = presentations.get(i).isApproved();
 
             model.addRow(rowData);
         }
@@ -312,7 +288,6 @@ public class LecturerForm extends javax.swing.JFrame {
         requestBtn = new javax.swing.JButton();
         dashboardBtn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        viewSupviseeBtn = new javax.swing.JButton();
         availabelSlotsBtn = new javax.swing.JButton();
         feedbackBtn = new javax.swing.JButton();
         jPanelContents = new javax.swing.JPanel();
@@ -342,10 +317,6 @@ public class LecturerForm extends javax.swing.JFrame {
         jLabelRequestStudentName = new javax.swing.JLabel();
         jLabelRequest10 = new javax.swing.JLabel();
         jLabelRequestLecturerId = new javax.swing.JLabel();
-        jPanelViewSupervisee = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTableViewSupervisee = new javax.swing.JTable();
-        jButtonSwitchToSMApply = new javax.swing.JButton();
         jPanelReport = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTableReport = new javax.swing.JTable();
@@ -550,18 +521,6 @@ public class LecturerForm extends javax.swing.JFrame {
 
         jPanelSide.add(jPanelDragLeft, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
-        viewSupviseeBtn.setBackground(new java.awt.Color(110, 139, 251));
-        viewSupviseeBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        viewSupviseeBtn.setForeground(new java.awt.Color(0, 0, 0));
-        viewSupviseeBtn.setText("View Supervisee List");
-        viewSupviseeBtn.setBorderPainted(false);
-        viewSupviseeBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewSupviseeBtnActionPerformed(evt);
-            }
-        });
-        jPanelSide.add(viewSupviseeBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 280, 237, 37));
-
         availabelSlotsBtn.setBackground(new java.awt.Color(110, 139, 251));
         availabelSlotsBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         availabelSlotsBtn.setForeground(new java.awt.Color(0, 0, 0));
@@ -584,7 +543,7 @@ public class LecturerForm extends javax.swing.JFrame {
                 feedbackBtnActionPerformed(evt);
             }
         });
-        jPanelSide.add(feedbackBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 340, 237, 37));
+        jPanelSide.add(feedbackBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 270, 237, 37));
 
         jPanelContents.setBackground(new java.awt.Color(153, 153, 255));
         jPanelContents.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -613,14 +572,14 @@ public class LecturerForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Student ID", "Student Name", "Module", "Date", "Module", "Approved"
+                "ID", "Student ID", "Student Name", "Module", "Date", "Approved"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
+                java.lang.Object.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -635,7 +594,7 @@ public class LecturerForm extends javax.swing.JFrame {
         if (jTablePresentation.getColumnModel().getColumnCount() > 0) {
             jTablePresentation.getColumnModel().getColumn(0).setMaxWidth(80);
             jTablePresentation.getColumnModel().getColumn(1).setMaxWidth(50);
-            jTablePresentation.getColumnModel().getColumn(6).setMaxWidth(100);
+            jTablePresentation.getColumnModel().getColumn(5).setMaxWidth(100);
         }
 
         jPanelViewPresentation.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 750, 180));
@@ -767,73 +726,6 @@ public class LecturerForm extends javax.swing.JFrame {
         jPanelAvailableSlots.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 60, 240, 410));
 
         jPanelContents.add(jPanelAvailableSlots, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-
-        jPanelViewSupervisee.setBackground(new java.awt.Color(204, 204, 255));
-        jPanelViewSupervisee.setPreferredSize(new java.awt.Dimension(800, 560));
-
-        jTableViewSupervisee.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "ID", "Name", "Supervisor", "Second Marker"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane3.setViewportView(jTableViewSupervisee);
-        if (jTableViewSupervisee.getColumnModel().getColumnCount() > 0) {
-            jTableViewSupervisee.getColumnModel().getColumn(0).setMaxWidth(50);
-        }
-
-        jButtonSwitchToSMApply.setText("jButton1");
-        jButtonSwitchToSMApply.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonSwitchToSMApplyActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanelViewSuperviseeLayout = new javax.swing.GroupLayout(jPanelViewSupervisee);
-        jPanelViewSupervisee.setLayout(jPanelViewSuperviseeLayout);
-        jPanelViewSuperviseeLayout.setHorizontalGroup(
-            jPanelViewSuperviseeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelViewSuperviseeLayout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addComponent(jButtonSwitchToSMApply, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 588, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(73, 73, 73))
-        );
-        jPanelViewSuperviseeLayout.setVerticalGroup(
-            jPanelViewSuperviseeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelViewSuperviseeLayout.createSequentialGroup()
-                .addGroup(jPanelViewSuperviseeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelViewSuperviseeLayout.createSequentialGroup()
-                        .addGap(59, 59, 59)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanelViewSuperviseeLayout.createSequentialGroup()
-                        .addGap(201, 201, 201)
-                        .addComponent(jButtonSwitchToSMApply, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(65, Short.MAX_VALUE))
-        );
-
-        jPanelContents.add(jPanelViewSupervisee, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         jPanelReport.setBackground(new java.awt.Color(204, 204, 255));
         jPanelReport.setPreferredSize(new java.awt.Dimension(800, 560));
@@ -1006,10 +898,6 @@ public class LecturerForm extends javax.swing.JFrame {
         populatePresentationRequestComboBox();
     }//GEN-LAST:event_jButtonApprovePresentationActionPerformed
 
-    private void jButtonSwitchToSMApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSwitchToSMApplyActionPerformed
-        openAvailableSlots();
-    }//GEN-LAST:event_jButtonSwitchToSMApplyActionPerformed
-
     private void jButtonResetFiltersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonResetFiltersActionPerformed
         jComboBoxFilterStudent.setSelectedIndex(-1);
         populateReportsTable();
@@ -1108,7 +996,6 @@ public class LecturerForm extends javax.swing.JFrame {
         jPanelDashboard.setVisible(false);
         jPanelViewPresentation.setVisible(true);
         jPanelAvailableSlots.setVisible(false);
-        jPanelViewSupervisee.setVisible(false);
         jPanelReport.setVisible(false);
         jTablePresentation.setEnabled(false);
     }// GEN-LAST:event_requestBtnActionPerformed
@@ -1117,7 +1004,6 @@ public class LecturerForm extends javax.swing.JFrame {
         jPanelDashboard.setVisible(false);
         jPanelViewPresentation.setVisible(false);
         jPanelAvailableSlots.setVisible(false);
-        jPanelViewSupervisee.setVisible(true);
         jPanelReport.setVisible(false);
     }// GEN-LAST:event_viewSupviseeBtnActionPerformed
 
@@ -1133,7 +1019,6 @@ public class LecturerForm extends javax.swing.JFrame {
         jPanelDashboard.setVisible(false);
         jPanelViewPresentation.setVisible(false);
         jPanelAvailableSlots.setVisible(false);
-        jPanelViewSupervisee.setVisible(false);
         jPanelReport.setVisible(true);
 
     }// GEN-LAST:event_feedbackBtnActionPerformed
@@ -1218,7 +1103,6 @@ public class LecturerForm extends javax.swing.JFrame {
     private javax.swing.JButton jButtonFeedback;
     private javax.swing.JButton jButtonResetFilters;
     private javax.swing.JButton jButtonSelectModule;
-    private javax.swing.JButton jButtonSwitchToSMApply;
     private javax.swing.JComboBox<Student> jComboBoxFilterStudent;
     private javax.swing.JComboBox<Request> jComboBoxPresentations;
     private javax.swing.JComboBox<String> jComboBoxStudentModules;
@@ -1271,18 +1155,14 @@ public class LecturerForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanelSide;
     private javax.swing.JPanel jPanelTitle;
     private javax.swing.JPanel jPanelViewPresentation;
-    private javax.swing.JPanel jPanelViewSupervisee;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTable jTablePresentation;
     private javax.swing.JTable jTableReport;
     private javax.swing.JTable jTableSecondMarkerSlots;
-    private javax.swing.JTable jTableViewSupervisee;
     private javax.swing.JTextArea jTextAreaFeedback;
     private javax.swing.JButton requestBtn;
-    private javax.swing.JButton viewSupviseeBtn;
     // End of variables declaration//GEN-END:variables
 }

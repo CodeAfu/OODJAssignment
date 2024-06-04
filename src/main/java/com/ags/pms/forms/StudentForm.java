@@ -100,7 +100,7 @@ public class StudentForm extends javax.swing.JFrame {
             
             rowData[0] = projects.get(i).getId();
             rowData[1] = projects.get(i).getAssessmentType();
-            rowData[2] = projects.get(i).getDetails();
+            rowData[2] = projects.get(i).getModule();
             rowData[3] = projects.get(i).getTotalMark();
 
             model.addRow(rowData);
@@ -725,7 +725,7 @@ public class StudentForm extends javax.swing.JFrame {
         requestsBtn.setBackground(new java.awt.Color(110, 139, 251));
         requestsBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         requestsBtn.setForeground(new java.awt.Color(0, 0, 0));
-        requestsBtn.setText("My Requests");
+        requestsBtn.setText("My Presentations");
         requestsBtn.setBorderPainted(false);
         requestsBtn.setMaximumSize(new java.awt.Dimension(93, 27));
         requestsBtn.setMinimumSize(new java.awt.Dimension(93, 27));
@@ -740,7 +740,7 @@ public class StudentForm extends javax.swing.JFrame {
         presentationBtn.setBackground(new java.awt.Color(110, 139, 251));
         presentationBtn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         presentationBtn.setForeground(new java.awt.Color(0, 0, 0));
-        presentationBtn.setText("Presentation");
+        presentationBtn.setText("Presentation Requests");
         presentationBtn.setBorderPainted(false);
         presentationBtn.setMaximumSize(new java.awt.Dimension(93, 27));
         presentationBtn.setMinimumSize(new java.awt.Dimension(93, 27));
@@ -1121,7 +1121,7 @@ public class StudentForm extends javax.swing.JFrame {
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel10.setText("Pending Requests");
+        jLabel10.setText("My Presentation Slots");
 
         javax.swing.GroupLayout jPanelMyPresentationSlotsLayout = new javax.swing.GroupLayout(jPanelMyPresentationSlots);
         jPanelMyPresentationSlots.setLayout(jPanelMyPresentationSlotsLayout);
