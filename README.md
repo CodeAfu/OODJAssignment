@@ -20,7 +20,52 @@
 - https://i.imgur.com/NV7HnW5.png
     - Shows the presentation requests made by the students (it must be approved by a lecturer)
 
-- Admin Menu
+### Admin Menu
+- https://i.imgur.com/MJsrt9N.png
+    - Displays all users in the system
+- https://i.imgur.com/pOTlDnk.png
+    - Update, Promote, Demote, delete
+        - Promote: Promotes Lecturer to Project manager, only works on lecturers
+        - Demote: Vice versa
+- https://i.imgur.com/9iSDNgQ.png
+    - ez
+
+### Lecturer Menu
+- https://i.imgur.com/I8OqCIx.png
+    - idk explain what u see
+- https://i.imgur.com/mVXzHeG.png
+    - List of presentation requests in the system (made by the student)
+    - Combo box selects a request and then click approve to confirm the request. (A PresentationSlot object is made)
+- https://i.imgur.com/lvAgoG2.png
+    - Apply for second marker of student report
+    - Lists all the students without a second marker
+    - Sends a request for the second marker (REQUEST MUST BE APPROVED BY PM)
+- https://i.imgur.com/HV357ZU.png
+    - Lists student reports
+    - click to see student report details
+    - feedback on the textarea
+
+
+### Project Manager Menu
+- https://i.imgur.com/2hteTjg.png
+    - idk explain what u see
+- https://i.imgur.com/8LYsxVo.png
+    - skip
+- https://i.imgur.com/yrkOk1U.png
+    - List of projects in the system
+    - Add, delete selected, create new
+    - Assign: enrolls all students to the projects based on the module (student data is properly reflected on the backend)
+- https://i.imgur.com/rlKg0hJ.png
+    - Second marker request from the lecturer menu
+    - accept or approve
+    - the yes/no dialogue: yes to delete record of the request, no to keep the record
+- https://i.imgur.com/fQqOZ2W.png
+    - skip
+- https://i.imgur.com/MlLR17e.png
+    - set assessment type i guess
+- https://i.imgur.com/xqI4vJh.png
+    - Assign a second marker or supervisor for student (click from both tables)
+
 
 ## VERY USEFUL METHODS
 

@@ -721,7 +721,7 @@ public class LecturerForm extends javax.swing.JFrame {
                 jButtonApprovePresentationActionPerformed(evt);
             }
         });
-        jPanel2.add(jButtonApprovePresentation, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 120, -1, 33));
+        jPanel2.add(jButtonApprovePresentation, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 120, -1, 33));
 
         jPanel2.add(jComboBoxPresentations, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 510, 40));
 

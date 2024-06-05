@@ -42,7 +42,7 @@ public class ProjectManagementSystem {
             Helper.joinForm(loginForm);
 
             user = loginForm.getUser();
-
+            
             if (user != null) {
                 if (user.getClass().getSimpleName().equals("Lecturer")) {
                     LecturerForm lecturerForm = new LecturerForm(user);
