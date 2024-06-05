@@ -56,7 +56,7 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         initComponents();
 
         try {
-            this.projectManager = new ProjectManager(2008, "Sophia Johnson", "25/06/1970", "sophia@email.com", "sophia_j", "ProjectMan321", Role.SUPERVISOR, new ArrayList<Integer>(Arrays.asList(4004)));
+            this.projectManager = new ProjectManager(2006, "Diego Hampton", "11/01/1980", "diegohPM@lecturer.com", "pm", "pm", Role.SECONDMARKER, new ArrayList<Integer>(Arrays.asList(4003)));
 
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
                 | BadPaddingException | InvalidAlgorithmParameterException e) {

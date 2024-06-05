@@ -1,4 +1,26 @@
+
+## Table of Contents
+
+- [Menu Explanations](#very-useful-methods)
+- [Project Structure](#project-structure)
+- [Very Useful Methods](#very-useful-methods)
+
+
 # OODJ Assignment
+
+## Menu Explanations
+
+### Student Menu
+- https://i.imgur.com/vtedSSP.png 
+    - Landing Page showing reports of the Student
+- https://i.imgur.com/HCpFKPl.png 
+    - Shows Projects enrolled to the student and the list of student's reports (again)
+        - Add Report (you can explain)
+        - Remove Report by clicking a report on the table first
+- https://i.imgur.com/NV7HnW5.png
+    - Shows the presentation requests made by the students (it must be approved by a lecturer)
+
+- Admin Menu
 
 ## VERY USEFUL METHODS
 

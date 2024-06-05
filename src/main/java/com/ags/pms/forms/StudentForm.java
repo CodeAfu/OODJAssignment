@@ -52,7 +52,7 @@ public class StudentForm extends javax.swing.JFrame {
     initComponents();
 
     try {
-        this.student = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "std", "std", new ArrayList<Integer>(Arrays.asList(8000, 8001)), new ArrayList<>(Arrays.asList(7000, 7001)));
+        this.student = new Student(4002, "John Kumar", "09/03/2024", "johnkumar@email.com", "std", "std", new ArrayList<>(Arrays.asList(8000, 8001)), new ArrayList<>(), new ArrayList<>(Arrays.asList(7000, 7001)), new ArrayList<>(Arrays.asList("Computer Science", "Business")));
     } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
             | BadPaddingException | InvalidAlgorithmParameterException e) {
         e.printStackTrace();

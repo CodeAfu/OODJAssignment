@@ -51,8 +51,7 @@ public class LecturerForm extends javax.swing.JFrame {
     initComponents();
 
     try {
-        this.lecturer = new Lecturer(2001, "Joshua", "11/01/1980", "joshua@lecturer.com",
-                        "josh_lecturer","verySecurePasswordMate", Role.NONE);
+        this.lecturer = new Lecturer(2001, "Joshua Samuel", "01/01/1980", "joshua.lecturer@gmail.com", "lc", "lc", Role.NONE);
     } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
             | BadPaddingException | InvalidAlgorithmParameterException e) {
         e.printStackTrace();

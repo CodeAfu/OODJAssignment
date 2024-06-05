@@ -54,7 +54,7 @@ public class AdminForm extends javax.swing.JFrame {
         initComponents();
 
         try {
-            this.admin = new Admin(1001, "Jay", "20/12/1999", "jay@admin.com", "admin", "VerySecureRight");
+            this.admin = new Admin(1001, "Jay", "20/12/1999", "jay@admin.com", "admin", "admin");
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
                 | BadPaddingException | InvalidAlgorithmParameterException e) {
             e.printStackTrace();
