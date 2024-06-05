@@ -71,6 +71,7 @@ public class LecturerForm extends javax.swing.JFrame {
     }
 
     private void populateData() {
+        jTextAreaSelectedReportDetails.setEditable(false);
         jLabelUsername.setText(lecturer.getUsername());
         populatePresentationsRequestTable();
         populateSecondMarkerTable();
@@ -78,7 +79,6 @@ public class LecturerForm extends javax.swing.JFrame {
         populateSecondMarkerComboBox();
         populatePresentationRequestComboBox();
         populateReportsTable();
-        populateFilterStudentComboBox();
     }
 
     private void openDashboard() {
@@ -143,12 +143,14 @@ public class LecturerForm extends javax.swing.JFrame {
             }
         });
         
+        DateFormat formatter = Helper.getDateFormat();
+
         for (int i = 0; i < reports.size(); i++) {
             Object rowData[] = new Object[5];
             
             rowData[0] = reports.get(i).getId();
             rowData[1] = reports.get(i).getStudentId();
-            rowData[2] = reports.get(i).getDateSubmitted();
+            rowData[2] = formatter.format(reports.get(i).getDateSubmitted());
             rowData[3] = reports.get(i).getTotalMark();
             rowData[4] = reports.get(i).getFeedback();
             
@@ -185,16 +187,6 @@ public class LecturerForm extends javax.swing.JFrame {
     }
 
 
-    private void populateFilterStudentComboBox() {
-        jComboBoxFilterStudent.removeAllItems();
-        ArrayList<Student> students = new ArrayList<>();
-        lecturer.viewAllStudentsWithReports().forEach(s -> {
-            students.add((Student) s.get("student"));
-        }); 
-
-        students.forEach(s -> jComboBoxFilterStudent.addItem(s));
-    }
-
     private void populateSecondMarkerAcceptence() {
         Map<String, Object> result = lecturer.viewSecondMarkerAcceptance();
 
@@ -208,13 +200,7 @@ public class LecturerForm extends javax.swing.JFrame {
         jLabelRequestStudentName.setText(student.getName());
         jLabelRequestIsApproved.setText(isApproved ? "Approved" : "Pending");
 
-        DefaultTableModel model = (DefaultTableModel) jTablePresentation.getModel();
-
-        try {
-            Thread.sleep(300);
-        } catch (InterruptedException e) {
-        }
-
+        sleep(300);
     }
 
     private void populatePresentationsRequestTable() {
@@ -292,6 +278,17 @@ public class LecturerForm extends javax.swing.JFrame {
         feedbackBtn = new javax.swing.JButton();
         jPanelContents = new javax.swing.JPanel();
         jPanelDashboard = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel21 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jLabel11 = new javax.swing.JLabel();
         jPanelViewPresentation = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTablePresentation = new javax.swing.JTable();
@@ -320,22 +317,11 @@ public class LecturerForm extends javax.swing.JFrame {
         jPanelReport = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTableReport = new javax.swing.JTable();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel13 = new javax.swing.JLabel();
-        jLabelTotalMarks = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        jLabelContents = new javax.swing.JLabel();
-        jLabelMarks = new javax.swing.JLabel();
-        jLabelMoodle = new javax.swing.JLabel();
-        jLabelProjectAssessmentType = new javax.swing.JLabel();
-        jLabelSupervisor = new javax.swing.JLabel();
-        jLabelProjectModule = new javax.swing.JLabel();
-        jLabelStudentId = new javax.swing.JLabel();
-        jLabelStudentName = new javax.swing.JLabel();
-        jComboBoxFilterStudent = new javax.swing.JComboBox<>();
+        jPanelReportArea = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextAreaSelectedReportDetails = new javax.swing.JTextArea();
         jScrollPane5 = new javax.swing.JScrollPane();
         jTextAreaFeedback = new javax.swing.JTextArea();
-        jButtonResetFilters = new javax.swing.JButton();
         jButtonFeedback = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         jLabelSelectedReport = new javax.swing.JLabel();
@@ -390,7 +376,6 @@ public class LecturerForm extends javax.swing.JFrame {
         jFrameSecondMarkerModuleSelect.getContentPane().add(jPanelMeh, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 340, 170));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1000, 700));
         setResizable(false);
 
         jPanelTitle.setBackground(new java.awt.Color(245, 246, 248));
@@ -549,19 +534,148 @@ public class LecturerForm extends javax.swing.JFrame {
         jPanelContents.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanelDashboard.setBackground(new java.awt.Color(204, 204, 255));
+        jPanelDashboard.setPreferredSize(new java.awt.Dimension(800, 560));
+
+        jPanel4.setBackground(new java.awt.Color(0, 0, 102));
+
+        jLabel15.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel15.setText("12");
+
+        jLabel17.setFont(new java.awt.Font("STZhongsong", 0, 14)); // NOI18N
+        jLabel17.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel17.setText("Currently remaining Slots");
+
+        jLabel9.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel9.setFont(new java.awt.Font("STZhongsong", 1, 18)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel9.setText("Slots");
+        jLabel9.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(81, 81, 81)
+                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap(33, Short.MAX_VALUE)
+                .addComponent(jLabel17)
+                .addGap(31, 31, 31))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel9)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                .addComponent(jLabel17)
+                .addGap(23, 23, 23))
+        );
+
+        jPanel5.setBackground(new java.awt.Color(0, 153, 153));
+
+        jLabel21.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
+        jLabel21.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel21.setText("8");
+
+        jLabel22.setFont(new java.awt.Font("STZhongsong", 0, 14)); // NOI18N
+        jLabel22.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel22.setText("Request made already");
+
+        jLabel10.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel10.setFont(new java.awt.Font("STZhongsong", 1, 18)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel10.setText("Presentation Request");
+        jLabel10.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(71, 71, 71))
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addComponent(jLabel22)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel10)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel22)
+                .addGap(22, 22, 22))
+        );
+
+        jTable1.setBackground(new java.awt.Color(153, 255, 0));
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane6.setViewportView(jTable1);
+
+        jLabel11.setBackground(new java.awt.Color(51, 255, 0));
+        jLabel11.setFont(new java.awt.Font("STZhongsong", 1, 18)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(102, 102, 0));
+        jLabel11.setText("Supervisee List");
+        jLabel11.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         javax.swing.GroupLayout jPanelDashboardLayout = new javax.swing.GroupLayout(jPanelDashboard);
         jPanelDashboard.setLayout(jPanelDashboardLayout);
         jPanelDashboardLayout.setHorizontalGroup(
             jPanelDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addGroup(jPanelDashboardLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(37, 37, 37)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                .addGroup(jPanelDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20))
         );
         jPanelDashboardLayout.setVerticalGroup(
             jPanelDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 560, Short.MAX_VALUE)
+            .addGroup(jPanelDashboardLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanelDashboardLayout.createSequentialGroup()
+                        .addComponent(jLabel11)
+                        .addGap(2, 2, 2)
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(321, Short.MAX_VALUE))
         );
 
-        jPanelContents.add(jPanelDashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 560));
+        jPanelContents.add(jPanelDashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         jPanelViewPresentation.setBackground(new java.awt.Color(204, 204, 255));
         jPanelViewPresentation.setPreferredSize(new java.awt.Dimension(800, 560));
@@ -767,78 +881,31 @@ public class LecturerForm extends javax.swing.JFrame {
             jTableReport.getColumnModel().getColumn(0).setMaxWidth(50);
         }
 
-        jPanelReport.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 20, 570, 120));
+        jPanelReport.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 780, 110));
 
-        jPanel3.setBackground(new java.awt.Color(102, 51, 255));
-        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanelReportArea.setBackground(new java.awt.Color(204, 204, 255));
+        jPanelReportArea.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel13.setText("Marks:");
-        jPanel3.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 261, -1, -1));
+        jScrollPane3.setEnabled(false);
+        jScrollPane3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
-        jLabelTotalMarks.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabelTotalMarks.setText("jLabel7");
-        jPanel3.add(jLabelTotalMarks, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 290, -1, -1));
+        jTextAreaSelectedReportDetails.setBackground(new java.awt.Color(255, 255, 255));
+        jTextAreaSelectedReportDetails.setColumns(20);
+        jTextAreaSelectedReportDetails.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jTextAreaSelectedReportDetails.setForeground(new java.awt.Color(0, 0, 0));
+        jTextAreaSelectedReportDetails.setRows(5);
+        jTextAreaSelectedReportDetails.setFocusable(false);
+        jScrollPane3.setViewportView(jTextAreaSelectedReportDetails);
 
-        jLabel16.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel16.setText("Total:");
-        jPanel3.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 290, -1, -1));
+        jPanelReportArea.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 570, 370));
 
-        jLabelContents.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabelContents.setText("jLabel7");
-        jPanel3.add(jLabelContents, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 110, 380, 150));
-
-        jLabelMarks.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabelMarks.setText("jLabel7");
-        jPanel3.add(jLabelMarks, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 260, -1, -1));
-
-        jLabelMoodle.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabelMoodle.setText("jLabel7");
-        jPanel3.add(jLabelMoodle, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, -1, -1));
-
-        jLabelProjectAssessmentType.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabelProjectAssessmentType.setText("jLabel7");
-        jPanel3.add(jLabelProjectAssessmentType, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 50, -1, -1));
-
-        jLabelSupervisor.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabelSupervisor.setText("jLabel7");
-        jPanel3.add(jLabelSupervisor, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 20, -1, -1));
-
-        jLabelProjectModule.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabelProjectModule.setText("jLabel7");
-        jPanel3.add(jLabelProjectModule, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 20, -1, -1));
-
-        jLabelStudentId.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabelStudentId.setText("jLabel7");
-        jPanel3.add(jLabelStudentId, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, -1, -1));
-
-        jLabelStudentName.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabelStudentName.setText("jLabel7");
-        jPanel3.add(jLabelStudentName, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
-
-        jPanelReport.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 150, 570, 370));
-
-        jComboBoxFilterStudent.setSelectedItem(null);
-        jComboBoxFilterStudent.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxFilterStudentActionPerformed(evt);
-            }
-        });
-        jPanelReport.add(jComboBoxFilterStudent, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 42, 150, 30));
+        jPanelReport.add(jPanelReportArea, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 150, 570, 370));
 
         jTextAreaFeedback.setColumns(20);
         jTextAreaFeedback.setRows(5);
         jScrollPane5.setViewportView(jTextAreaFeedback);
 
         jPanelReport.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 200, 340));
-
-        jButtonResetFilters.setText("Reset");
-        jButtonResetFilters.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonResetFiltersActionPerformed(evt);
-            }
-        });
-        jPanelReport.add(jButtonResetFilters, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 80, -1, -1));
 
         jButtonFeedback.setText("Evaluate Report");
         jButtonFeedback.addActionListener(new java.awt.event.ActionListener() {
@@ -875,7 +942,7 @@ public class LecturerForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanelTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelContents, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanelContents, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE))
         );
 
         setSize(new java.awt.Dimension(1065, 681));
@@ -898,18 +965,6 @@ public class LecturerForm extends javax.swing.JFrame {
         populatePresentationRequestComboBox();
     }//GEN-LAST:event_jButtonApprovePresentationActionPerformed
 
-    private void jButtonResetFiltersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonResetFiltersActionPerformed
-        jComboBoxFilterStudent.setSelectedIndex(-1);
-        populateReportsTable();
-    }//GEN-LAST:event_jButtonResetFiltersActionPerformed
-
-    private void jComboBoxFilterStudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxFilterStudentActionPerformed
-        if (jComboBoxFilterStudent.getSelectedIndex() != -1) {
-            int id = ((Identifiable) jComboBoxFilterStudent.getSelectedItem()).getId();
-            populateReportsTable(id);
-        }
-    }//GEN-LAST:event_jComboBoxFilterStudentActionPerformed
-
     private void jButtonFeedbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFeedbackActionPerformed
         String feedback = jTextAreaFeedback.getText();
         lecturer.evaluateReport(selectedReportId, feedback);
@@ -919,7 +974,6 @@ public class LecturerForm extends javax.swing.JFrame {
         } catch (InterruptedException e) {}
 
         populateReportsTable();
-        populateFilterStudentComboBox();
     }//GEN-LAST:event_jButtonFeedbackActionPerformed
 
     private void jTableReportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableReportMouseClicked
@@ -956,19 +1010,32 @@ public class LecturerForm extends javax.swing.JFrame {
         DataContext context = new DataContext();
         Report report = context.getById(selectedReportId);
 
-        jLabelMoodle.setText(report.getMoodleLink());
-        jLabelMarks.setText(Integer.toString(report.getStudentMark()));
-        jLabelTotalMarks.setText(Integer.toString(report.getTotalMark()));
-        jLabelContents.setText(report.getContents());
-        jLabelProjectAssessmentType.setText(report.fetchProject().getAssessmentType().toString());
-        jLabelProjectModule.setText(report.fetchProject().getModule());
-
-        // These values not properly added into data
-        jLabelStudentName.setText(report.fetchStudent().getName());
-        jLabelStudentId.setText(Integer.toString(report.fetchStudent().getId()));
+        String studentId = Integer.toString(report.fetchStudent().getId());
+        String studentName = report.fetchStudent().getName();
+        
         Lecturer supervisor = (Lecturer) report.fetchStudent().fetchSupervisor();
         String supervisorName = supervisor == null ? "null" : supervisor.getName();
-        jLabelSupervisor.setText(supervisorName);
+        
+        String projectModule = report.fetchProject().getModule();
+        String projectAssessmentType = report.fetchProject().getAssessmentType().toString();
+        String contents = report.getContents();
+        String totalMarks = Integer.toString(report.getTotalMark());
+        String studentMarks = Integer.toString(report.getStudentMark());
+        String moodleLink = report.getMoodleLink();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Student ID: " + studentId).append("\n")
+            .append("Student Name: " + studentName).append("\n")
+            .append("Supervisor Name: " + supervisorName).append("\n")
+            .append("Module: " + projectModule).append("\n")
+            .append("Assessment Type: " + projectAssessmentType).append("\n")
+            .append("Contents: " + contents).append("\n")
+            .append("Total Marks: " + totalMarks).append("\n")
+            .append("Student Marks: " + studentMarks).append("\n")
+            .append("Moodle Link: " + moodleLink);
+        
+        String reportDetails = stringBuilder.toString();
+        jTextAreaSelectedReportDetails.setText(reportDetails);
     }
 
     private void jButtonApplySecondMarkerActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonApplySecondMarkerActionPerformed
@@ -1089,7 +1156,6 @@ public class LecturerForm extends javax.swing.JFrame {
         try {
             Thread.sleep(i);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -1101,28 +1167,26 @@ public class LecturerForm extends javax.swing.JFrame {
     private javax.swing.JButton jButtonApplySecondMarker;
     private javax.swing.JButton jButtonApprovePresentation;
     private javax.swing.JButton jButtonFeedback;
-    private javax.swing.JButton jButtonResetFilters;
     private javax.swing.JButton jButtonSelectModule;
-    private javax.swing.JComboBox<Student> jComboBoxFilterStudent;
     private javax.swing.JComboBox<Request> jComboBoxPresentations;
     private javax.swing.JComboBox<String> jComboBoxStudentModules;
     private javax.swing.JComboBox<Student> jComboBoxStudentSecondMarker;
     private javax.swing.JFrame jFrameSecondMarkerModuleSelect;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabelContents;
-    private javax.swing.JLabel jLabelMarks;
-    private javax.swing.JLabel jLabelMoodle;
-    private javax.swing.JLabel jLabelProjectAssessmentType;
-    private javax.swing.JLabel jLabelProjectModule;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel jLabelRequest;
     private javax.swing.JLabel jLabelRequest1;
     private javax.swing.JLabel jLabelRequest10;
@@ -1137,32 +1201,34 @@ public class LecturerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelRequestStudentId;
     private javax.swing.JLabel jLabelRequestStudentName;
     private javax.swing.JLabel jLabelSelectedReport;
-    private javax.swing.JLabel jLabelStudentId;
-    private javax.swing.JLabel jLabelStudentName;
-    private javax.swing.JLabel jLabelSupervisor;
     private javax.swing.JLabel jLabelTitle;
-    private javax.swing.JLabel jLabelTotalMarks;
     private javax.swing.JLabel jLabelUsername;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanelAvailableSlots;
     private javax.swing.JPanel jPanelContents;
     private javax.swing.JPanel jPanelDashboard;
     private javax.swing.JPanel jPanelDragLeft;
     private javax.swing.JPanel jPanelMeh;
     private javax.swing.JPanel jPanelReport;
+    private javax.swing.JPanel jPanelReportArea;
     private javax.swing.JPanel jPanelSide;
     private javax.swing.JPanel jPanelTitle;
     private javax.swing.JPanel jPanelViewPresentation;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTablePresentation;
     private javax.swing.JTable jTableReport;
     private javax.swing.JTable jTableSecondMarkerSlots;
     private javax.swing.JTextArea jTextAreaFeedback;
+    private javax.swing.JTextArea jTextAreaSelectedReportDetails;
     private javax.swing.JButton requestBtn;
     // End of variables declaration//GEN-END:variables
 }

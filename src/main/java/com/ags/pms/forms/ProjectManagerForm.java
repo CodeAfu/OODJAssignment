@@ -85,7 +85,6 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         populateSupervisees();
         populatePresentationRequestComboBox();
         populateReportsTable();
-        populateFilterStudentComboBox();
         populateStudentAssessmentTable();
         populateAssessmentTypeComboBox();
         populateLecturerRoleTable();
@@ -204,12 +203,14 @@ public class ProjectManagerForm extends javax.swing.JFrame {
             }
         });
 
+        DateFormat formatter = Helper.getDateFormat();
+
         for (int i = 0; i < reports.size(); i++) {
             Object rowData[] = new Object[5];
 
             rowData[0] = reports.get(i).getId();
             rowData[1] = reports.get(i).getStudentId();
-            rowData[2] = reports.get(i).getDateSubmitted();
+            rowData[2] = formatter.format(reports.get(i).getDateSubmitted());
             rowData[3] = reports.get(i).getTotalMark();
             rowData[4] = reports.get(i).getFeedback();
 
@@ -243,16 +244,6 @@ public class ProjectManagerForm extends javax.swing.JFrame {
 
             model.addRow(rowData);
         }
-    }
-
-    private void populateFilterStudentComboBox() {
-        jComboBoxFilterStudent.removeAllItems();
-        ArrayList<Student> students = new ArrayList<>();
-        projectManager.viewAllStudentsWithReports().forEach(s -> {
-            students.add((Student) s.get("student"));
-        });
-
-        students.forEach(s -> jComboBoxFilterStudent.addItem(s));
     }
 
     private void populateSecondMarkerAcceptence() {
@@ -718,6 +709,16 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         projectsBtn = new javax.swing.JButton();
         jPanelContents = new javax.swing.JPanel();
         jPanelDashboard = new javax.swing.JPanel();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel13 = new javax.swing.JLabel();
+        viewLecturerBtn1 = new javax.swing.JButton();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel15 = new javax.swing.JLabel();
+        viewReportBtn1 = new javax.swing.JButton();
+        jPanel9 = new javax.swing.JPanel();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
         jPanelViewPresentation = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTablePresentation = new javax.swing.JTable();
@@ -762,25 +763,14 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         jPanelReport = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTableReport = new javax.swing.JTable();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel13 = new javax.swing.JLabel();
-        jLabelTotalMarks = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        jLabelContents = new javax.swing.JLabel();
-        jLabelMarks = new javax.swing.JLabel();
-        jLabelMoodle = new javax.swing.JLabel();
-        jLabelProjectAssessmentType = new javax.swing.JLabel();
-        jLabelSupervisor = new javax.swing.JLabel();
-        jLabelProjectModule = new javax.swing.JLabel();
-        jLabelStudentId = new javax.swing.JLabel();
-        jLabelStudentName = new javax.swing.JLabel();
-        jComboBoxFilterStudent = new javax.swing.JComboBox<>();
         jScrollPane5 = new javax.swing.JScrollPane();
         jTextAreaFeedback = new javax.swing.JTextArea();
-        jButtonResetFilters = new javax.swing.JButton();
         jButtonFeedback = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         jLabelSelectedReport = new javax.swing.JLabel();
+        jPanelReportArea = new javax.swing.JPanel();
+        jScrollPane12 = new javax.swing.JScrollPane();
+        jTextAreaSelectedReportDetails = new javax.swing.JTextArea();
         jPanelAssessment = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         jTableStudentAssessmentTypes = new javax.swing.JTable();
@@ -1117,15 +1107,158 @@ public class ProjectManagerForm extends javax.swing.JFrame {
 
         jPanelDashboard.setBackground(new java.awt.Color(204, 204, 255));
 
+        jPanel7.setBackground(new java.awt.Color(0, 0, 102));
+
+        jLabel13.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel13.setFont(new java.awt.Font("STZhongsong", 1, 18)); // NOI18N
+        jLabel13.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel13.setText("Assign Role");
+        jLabel13.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        viewLecturerBtn1.setBackground(new java.awt.Color(255, 255, 255));
+        viewLecturerBtn1.setFont(new java.awt.Font("STZhongsong", 0, 12)); // NOI18N
+        viewLecturerBtn1.setForeground(new java.awt.Color(0, 0, 0));
+        viewLecturerBtn1.setText("Assign Lecturer Role");
+        viewLecturerBtn1.setBorderPainted(false);
+        viewLecturerBtn1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                viewLecturerBtn1MouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                        .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                        .addGap(0, 45, Short.MAX_VALUE)
+                        .addComponent(viewLecturerBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(47, 47, 47))))
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel13)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(viewLecturerBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(99, 99, 99))
+        );
+
+        jPanel8.setBackground(new java.awt.Color(0, 153, 153));
+
+        jLabel15.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel15.setFont(new java.awt.Font("STZhongsong", 1, 18)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel15.setText("View Report");
+        jLabel15.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        viewReportBtn1.setBackground(new java.awt.Color(255, 255, 255));
+        viewReportBtn1.setFont(new java.awt.Font("STZhongsong", 0, 12)); // NOI18N
+        viewReportBtn1.setForeground(new java.awt.Color(0, 0, 0));
+        viewReportBtn1.setText("View Report");
+        viewReportBtn1.setBorderPainted(false);
+        viewReportBtn1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                viewReportBtn1MouseClicked(evt);
+            }
+        });
+        viewReportBtn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewReportBtn1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addComponent(viewReportBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel15)
+                .addGap(58, 58, 58)
+                .addComponent(viewReportBtn1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel9.setBackground(new java.awt.Color(102, 0, 204));
+
+        jLabel16.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel16.setFont(new java.awt.Font("STZhongsong", 1, 18)); // NOI18N
+        jLabel16.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel16.setText("Presentation Requests");
+        jLabel16.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jLabel18.setFont(new java.awt.Font("STZhongsong", 0, 48)); // NOI18N
+        jLabel18.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel18.setText("11");
+
+        jLabel24.setFont(new java.awt.Font("STZhongsong", 0, 14)); // NOI18N
+        jLabel24.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel24.setText("Request made already");
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGap(85, 85, 85)
+                .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel24)
+                .addGap(48, 48, 48))
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel16)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+                .addComponent(jLabel24)
+                .addGap(29, 29, 29))
+        );
+
         javax.swing.GroupLayout jPanelDashboardLayout = new javax.swing.GroupLayout(jPanelDashboard);
         jPanelDashboard.setLayout(jPanelDashboardLayout);
         jPanelDashboardLayout.setHorizontalGroup(
             jPanelDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addGroup(jPanelDashboardLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelDashboardLayout.setVerticalGroup(
             jPanelDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 560, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelDashboardLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(jPanelDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(312, 312, 312))
         );
 
         jPanelContents.add(jPanelDashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 560));
@@ -1506,64 +1639,7 @@ public class ProjectManagerForm extends javax.swing.JFrame {
             jTableReport.getColumnModel().getColumn(0).setMaxWidth(50);
         }
 
-        jPanelReport.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 20, 570, 120));
-
-        jPanel3.setBackground(new java.awt.Color(102, 51, 255));
-        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel13.setText("Marks:");
-        jPanel3.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 261, -1, -1));
-
-        jLabelTotalMarks.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabelTotalMarks.setText("jLabel7");
-        jPanel3.add(jLabelTotalMarks, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 290, -1, -1));
-
-        jLabel16.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel16.setText("Total:");
-        jPanel3.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 290, -1, -1));
-
-        jLabelContents.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabelContents.setText("jLabel7");
-        jPanel3.add(jLabelContents, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 110, 380, 150));
-
-        jLabelMarks.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabelMarks.setText("jLabel7");
-        jPanel3.add(jLabelMarks, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 260, -1, -1));
-
-        jLabelMoodle.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabelMoodle.setText("jLabel7");
-        jPanel3.add(jLabelMoodle, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, -1, -1));
-
-        jLabelProjectAssessmentType.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabelProjectAssessmentType.setText("jLabel7");
-        jPanel3.add(jLabelProjectAssessmentType, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 50, -1, -1));
-
-        jLabelSupervisor.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabelSupervisor.setText("jLabel7");
-        jPanel3.add(jLabelSupervisor, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 20, -1, -1));
-
-        jLabelProjectModule.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabelProjectModule.setText("jLabel7");
-        jPanel3.add(jLabelProjectModule, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 20, -1, -1));
-
-        jLabelStudentId.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabelStudentId.setText("jLabel7");
-        jPanel3.add(jLabelStudentId, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, -1, -1));
-
-        jLabelStudentName.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabelStudentName.setText("jLabel7");
-        jPanel3.add(jLabelStudentName, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
-
-        jPanelReport.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 150, 570, 370));
-
-        jComboBoxFilterStudent.setSelectedItem(null);
-        jComboBoxFilterStudent.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxFilterStudentActionPerformed(evt);
-            }
-        });
-        jPanelReport.add(jComboBoxFilterStudent, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 42, 150, 30));
+        jPanelReport.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 780, 110));
 
         jTextAreaFeedback.setColumns(20);
         jTextAreaFeedback.setRows(5);
@@ -1571,14 +1647,6 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         jScrollPane5.setViewportView(jTextAreaFeedback);
 
         jPanelReport.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 200, 340));
-
-        jButtonResetFilters.setText("Reset");
-        jButtonResetFilters.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonResetFiltersActionPerformed(evt);
-            }
-        });
-        jPanelReport.add(jButtonResetFilters, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 80, -1, -1));
 
         jButtonFeedback.setText("Evaluate Report");
         jButtonFeedback.addActionListener(new java.awt.event.ActionListener() {
@@ -1593,6 +1661,24 @@ public class ProjectManagerForm extends javax.swing.JFrame {
 
         jLabelSelectedReport.setText("-1");
         jPanelReport.add(jLabelSelectedReport, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 130, -1, 20));
+
+        jPanelReportArea.setBackground(new java.awt.Color(204, 204, 255));
+        jPanelReportArea.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jScrollPane12.setEnabled(false);
+        jScrollPane12.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+
+        jTextAreaSelectedReportDetails.setBackground(new java.awt.Color(255, 255, 255));
+        jTextAreaSelectedReportDetails.setColumns(20);
+        jTextAreaSelectedReportDetails.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jTextAreaSelectedReportDetails.setForeground(new java.awt.Color(0, 0, 0));
+        jTextAreaSelectedReportDetails.setRows(5);
+        jTextAreaSelectedReportDetails.setFocusable(false);
+        jScrollPane12.setViewportView(jTextAreaSelectedReportDetails);
+
+        jPanelReportArea.add(jScrollPane12, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 570, 370));
+
+        jPanelReport.add(jPanelReportArea, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 150, 570, 370));
 
         jPanelContents.add(jPanelReport, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
@@ -1798,18 +1884,6 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         openAvailableSlots();
     }//GEN-LAST:event_jButtonSwitchToSMApplyActionPerformed
 
-    private void jButtonResetFiltersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonResetFiltersActionPerformed
-        jComboBoxFilterStudent.setSelectedIndex(-1);
-        populateReportsTable();
-    }//GEN-LAST:event_jButtonResetFiltersActionPerformed
-
-    private void jComboBoxFilterStudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxFilterStudentActionPerformed
-        if (jComboBoxFilterStudent.getSelectedIndex() != -1) {
-            int id = ((Identifiable) jComboBoxFilterStudent.getSelectedItem()).getId();
-            populateReportsTable(id);
-        }
-    }//GEN-LAST:event_jComboBoxFilterStudentActionPerformed
-
     private void jButtonFeedbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFeedbackActionPerformed
         String feedback = jTextAreaFeedback.getText();
         projectManager.evaluateReport(selectedReportId, feedback);
@@ -1820,7 +1894,6 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         }
 
         populateReportsTable();
-        populateFilterStudentComboBox();
     }//GEN-LAST:event_jButtonFeedbackActionPerformed
 
     private void jTableReportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableReportMouseClicked
@@ -1976,6 +2049,30 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         assignProjects();
     }//GEN-LAST:event_jButtonAssignProjectsMouseClicked
 
+    private void viewLecturerBtn1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_viewLecturerBtn1MouseClicked
+        jPanelDashboard.setVisible(false);
+        jPanelViewPresentation.setVisible(false);
+        jPanelMarkerRequests.setVisible(false);
+        jPanelViewSupervisee.setVisible(false);
+        jPanelReport.setVisible(false);
+        jPanelAssessment.setVisible(false);
+        jPanelLecturerRole.setVisible(true);
+    }//GEN-LAST:event_viewLecturerBtn1MouseClicked
+
+    private void viewReportBtn1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_viewReportBtn1MouseClicked
+        jPanelDashboard.setVisible(false);
+        jPanelViewPresentation.setVisible(false);
+        jPanelMarkerRequests.setVisible(false);
+        jPanelViewSupervisee.setVisible(false);
+        jPanelReport.setVisible(true);
+        jPanelAssessment.setVisible(false);
+        jPanelLecturerRole.setVisible(false);
+    }//GEN-LAST:event_viewReportBtn1MouseClicked
+
+    private void viewReportBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewReportBtn1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_viewReportBtn1ActionPerformed
+
     private void loadRequestFromSelectedItem() {
         DefaultTableModel dtm = (DefaultTableModel) jTableSecondMarkerRequests.getModel();
         int selectedRow = jTableSecondMarkerRequests.getSelectedRow();
@@ -2006,21 +2103,35 @@ public class ProjectManagerForm extends javax.swing.JFrame {
         jLabelSelectedReport.setText(Integer.toString(reportId));
 
         DataContext context = new DataContext();
-        Report report = context.getById(reportId);
+        Report report = context.getById(selectedReportId);
 
-        jLabelMoodle.setText(report.getMoodleLink());
-        jLabelMarks.setText(Integer.toString(report.getStudentMark()));
-        jLabelTotalMarks.setText(Integer.toString(report.getTotalMark()));
-        jLabelContents.setText(report.getContents());
-        jLabelProjectAssessmentType.setText(report.fetchProject().getAssessmentType().toString());
-        jLabelProjectModule.setText(report.fetchProject().getModule());
-
-        // These values not properly added into data
-        jLabelStudentName.setText(report.fetchStudent().getName());
-        jLabelStudentId.setText(Integer.toString(report.fetchStudent().getId()));
+        String studentId = Integer.toString(report.fetchStudent().getId());
+        String studentName = report.fetchStudent().getName();
+        
         Lecturer supervisor = (Lecturer) report.fetchStudent().fetchSupervisor();
         String supervisorName = supervisor == null ? "null" : supervisor.getName();
-        jLabelSupervisor.setText(supervisorName);
+        
+        String projectModule = report.fetchProject().getModule();
+        String projectAssessmentType = report.fetchProject().getAssessmentType().toString();
+        String contents = report.getContents();
+        String totalMarks = Integer.toString(report.getTotalMark());
+        String studentMarks = Integer.toString(report.getStudentMark());
+        String moodleLink = report.getMoodleLink();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Student ID: " + studentId).append("\n")
+            .append("Student Name: " + studentName).append("\n")
+            .append("Supervisor Name: " + supervisorName).append("\n")
+            .append("Module: " + projectModule).append("\n")
+            .append("Assessment Type: " + projectAssessmentType).append("\n")
+            .append("Contents: " + contents).append("\n")
+            .append("Total Marks: " + totalMarks).append("\n")
+            .append("Student Marks: " + studentMarks).append("\n")
+            .append("Moodle Link: " + moodleLink);
+        
+        String reportDetails = stringBuilder.toString();
+        jTextAreaSelectedReportDetails.setText(reportDetails);
+
     }
 
     private void requestBtnActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_requestBtnActionPerformed
@@ -2142,12 +2253,10 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private javax.swing.JButton jButtonProjectCreate;
     private javax.swing.JButton jButtonProjectEdit;
     private javax.swing.JButton jButtonRejectSecondMarker;
-    private javax.swing.JButton jButtonResetFilters;
     private javax.swing.JButton jButtonSwitchToSMApply;
     private javax.swing.JComboBox<AssessmentType> jComboBoxAssessmentType;
     private javax.swing.JComboBox<AssessmentType> jComboBoxCProjectAT;
     private javax.swing.JComboBox<AssessmentType> jComboBoxEProjectAT;
-    private javax.swing.JComboBox<Student> jComboBoxFilterStudent;
     private javax.swing.JComboBox<Role> jComboBoxLecturerRoles;
     private javax.swing.JComboBox<Request> jComboBoxPresentations;
     private javax.swing.JFrame jFrameEditProjectPopup;
@@ -2158,14 +2267,17 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -2173,11 +2285,6 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JLabel jLabelContents;
-    private javax.swing.JLabel jLabelMarks;
-    private javax.swing.JLabel jLabelMoodle;
-    private javax.swing.JLabel jLabelProjectAssessmentType;
-    private javax.swing.JLabel jLabelProjectModule;
     private javax.swing.JLabel jLabelRequest;
     private javax.swing.JLabel jLabelRequest10;
     private javax.swing.JLabel jLabelRequest11;
@@ -2199,18 +2306,16 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelRequestStudentName;
     private javax.swing.JLabel jLabelRequestType;
     private javax.swing.JLabel jLabelSelectedReport;
-    private javax.swing.JLabel jLabelStudentId;
-    private javax.swing.JLabel jLabelStudentName;
-    private javax.swing.JLabel jLabelSupervisor;
     private javax.swing.JLabel jLabelTitle;
-    private javax.swing.JLabel jLabelTotalMarks;
     private javax.swing.JLabel jLabelUsername;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JPanel jPanelAssessment;
     private javax.swing.JPanel jPanelContents;
     private javax.swing.JPanel jPanelDashboard;
@@ -2221,6 +2326,7 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanelMarkerRequests;
     private javax.swing.JPanel jPanelProjects;
     private javax.swing.JPanel jPanelReport;
+    private javax.swing.JPanel jPanelReportArea;
     private javax.swing.JPanel jPanelSide;
     private javax.swing.JPanel jPanelTitle;
     private javax.swing.JPanel jPanelViewPresentation;
@@ -2228,6 +2334,7 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane11;
+    private javax.swing.JScrollPane jScrollPane12;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -2247,6 +2354,7 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextAreaCProjectDetails;
     private javax.swing.JTextArea jTextAreaEProjectDetails;
     private javax.swing.JTextArea jTextAreaFeedback;
+    private javax.swing.JTextArea jTextAreaSelectedReportDetails;
     private javax.swing.JTextField jTextFieldCProjectModule;
     private javax.swing.JTextField jTextFieldCProjectTM;
     private javax.swing.JTextField jTextFieldEProjectId;
@@ -2257,7 +2365,9 @@ public class ProjectManagerForm extends javax.swing.JFrame {
     private javax.swing.JButton requestBtn;
     private javax.swing.JButton viewAssessmentBtn;
     private javax.swing.JButton viewLecturerBtn;
+    private javax.swing.JButton viewLecturerBtn1;
     private javax.swing.JButton viewReportBtn;
+    private javax.swing.JButton viewReportBtn1;
     private javax.swing.JButton viewSuperviseeBtn;
     // End of variables declaration//GEN-END:variables
 

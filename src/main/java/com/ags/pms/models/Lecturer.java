@@ -103,8 +103,6 @@ public class Lecturer extends User {
         return context.getStudents();
     }
 
-
-
     public Student viewStudent(int id) {
         if (Integer.toString(id).charAt(0) != '4') {
             Helper.printErr("Student ID must start with value 4: " + id);
