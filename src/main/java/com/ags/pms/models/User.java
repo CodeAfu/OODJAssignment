@@ -25,7 +25,8 @@ public abstract class User implements Identifiable {
     protected String username;
     protected String password;
 
-    private PasswordHandler pwHandler = new PasswordHandler();
+    private PasswordHandler pwHandler = new PasswordHandler("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
+    // private PasswordHandler pwHandler = new PasswordHandler();
     
     public User() {
     }
