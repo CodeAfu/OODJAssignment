@@ -10,16 +10,10 @@ import javax.crypto.NoSuchPaddingException;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Collections;
-import java.util.Comparator;
 
 import com.ags.pms.Helper;
 import com.ags.pms.data.DataContext;
-import com.fasterxml.jackson.databind.deser.std.CollectionDeserializer;
-
-import net.bytebuddy.implementation.bytecode.collection.ArrayAccess;
 
 public class Lecturer extends User {
 

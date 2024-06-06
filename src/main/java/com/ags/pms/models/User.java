@@ -9,8 +9,6 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import java.util.HashMap;
-
 import com.ags.pms.Helper;
 import com.ags.pms.data.DataContext;
 import com.ags.pms.services.PasswordHandler;

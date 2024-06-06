@@ -1,6 +1,5 @@
 package com.ags.pms.models;
 
-import java.lang.reflect.Array;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -15,7 +14,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import com.ags.pms.data.DataContext;
-import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
 
 public class ProjectManager extends Lecturer {
 

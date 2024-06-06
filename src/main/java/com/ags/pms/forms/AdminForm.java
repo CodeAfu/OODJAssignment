@@ -6,40 +6,18 @@
 package com.ags.pms.forms;
 
 import com.ags.pms.Helper;
-import com.ags.pms.data.DataContext;
 import com.ags.pms.models.Admin;
-import com.ags.pms.models.Identifiable;
-import com.ags.pms.models.Lecturer;
-import com.ags.pms.models.Report;
-import com.ags.pms.models.Request;
 import com.ags.pms.models.RequestType;
-import com.ags.pms.models.Role;
-import com.ags.pms.models.Student;
 import com.ags.pms.models.User;
-import com.formdev.flatlaf.FlatLightLaf;
-import java.awt.Dimension;
-import java.awt.Window;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JOptionPane;
-import javax.swing.JToolTip;
-
-import java.util.stream.Collectors;
-import javax.swing.ListSelectionModel;
-
 
 /**
  *

@@ -5,7 +5,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 
 import javax.crypto.BadPaddingException;
@@ -282,6 +281,7 @@ public class SeedData {
         
     }
 
+    @SuppressWarnings("unused")
     public static void executeWithContext() throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         DataContext context = new DataContext();
 
