@@ -1681,8 +1681,8 @@ public class ProjectManagerForm extends javax.swing.JFrame {
 
         jLabelRequest5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabelRequest5.setForeground(new java.awt.Color(0, 51, 51));
-        jLabelRequest5.setText("Assign Project Manager Role");
-        jPanel5.add(jLabelRequest5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 220, 40));
+        jLabelRequest5.setText("Assign Lecturer Role");
+        jPanel5.add(jLabelRequest5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, 220, 40));
 
         jButtonAssignLecturerRole.setText("Assign");
         jButtonAssignLecturerRole.addMouseListener(new java.awt.event.MouseAdapter() {

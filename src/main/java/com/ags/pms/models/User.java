@@ -18,7 +18,7 @@ import com.ags.pms.services.PasswordHandler;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class User implements Identifiable {
+public abstract class User implements Identifiable {
     
     protected int id;
     protected String name;
@@ -27,8 +27,7 @@ public class User implements Identifiable {
     protected String username;
     protected String password;
 
-    private PasswordHandler pwHandler = new PasswordHandler("9Vs+DfEF1+3tF8fCKLp9BQ==", "JoprQnQRq95s/Nuz");
-    // private PasswordHandler pwHandler = new PasswordHandler();
+    private PasswordHandler pwHandler = new PasswordHandler();
     
     public User() {
     }
@@ -143,53 +142,5 @@ public class User implements Identifiable {
                 | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException | IOException e) {
             Helper.printErr(Helper.getStackTraceString(e));                
         }
-    }
-
-    // public <T extends User> boolean login(String username, String password) {
-        // DataContext context = new DataContext();
-        // context.populateUserCollection();
-        // context.getValidUser(username, password);
-
-
-        // JsonHandler handler = new JsonHandler();
-
-        // @SuppressWarnings("unchecked")
-        // Class<T> userClass = (Class<T>)getClass();
-        // String classSimpleName = userClass.getSimpleName();
-        // ArrayList<T> dataArrayList = handler.readJson(classSimpleName);
-
-        // HashMap<String, String> users = new HashMap<>();
-
-
-        // for (User obj : dataArrayList) {
-        //     try {
-        //         users.put(obj.getUsername(), pwHandler.decryptPassword(obj.getPassword()));
-        //     } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
-        //             | BadPaddingException | InvalidAlgorithmParameterException ex) {
-        //         Helper.printErr(Helper.getStackTraceString(ex));
-        //     }
-        // }
-
-        // PRINT ALL VALUES OF HASHSET
-        // for (String name : users.keySet()) {
-            // String key = name.toString();
-            // String value = users.get(name).toString();
-            // System.out.println(key + " " + value);
-        // }
-
-        // if (validateUser(users)) return true;
-
-        // return false;
-    // }
-
-    private boolean validateUser(HashMap<String, String> users) {
-        if (users != null) {
-            if (users.containsKey(this.username)) {
-                if (users.get(this.username).equals(this.password)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }

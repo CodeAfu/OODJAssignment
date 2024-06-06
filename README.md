@@ -1,7 +1,7 @@
 
 ## Table of Contents
 
-- [Menu Explanations](#very-useful-methods)
+- [Menu Explanations](#menu-explanations)
 - [Project Structure](#project-structure)
 - [Very Useful Methods](#very-useful-methods)
 

@@ -223,7 +223,7 @@ public class Admin extends User {
         DataContext context = new DataContext();
         context.populateUserCollection();
 
-        context.updateById(id, u -> {
+        context.updateUserById(id, u -> {
             u.setName(name);
             u.setDob(dob);
             u.setEmail(email);

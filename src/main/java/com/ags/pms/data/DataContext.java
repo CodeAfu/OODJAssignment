@@ -35,7 +35,6 @@ public class DataContext {
     private Map<String, List<? extends Identifiable>> collections = new HashMap<>();
     private Map<String, List<? extends User>> userCollections = new HashMap<>();
 
-
     private ArrayList<Lecturer> lecturers = new ArrayList<>();
     private ArrayList<Student> students = new ArrayList<>();
     private ArrayList<Admin> admins = new ArrayList<>();
@@ -176,7 +175,7 @@ public class DataContext {
                        .orElse(null);
     }
 
-    public void updateById(int id, Consumer<User> updater) {
+    public void updateUserById(int id, Consumer<User> updater) {
         Optional<? extends User> obj = userCollections.values().stream()
                 .flatMap(Collection::stream)
                 .filter(o -> o.getId() == id)
@@ -635,32 +634,7 @@ public class DataContext {
             .exceptionally(ex -> { ex.printStackTrace(); return null; });
     }
 
-    public void print() {
-        allFutures.thenRun(() -> {
-            System.out.print("STUDENTS: ");
-            students.forEach(x -> System.out.print(x.getUsername() + " "));
-            System.out.println();
-    
-            System.out.print("LECTURERS: ");
-            lecturers.forEach(x -> System.out.print(x.getUsername() + " "));
-            System.out.println();
-    
-            System.out.print("ADMINS: ");
-            admins.forEach(x -> System.out.print(x.getUsername() + " "));
-            System.out.println();
-    
-            System.out.print("PROJECTMANAGERS: ");
-            projectManagers.forEach(x -> System.out.print(x.getUsername() + " "));
-            System.out.println();
-    
-            System.out.print("REPORTS: ");
-            reports.forEach(x -> System.out.print(x.getMoodleLink() + " "));
-            System.out.println();
-        })
-        .exceptionally(ex -> { ex.printStackTrace(); return null; });
-    }
-
-    public void sortAll() {
+    private void sortAll() {
         Collections.sort(students, Comparator.comparingInt(Student::getId));
         Collections.sort(lecturers, Comparator.comparingInt(Lecturer::getId));
         Collections.sort(projectManagers, Comparator.comparingInt(ProjectManager::getId));
